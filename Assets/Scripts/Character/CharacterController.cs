@@ -77,9 +77,11 @@ public class CharacterController2D : MonoBehaviour
 
         Vector2 rawInput = moveAction.ReadValue<Vector2>();
 
-        moveInput = rawInput.normalized;
+        Vector2 discreteInput = new Vector2(Mathf.Round(rawInput.x), Mathf.Round(rawInput.y));
 
-        if (moveInput != Vector2.zero)
+        moveInput = discreteInput.normalized;
+
+        if (discreteInput != Vector2.zero)
         {
             if (animator != null)
             {
@@ -89,7 +91,7 @@ public class CharacterController2D : MonoBehaviour
 
             if (mode == MovementMode.GridBased)
             {
-                Vector3 targetPos = transform.position + new Vector3(rawInput.x, rawInput.y, 0f) * tileSize;
+                Vector3 targetPos = transform.position + new Vector3(discreteInput.x, discreteInput.y, 0f) * tileSize;
                 if (!IsObstacle(targetPos))
                 {
                     StartCoroutine(MoveToGridPosition(targetPos));
