@@ -103,6 +103,14 @@ public class CharacterController2D : MonoBehaviour
     {
         if (isDashing) return;
 
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        {
+            moveInput = Vector2.zero;
+            isRunning = false;
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         HandleInput();
         HandleStamina();
         UpdateVisuals();
