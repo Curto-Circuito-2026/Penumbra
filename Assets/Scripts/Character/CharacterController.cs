@@ -143,8 +143,21 @@ public class CharacterController2D : MonoBehaviour
             return;
         }
 
-        float speed = isRunning ? runSpeed : walkSpeed;
-        rb.linearVelocity = moveInput * speed;
+        // Se houver input manual WASD, aplica o movimento WASD
+        if (moveInput != Vector2.zero)
+        {
+            float speed = isRunning ? runSpeed : walkSpeed;
+            rb.linearVelocity = moveInput * speed;
+        }
+        else
+        {
+            // Se NÃO houver input WASD, só zera a velocidade se não houver perseguição/pathfinding de combate ativo
+            PlayerCombatController combat = GetComponent<PlayerCombatController>();
+            if (combat == null || !combat.IsPursuingTarget)
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
+        }
     }
 
     private void HandleInput()

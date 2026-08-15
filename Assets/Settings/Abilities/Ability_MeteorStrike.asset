@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8998fec7cbd82546bb52159700acd70, type: 3}
+  m_Name: Ability_MeteorStrike
+  m_EditorClassIdentifier: Assembly-CSharp::DamageAbility
+  abilityName: Meteoro Devastador
+  description: "Invoca um meteoro colossal do c\xE9u na posi\xE7\xE3o do cursor,
+    causando 100 de dano massivo."
+  icon: {fileID: 0}
+  cooldown: 15
+  range: 5
+  damage: 100
+  manaCost: 0
+  cost: 0
+  type: 0
+  aoeRadius: 3
+  projectilePrefab: {fileID: 0}
+  vfxPrefab: {fileID: 0}
