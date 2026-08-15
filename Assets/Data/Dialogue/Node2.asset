@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
   speakerName: Prof. Carvalho
   speakerPortrait: {fileID: 0}
-  dialogueText: "Este mundo \xE9 habitado por criaturas chamadas Pok\xE9mon! Para
-    alguns, s\xE3o animais de estima\xE7\xE3o. Outros usam para batalhas."
+  dialogueText: FOLCLORE 2
   nextNode: {fileID: 11400000, guid: 6bee4c763369f844a91f5db0f442b49c, type: 2}

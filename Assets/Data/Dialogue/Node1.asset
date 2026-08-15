@@ -14,6 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
   speakerName: Prof. Carvalho
   speakerPortrait: {fileID: 0}
-  dialogueText: "Ol\xE1! Bem-vindo ao mundo dos Pok\xE9mon! Meu nome \xE9 Carvalho,
-    mas todos me chamam de Professor Pok\xE9mon."
+  dialogueText: FOLCLORE
   nextNode: {fileID: 11400000, guid: c1eaf1f9b1c02574eb6ca801f892813b, type: 2}

@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f03cf499bd150f84c94de7afa9e16fd8, type: 3}
-  m_Name: OakSequence
+  m_Name: NPC Sequence
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   startingNode: {fileID: 11400000, guid: 76feaaeb8155e5947af357ca82c123de, type: 2}

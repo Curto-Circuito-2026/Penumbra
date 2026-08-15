@@ -6,7 +6,19 @@ using UnityEngine.InputSystem;
 
 public class DialogueManager : MonoBehaviour
 {
-    public static DialogueManager Instance { get; private set; }
+    private static DialogueManager instance;
+
+    public static DialogueManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = UnityEngine.Object.FindAnyObjectByType<DialogueManager>();
+            }
+            return instance;
+        }
+    }
 
     [Header("UI References (TMP & uGUI)")]
     [SerializeField] private TextMeshProUGUI nameText;
@@ -31,17 +43,21 @@ public class DialogueManager : MonoBehaviour
     private bool justStartedThisFrame;
     private Coroutine typingCoroutine;
 
+    // Sobrescritas opcionais vindas do NPC / DialogueTrigger
+    private string currentOverrideName;
+    private Sprite currentOverridePortrait;
+
     // Propriedade para verificar se o diálogo está ativo (útil para bloquear movimento do jogador)
     public bool IsDialogueActive => isDialogueActive;
 
     private void Awake()
     {
         // Padrão Singleton
-        if (Instance == null)
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
         }
-        else
+        else if (instance != this)
         {
             Destroy(gameObject);
             return;
@@ -78,9 +94,12 @@ public class DialogueManager : MonoBehaviour
 
     /// <summary>
     /// Ativa a UI, reseta o estado e começa a digitar o nó inicial da sequência.
+    /// Permite passar opcionalmente o nome e retrato do NPC para a UI.
     /// </summary>
     /// <param name="sequence">A sequência de diálogo a ser exibida.</param>
-    public void StartDialogue(DialogueSequence sequence)
+    /// <param name="overrideName">Nome do NPC (opcional).</param>
+    /// <param name="overridePortrait">Retrato do NPC (opcional).</param>
+    public void StartDialogue(DialogueSequence sequence, string overrideName = null, Sprite overridePortrait = null)
     {
         if (sequence == null || sequence.StartingNode == null)
         {
@@ -90,6 +109,14 @@ public class DialogueManager : MonoBehaviour
 
         isDialogueActive = true;
         justStartedThisFrame = true;
+        currentOverrideName = overrideName;
+        currentOverridePortrait = overridePortrait;
+
+        // Atualiza o estado do jogo para Dialogue
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.SetState(GameState.Dialogue);
+        }
 
         if (dialoguePanel != null)
         {
@@ -113,24 +140,26 @@ public class DialogueManager : MonoBehaviour
         currentNode = node;
         isTyping = true;
 
+        // Determina o nome a exibir: prioriza o nome definido no NPC (currentOverrideName); se vazio, usa o do nó
+        string displayName = !string.IsNullOrEmpty(currentOverrideName) ? currentOverrideName : node.SpeakerName;
+
         // Atribui o nome do palestrante
         if (nameText != null)
         {
-            nameText.text = node.SpeakerName;
+            nameText.text = displayName;
             // Exibe a caixa de nome apenas se houver um nome preenchido
-            nameText.gameObject.SetActive(!string.IsNullOrEmpty(node.SpeakerName));
+            nameText.gameObject.SetActive(!string.IsNullOrEmpty(displayName));
         }
 
         // Lógica de Retratos Opcionais:
-        // Verifica se a fala tem um retrato associado.
-        // Se tiver, atribui o sprite e exibe o componente Image.
-        // Se for nulo, esconde o GameObject do retrato. Isso permite que componentes de layout
-        // (como Horizontal Layout Group ou Anchors da UI) expandam o texto para ocupar o espaço.
+        // Determina o retrato a exibir: prioriza o do NPC; se nulo, usa o do nó.
+        Sprite displayPortrait = currentOverridePortrait != null ? currentOverridePortrait : node.SpeakerPortrait;
+
         if (portraitImage != null)
         {
-            if (node.SpeakerPortrait != null)
+            if (displayPortrait != null)
             {
-                portraitImage.sprite = node.SpeakerPortrait;
+                portraitImage.sprite = displayPortrait;
                 portraitImage.gameObject.SetActive(true);
             }
             else
@@ -212,6 +241,12 @@ public class DialogueManager : MonoBehaviour
         if (dialoguePanel != null)
         {
             dialoguePanel.SetActive(false);
+        }
+
+        // Restaura o estado do jogo para Playing
+        if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState == GameState.Dialogue)
+        {
+            GameStateManager.Instance.SetState(GameState.Playing);
         }
     }
 }

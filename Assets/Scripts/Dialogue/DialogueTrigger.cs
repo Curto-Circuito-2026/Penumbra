@@ -3,11 +3,21 @@ using UnityEngine.InputSystem;
 
 public class DialogueTrigger : MonoBehaviour
 {
+    [Header("NPC Profile (Opcional)")]
+    [Tooltip("Nome do NPC exibido na caixa de diálogo.")]
+    [SerializeField] private string npcName;
+
+    [Tooltip("Retrato do NPC exibido no diálogo. Se for nulo, oculta o retrato na UI.")]
+    [SerializeField] private Sprite npcPortrait;
+
     [Header("Dialogue Configuration")]
     [Tooltip("Sequência de diálogo a ser disparada.")]
     [SerializeField] private DialogueSequence dialogueToTrigger;
 
     [Header("Trigger Options")]
+    [Tooltip("Se verdadeiro, permite interagir clicando com o mouse diretamente no NPC.")]
+    [SerializeField] private bool allowMouseClick = true;
+
     [Tooltip("Se verdadeiro, o diálogo já foi falado e não será exibido novamente.")]
     [SerializeField] private bool alreadyTalk = false;
 
@@ -39,7 +49,21 @@ public class DialogueTrigger : MonoBehaviour
     }
 
     /// <summary>
-    /// Inicia o diálogo chamando o DialogueManager.
+    /// Detecta o clique do mouse diretamente no Collider do NPC.
+    /// </summary>
+    private void OnMouseDown()
+    {
+        if (!allowMouseClick) return;
+
+        // Evita disparar se o diálogo já estiver sendo exibido
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+
+        alreadyTalk = true;
+        TriggerDialogue();
+    }
+
+    /// <summary>
+    /// Inicia o diálogo chamando o DialogueManager, passando o nome e o retrato do NPC.
     /// </summary>
     public void TriggerDialogue()
     {
@@ -51,7 +75,7 @@ public class DialogueTrigger : MonoBehaviour
 
         if (DialogueManager.Instance != null)
         {
-            DialogueManager.Instance.StartDialogue(dialogueToTrigger);
+            DialogueManager.Instance.StartDialogue(dialogueToTrigger, npcName, npcPortrait);
         }
         else
         {
