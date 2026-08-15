@@ -103,11 +103,21 @@ public class CharacterController2D : MonoBehaviour
     {
         if (isDashing) return;
 
+        // Verifica se o jogador pode se movimentar de acordo com o estado do jogo (GameStateManager)
+        bool canMove = GameStateManager.Instance == null || GameStateManager.Instance.CanPlayerMove;
+
+        // Caso alternativo se o DialogueManager estiver ativo diretamente
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        {
+            canMove = false;
+        }
+
+        if (!canMove)
         {
             moveInput = Vector2.zero;
             isRunning = false;
             if (rb != null) rb.linearVelocity = Vector2.zero;
+            UpdateAnimator();
             return;
         }
 
@@ -120,6 +130,18 @@ public class CharacterController2D : MonoBehaviour
     private void FixedUpdate()
     {
         if (isDashing) return;
+
+        bool canMove = GameStateManager.Instance == null || GameStateManager.Instance.CanPlayerMove;
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        {
+            canMove = false;
+        }
+
+        if (!canMove)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
 
         float speed = isRunning ? runSpeed : walkSpeed;
         rb.linearVelocity = moveInput * speed;
