@@ -5,21 +5,13 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterController2D : MonoBehaviour
 {
-    public enum MovementMode { GridBased, Continuous }
-
     [Header("Movement Settings")]
-    [SerializeField] private MovementMode mode = MovementMode.GridBased;
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 8.5f;
-    [SerializeField] private LayerMask obstacleLayer;
-
-    [Header("Grid Settings")]
-    [SerializeField] private float tileSize = 1f;
 
     [Header("Dash Settings")]
     [SerializeField] private float dashDistance = 3f;
     [SerializeField] private float dashSpeed = 18f;
-    [SerializeField] private int gridDashTiles = 2;
 
     [Header("Stamina Settings")]
     [SerializeField] private float maxStamina = 100f;
@@ -44,7 +36,6 @@ public class CharacterController2D : MonoBehaviour
 
     private Vector2 moveInput;
     private Vector2 lastMoveDirection = Vector2.down;
-    private bool isMovingGrid;
     private bool isDashing;
     private bool isRunning;
     private float staminaRegenTimer;
@@ -54,6 +45,7 @@ public class CharacterController2D : MonoBehaviour
     private static readonly int IsMoving = Animator.StringToHash("IsMoving");
     private static readonly int LastMoveX = Animator.StringToHash("LastMoveX");
     private static readonly int LastMoveY = Animator.StringToHash("LastMoveY");
+    private static readonly int DashTrigger = Animator.StringToHash("Dash");
 
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
@@ -121,21 +113,14 @@ public class CharacterController2D : MonoBehaviour
     {
         if (isDashing) return;
 
-        if (mode == MovementMode.Continuous)
-        {
-            float speed = isRunning ? runSpeed : walkSpeed;
-            rb.MovePosition(rb.position + moveInput * (speed * Time.fixedDeltaTime));
-        }
+        float speed = isRunning ? runSpeed : walkSpeed;
+        rb.linearVelocity = moveInput * speed;
     }
 
     private void HandleInput()
     {
-        if (mode == MovementMode.GridBased && isMovingGrid) return;
-
         Vector2 rawInput = moveAction.ReadValue<Vector2>();
-        Vector2 discreteInput = new Vector2(Mathf.Round(rawInput.x), Mathf.Round(rawInput.y));
-
-        moveInput = discreteInput.normalized;
+        moveInput = rawInput.sqrMagnitude > 0.01f ? rawInput.normalized : Vector2.zero;
 
         if (moveInput != Vector2.zero)
         {
@@ -143,8 +128,8 @@ public class CharacterController2D : MonoBehaviour
 
             if (animator != null)
             {
-                animator.SetFloat(LastMoveX, moveInput.x);
-                animator.SetFloat(LastMoveY, moveInput.y);
+                animator.SetFloat(LastMoveX, lastMoveDirection.x);
+                animator.SetFloat(LastMoveY, lastMoveDirection.y);
             }
         }
 
@@ -153,19 +138,7 @@ public class CharacterController2D : MonoBehaviour
 
         if (dashAction.WasPressedThisFrame() && currentStamina >= dashStaminaCost)
         {
-            StartCoroutine(PerformDash(discreteInput));
-            return;
-        }
-
-        if (mode == MovementMode.GridBased && discreteInput != Vector2.zero && !isMovingGrid)
-        {
-            float speed = isRunning ? runSpeed : walkSpeed;
-            Vector3 targetPos = transform.position + new Vector3(discreteInput.x, discreteInput.y, 0f) * tileSize;
-
-            if (!IsObstacle(targetPos))
-            {
-                StartCoroutine(MoveToGridPosition(targetPos, speed));
-            }
+            StartCoroutine(PerformDash(moveInput));
         }
     }
 
@@ -202,62 +175,33 @@ public class CharacterController2D : MonoBehaviour
         currentStamina -= dashStaminaCost;
         staminaRegenTimer = staminaRegenDelay;
 
-        Vector2 dashDir = inputDirection != Vector2.zero ? inputDirection.normalized : lastMoveDirection;
+        Vector2 dashDir = inputDirection != Vector2.zero ? inputDirection : lastMoveDirection;
 
-        if (mode == MovementMode.Continuous)
+        // Dispara o Trigger e atualiza a direção do dash no Animator
+        if (animator != null)
         {
-            Vector2 startPos = rb.position;
-            Vector2 targetPos = startPos + dashDir * dashDistance;
-            float travelDuration = dashDistance / dashSpeed;
-            float elapsedTime = 0f;
-
-            while (elapsedTime < travelDuration)
-            {
-                elapsedTime += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsedTime / travelDuration);
-                
-                Vector2 nextPos = Vector2.Lerp(startPos, targetPos, t);
-
-                if (IsObstacle(nextPos)) break;
-
-                rb.MovePosition(nextPos);
-                yield return null;
-            }
-        }
-        else
-        {
-            Vector3 targetPos = transform.position;
-            for (int i = 1; i <= gridDashTiles; i++)
-            {
-                Vector3 nextCheck = transform.position + new Vector3(dashDir.x, dashDir.y, 0f) * (tileSize * i);
-                if (IsObstacle(nextCheck)) break;
-                targetPos = nextCheck;
-            }
-
-            yield return MoveToGridPosition(targetPos, dashSpeed);
+            animator.SetFloat(LastMoveX, dashDir.x);
+            animator.SetFloat(LastMoveY, dashDir.y);
+            animator.SetTrigger(DashTrigger);
         }
 
+        Vector2 startPos = rb.position;
+        Vector2 targetPos = startPos + dashDir * dashDistance;
+        float travelDuration = dashDistance / dashSpeed;
+        float elapsedTime = 0f;
+
+        rb.linearVelocity = Vector2.zero;
+
+        while (elapsedTime < travelDuration)
+        {
+            elapsedTime += Time.fixedDeltaTime;
+            float t = Mathf.Clamp01(elapsedTime / travelDuration);
+            rb.MovePosition(Vector2.Lerp(startPos, targetPos, t));
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.MovePosition(targetPos);
         isDashing = false;
-    }
-
-    private IEnumerator MoveToGridPosition(Vector3 targetPos, float speed)
-    {
-        isMovingGrid = true;
-
-        while (Vector3.Distance(transform.position, targetPos) > 0.001f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-            yield return null;
-        }
-
-        transform.position = targetPos;
-        isMovingGrid = false;
-    }
-
-    private bool IsObstacle(Vector3 targetPos)
-    {
-        if (obstacleLayer == 0) return false;
-        return Physics2D.OverlapCircle(targetPos, 0.2f, obstacleLayer) != null;
     }
 
     private void UpdateVisuals()
@@ -282,10 +226,8 @@ public class CharacterController2D : MonoBehaviour
     {
         if (animator == null) return;
 
-        bool moving = mode == MovementMode.GridBased ? isMovingGrid : moveInput != Vector2.zero;
-
         animator.SetFloat(MoveX, moveInput.x);
         animator.SetFloat(MoveY, moveInput.y);
-        animator.SetBool(IsMoving, moving);
+        animator.SetBool(IsMoving, moveInput != Vector2.zero);
     }
 }
