@@ -70,6 +70,8 @@ public class PlayerCombatController : MonoBehaviour
 
     private Camera mainCamera;
     private Rigidbody2D rb;
+    private PlayerStats playerStats;
+    private CharacterController2D characterController;
 
     // Input Actions do New Input System
     private InputAction moveAction;
@@ -99,6 +101,8 @@ public class PlayerCombatController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerStats = GetComponent<PlayerStats>();
+        characterController = GetComponent<CharacterController2D>();
         mainCamera = Camera.main;
         calculatedPath = new NavMeshPath();
 
@@ -212,7 +216,8 @@ public class PlayerCombatController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Se houver uma ação pendente e um alvo/ponto, persegue pelo caminho mais rápido (NavMesh / Pathfinding)
+        /*
+        // [COMENTADO A PEDIDO] Auto-caminhada até o alcance do inimigo
         if (pendingAction != PendingActionType.None)
         {
             Vector3 destination = currentTarget != null ? currentTarget.transform.position : targetPoint;
@@ -221,16 +226,15 @@ public class PlayerCombatController : MonoBehaviour
 
             if (dist <= requiredRange)
             {
-                // Entrou no alcance específico desta habilidade/ataque: para o movimento e executa a ação
                 StopMovement();
                 ExecutePendingAction();
             }
             else
             {
-                // Navega pelo caminho mais rápido (Pathfinding 2D contornando obstáculos)
                 NavigateAlongPath(destination);
             }
         }
+        */
     }
 
     /// <summary>
@@ -268,66 +272,47 @@ public class PlayerCombatController : MonoBehaviour
 
     /// <summary>
     /// Processa comandos de clique do mouse, WASD e atalhos de habilidades Q, E, R.
+    /// Ataques e habilidades são disparados na direção do ponteiro do mouse em linha reta.
     /// </summary>
     private void HandleInput()
     {
-        Vector2 manualMove = moveAction.ReadValue<Vector2>();
-
-        // CANCELAMENTO INSTANTÂNEO: Pressionar qualquer tecla WASD cancela a perseguição e o comando de ataque
-        if (manualMove.sqrMagnitude > 0.01f)
+        // Se o personagem estiver dando dash, impede atirar ou usar habilidades até o dash terminar
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing)
         {
-            CancelAction();
             return;
         }
 
         Vector3 mouseWorldPos = GetMouseWorldPosition();
 
-        // Clique do Mouse Esquerdo (Ataque Melee)
+        // Clique do Mouse Esquerdo (Ataque Melee Direcional)
         if (lmbAction.WasPressedThisFrame())
         {
-            RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, enemyLayerMask);
-            if (hit.collider != null)
-            {
-                SetPendingAction(PendingActionType.Melee, hit.collider.gameObject, mouseWorldPos);
-            }
-            else
-            {
-                // Clicou no chão fora do inimigo: Cancela comando e perseguição
-                CancelAction();
-            }
+            PerformMeleeAttack(mouseWorldPos);
         }
 
-        // Clique do Mouse Direito (Ataque Ranged)
+        // Clique do Mouse Direito (Ataque Ranged Direcional)
         if (rmbAction.WasPressedThisFrame())
         {
-            RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, enemyLayerMask);
-            if (hit.collider != null)
-            {
-                SetPendingAction(PendingActionType.Ranged, hit.collider.gameObject, mouseWorldPos);
-            }
-            else
-            {
-                // Clicou no chão fora do inimigo: Cancela comando e perseguição
-                CancelAction();
-            }
+            PerformRangedAttack(mouseWorldPos);
         }
 
-        // Tecla Q - Habilidade 1
+        // Tecla Q - Habilidade 1 Direcional
         if (keyQAction.WasPressedThisFrame())
         {
-            TryTargetOrCastAbility(0, slotQ, PendingActionType.AbilityQ, ref cooldownQ);
+            TryTargetOrCastAbility(0, slotQ, ref cooldownQ, mouseWorldPos);
         }
 
-        // Tecla E - Habilidade 2
+        // Tecla E - Habilidade 2 Direcional
         if (keyEAction.WasPressedThisFrame())
         {
-            TryTargetOrCastAbility(1, slotE, PendingActionType.AbilityE, ref cooldownE);
+            TryTargetOrCastAbility(1, slotE, ref cooldownE, mouseWorldPos);
         }
 
-        // Tecla R - Ultimate (Requer 100% de carga)
+        // Tecla R - Ultimate Direcional
         if (keyRAction.WasPressedThisFrame())
         {
-            TryCastUltimate();
+            TryCastUltimate(mouseWorldPos);
         }
     }
 
@@ -433,86 +418,96 @@ public class PlayerCombatController : MonoBehaviour
         hudHoverAction = PendingActionType.None;
     }
 
-    private void SetPendingAction(PendingActionType action, GameObject target, Vector3 point)
+    private void PerformMeleeAttack(Vector3 mouseWorldPos)
     {
-        pendingAction = action;
-        currentTarget = target;
-        targetPoint = point;
+        if (meleeCooldownTimer > 0f) return;
 
-        float requiredRange = GetRequiredRange(action);
-        Vector3 targetPos = target != null ? target.transform.position : point;
+        Vector3 dir = (mouseWorldPos - transform.position).normalized;
+        if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
-        if (Vector2.Distance(transform.position, targetPos) <= requiredRange)
+        // Raycast da posição do jogador em direção ao mouse até o alcance Melee
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, meleeRange, enemyLayerMask);
+        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
+
+        Debug.Log($"[PlayerCombatController] Ataque Melee Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
+
+        // Retorno Visual: Arco de corte Melee
+        if (CombatVisualEffects.Instance != null)
         {
-            StopMovement();
-            ExecutePendingAction();
-        }
-    }
-
-    private void ExecutePendingAction()
-    {
-        if (currentTarget == null && pendingAction != PendingActionType.AbilityQ && pendingAction != PendingActionType.AbilityE && pendingAction != PendingActionType.AbilityR)
-        {
-            CancelAction();
-            return;
+            CombatVisualEffects.Instance.PlayMeleeSlash(transform.position, dir);
         }
 
-        Vector3 targetPos = currentTarget != null ? currentTarget.transform.position : targetPoint;
-        Vector3 dir = (targetPos - transform.position).normalized;
-
-        switch (pendingAction)
+        if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
         {
-            case PendingActionType.Melee:
-                if (meleeCooldownTimer <= 0f)
-                {
-                    PerformMeleeAttack(currentTarget, dir);
-                    meleeCooldownTimer = meleeCooldown;
-                }
-                break;
-
-            case PendingActionType.Ranged:
-                if (rangedCooldownTimer <= 0f)
-                {
-                    PerformRangedAttack(currentTarget, dir);
-                    rangedCooldownTimer = rangedCooldown;
-                }
-                break;
-
-            case PendingActionType.AbilityQ:
-                TryCastAbilityInternal(0, slotQ, ref cooldownQ);
-                break;
-
-            case PendingActionType.AbilityE:
-                TryCastAbilityInternal(1, slotE, ref cooldownE);
-                break;
-        }
-
-        // Reseta ação pendente após tentar executar
-        pendingAction = PendingActionType.None;
-        currentTarget = null;
-    }
-
-    private void PerformMeleeAttack(GameObject target, Vector3 direction)
-    {
-        Debug.Log($"[PlayerCombatController] Ataque Melee executado no alvo: {(target != null ? target.name : "ponto")}");
-        if (target != null && target.TryGetComponent(out IDamageable damageable))
-        {
-            damageable.TakeDamage(meleeDamage, direction);
+            damageable.TakeDamage(meleeDamage, dir);
             AddUltimateCharge(chargePerHit);
         }
-    }
-
-    private void PerformRangedAttack(GameObject target, Vector3 direction)
-    {
-        Debug.Log($"[PlayerCombatController] Disparo Ranged executado no alvo: {(target != null ? target.name : "ponto")}");
-        if (target != null && target.TryGetComponent(out IDamageable damageable))
+        else
         {
-            damageable.TakeDamage(rangedDamage, direction);
-            AddUltimateCharge(chargePerHit);
+            // Procura inimigos por OverlapCircle no arco curto em frente
+            Collider2D hitCol = Physics2D.OverlapCircle(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.6f, enemyLayerMask);
+            if (hitCol != null && hitCol.TryGetComponent(out IDamageable hitDmg))
+            {
+                hitDmg.TakeDamage(meleeDamage, dir);
+                AddUltimateCharge(chargePerHit);
+            }
         }
+
+        meleeCooldownTimer = meleeCooldown;
     }
 
-    private void TryTargetOrCastAbility(int slotIndex, Ability ability, PendingActionType actionType, ref float cooldownTimer)
+    private void PerformRangedAttack(Vector3 mouseWorldPos)
+    {
+        if (rangedCooldownTimer > 0f) return;
+
+        Vector3 dir = (mouseWorldPos - transform.position).normalized;
+        if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
+
+        float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
+        float castDist = Mathf.Min(mouseDist, rangedRange);
+        if (castDist < 0.5f) castDist = rangedRange;
+
+        // Raycast da posição do jogador na direção do mouse até o alcance máximo
+        // Encontra o PRIMEIRO inimigo que estiver na frente entre o jogador e a mira!
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rangedRange, enemyLayerMask);
+        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
+        Vector3 impactPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+
+        Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
+
+        if (CombatVisualEffects.Instance != null)
+        {
+            CombatVisualEffects.Instance.PlayRangedProjectile(transform.position, impactPos, () =>
+            {
+                if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.TakeDamage(rangedDamage, dir);
+                    AddUltimateCharge(chargePerHit);
+                }
+                else
+                {
+                    Collider2D hitCol = Physics2D.OverlapCircle(impactPos, 0.8f, enemyLayerMask);
+                    if (hitCol != null && hitCol.TryGetComponent(out IDamageable hitDmg))
+                    {
+                        hitDmg.TakeDamage(rangedDamage, dir);
+                        AddUltimateCharge(chargePerHit);
+                    }
+                }
+            });
+        }
+        else
+        {
+            if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+            {
+                damageable.TakeDamage(rangedDamage, dir);
+                AddUltimateCharge(chargePerHit);
+            }
+        }
+
+        rangedCooldownTimer = rangedCooldown;
+    }
+
+    private void TryTargetOrCastAbility(int slotIndex, Ability ability, ref float cooldownTimer, Vector3 mouseWorldPos)
     {
         if (ability == null) return;
         if (cooldownTimer > 0f)
@@ -521,57 +516,72 @@ public class PlayerCombatController : MonoBehaviour
             return;
         }
 
-        Vector3 mouseWorldPos = GetMouseWorldPosition();
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, enemyLayerMask);
-        GameObject targetObj = hit.collider != null ? hit.collider.gameObject : null;
-
-        Vector3 targetPos = targetObj != null ? targetObj.transform.position : mouseWorldPos;
-        float dist = Vector2.Distance(transform.position, targetPos);
-
-        if (dist <= ability.Range)
+        if (playerStats == null) playerStats = GetComponent<PlayerStats>();
+        if (playerStats != null && !playerStats.HasEnoughMana(ability.ManaCost))
         {
-            // Dentro do alcance da habilidade: conjura diretamente
-            TryCastAbilityInternal(slotIndex, ability, ref cooldownTimer);
+            Debug.Log($"[PlayerCombatController] Mana insuficiente para usar {ability.AbilityName}! Custo: {ability.ManaCost}, Atual: {playerStats.CurrentMana:F0}");
+            return;
         }
-        else
-        {
-            // Fora do alcance: entra em perseguição até alcançar o range da habilidade
-            SetPendingAction(actionType, targetObj, mouseWorldPos);
-        }
-    }
 
-    private void TryCastAbilityInternal(int slotIndex, Ability ability, ref float cooldownTimer)
-    {
-        if (ability == null) return;
+        Vector3 dir = (mouseWorldPos - transform.position).normalized;
+        if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
-        Vector3 mouseWorldPos = GetMouseWorldPosition();
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, enemyLayerMask);
-        GameObject targetObj = hit.collider != null ? hit.collider.gameObject : (currentTarget != null ? currentTarget : null);
+        float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
+        float castDist = Mathf.Min(mouseDist, ability.Range);
+        if (castDist < 0.5f) castDist = ability.Range;
 
-        bool success = ability.Cast(gameObject, mouseWorldPos, targetObj);
+        // Raycast da posição do jogador na direção do mouse até o alcance máximo da habilidade
+        // Se houver um inimigo na frente entre o jogador e o ponto mirado, o Raycast acerta o primeiro!
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, ability.Range, enemyLayerMask);
+        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
+        Vector3 targetPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+
+        bool success = ability.Cast(gameObject, targetPos, targetEnemy);
         if (success)
         {
+            if (playerStats != null) playerStats.UseMana(ability.ManaCost);
             cooldownTimer = ability.Cooldown;
             OnAbilityCooldownUpdated?.Invoke(slotIndex, cooldownTimer, ability.Cooldown);
         }
     }
 
-    private void TryCastUltimate()
+    private void TryCastUltimate(Vector3 mouseWorldPos)
     {
         if (slotR == null) return;
+        if (cooldownR > 0f)
+        {
+            Debug.Log($"[PlayerCombatController] Ultimate {slotR.AbilityName} em recarga ({cooldownR:F1}s restante)!");
+            return;
+        }
         if (!IsUltimateReady)
         {
             Debug.Log($"[PlayerCombatController] Ultimate não está carregada! Carga atual: {ultimateCharge}/{maxUltimateCharge}");
             return;
         }
 
-        Vector3 mouseWorldPos = GetMouseWorldPosition();
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, enemyLayerMask);
-        GameObject targetObj = hit.collider != null ? hit.collider.gameObject : null;
+        if (playerStats == null) playerStats = GetComponent<PlayerStats>();
+        if (playerStats != null && !playerStats.HasEnoughMana(slotR.ManaCost))
+        {
+            Debug.Log($"[PlayerCombatController] Mana insuficiente para usar Ultimate {slotR.AbilityName}! Custo: {slotR.ManaCost}, Atual: {playerStats.CurrentMana:F0}");
+            return;
+        }
 
-        bool success = slotR.Cast(gameObject, mouseWorldPos, targetObj);
+        Vector3 dir = (mouseWorldPos - transform.position).normalized;
+        if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
+
+        float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
+        float castDist = Mathf.Min(mouseDist, slotR.Range);
+        if (castDist < 0.5f) castDist = slotR.Range;
+
+        // Raycast na direção do mouse até o alcance da Ultimate
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, slotR.Range, enemyLayerMask);
+        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
+        Vector3 targetPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+
+        bool success = slotR.Cast(gameObject, targetPos, targetEnemy);
         if (success)
         {
+            if (playerStats != null) playerStats.UseMana(slotR.ManaCost);
             ultimateCharge = 0f;
             cooldownR = slotR.Cooldown;
             OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);

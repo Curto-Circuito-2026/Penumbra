@@ -10,7 +10,7 @@ public class DamageAbility : Ability
     [SerializeField] private AbilityType type = AbilityType.SingleTarget;
 
     [Tooltip("Raio de efeito no caso de dano em área (AoE).")]
-    [SerializeField] private float aoeRadius = 3f;
+    [SerializeField] private float aoeRadius = 3.5f;
 
     [Tooltip("Prefab do projétil (se tipo for Projétil).")]
     [SerializeField] private GameObject projectilePrefab;
@@ -23,76 +23,83 @@ public class DamageAbility : Ability
         Vector3 casterPos = caster != null ? caster.transform.position : targetPosition;
         Vector3 direction = (targetPosition - casterPos).normalized;
 
-        switch (type)
+        bool hasVFX = CombatVisualEffects.Instance != null;
+
+        string nameUpper = abilityName.ToUpper();
+        bool isMeteor = nameUpper.Contains("METEOR") || nameUpper.Contains("ULTIMATE") || nameUpper.Contains("FÚRIA") || nameUpper.Contains("FURIA") || damage >= 50f;
+        bool isFrost = nameUpper.Contains("FROST") || nameUpper.Contains("GELO") || nameUpper.Contains("NOVA") || nameUpper.Contains("AVANÇO") || nameUpper.Contains("AVANCO");
+
+        if (hasVFX)
         {
-            case AbilityType.SingleTarget:
-                if (targetEntity != null)
+            if (isMeteor)
+            {
+                // Visual R: Meteoro caindo dos céus + Explosão Massiva + Shake
+                CombatVisualEffects.Instance.PlayAbilityRMeteorStrike(targetPosition, () =>
                 {
-                    IDamageable damageable = targetEntity.GetComponent<IDamageable>();
-                    if (damageable != null)
-                    {
-                        damageable.TakeDamage(damage, direction);
-                        Debug.Log($"[DamageAbility] Habilidade '{abilityName}' causou {damage} de dano a {targetEntity.name}");
-                        SpawnVFX(targetEntity.transform.position);
-                        return true;
-                    }
+                    ApplyDamage(caster, targetPosition, targetEntity, direction);
+                });
+                return true;
+            }
+            else if (isFrost || (type == AbilityType.AoE && !isMeteor))
+            {
+                // Visual E: Nova de Gelo / Onda de Choque Expansiva
+                CombatVisualEffects.Instance.PlayAbilityEFrostNova(targetPosition, aoeRadius);
+                ApplyDamage(caster, targetPosition, targetEntity, direction);
+                return true;
+            }
+            else
+            {
+                // Visual Q: Bola de Fogo / Projétil Flamejante com Explosão
+                CombatVisualEffects.Instance.PlayAbilityQFireball(casterPos, targetPosition, () =>
+                {
+                    ApplyDamage(caster, targetPosition, targetEntity, direction);
+                });
+                return true;
+            }
+        }
+        else
+        {
+            // Fallback sem VFX Manager
+            ApplyDamage(caster, targetPosition, targetEntity, direction);
+            return true;
+        }
+    }
+
+    private void ApplyDamage(GameObject caster, Vector3 targetPosition, GameObject targetEntity, Vector3 direction)
+    {
+        if (type == AbilityType.AoE)
+        {
+            Collider2D[] hits = Physics2D.OverlapCircleAll(targetPosition, aoeRadius);
+            int count = 0;
+            foreach (Collider2D hit in hits)
+            {
+                if (hit.gameObject == caster) continue;
+                if (hit.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.TakeDamage(damage, (hit.transform.position - targetPosition).normalized);
+                    count++;
                 }
-                // Se não tinha entidade alvo direto, pode aplicar dano se houver collider no ponto
+            }
+            Debug.Log($"[DamageAbility] Habilidade AoE '{abilityName}' atingiu {count} alvos em raio {aoeRadius}");
+        }
+        else
+        {
+            if (targetEntity != null && targetEntity.TryGetComponent(out IDamageable targetDmg))
+            {
+                targetDmg.TakeDamage(damage, direction);
+                Debug.Log($"[DamageAbility] Habilidade '{abilityName}' causou {damage} de dano a {targetEntity.name}");
+            }
+            else
+            {
                 Collider2D hitCol = Physics2D.OverlapCircle(targetPosition, 0.8f);
-                if (hitCol != null && hitCol.gameObject != caster)
+                if (hitCol != null && hitCol.gameObject != caster && hitCol.TryGetComponent(out IDamageable hitDmg))
                 {
-                    IDamageable damageable = hitCol.GetComponent<IDamageable>();
-                    if (damageable != null)
-                    {
-                        damageable.TakeDamage(damage, direction);
-                        SpawnVFX(targetPosition);
-                        return true;
-                    }
+                    hitDmg.TakeDamage(damage, direction);
                 }
-                SpawnVFX(targetPosition);
-                return true;
-
-            case AbilityType.AoE:
-                Collider2D[] hits = Physics2D.OverlapCircleAll(targetPosition, aoeRadius);
-                int count = 0;
-                foreach (Collider2D hit in hits)
-                {
-                    if (hit.gameObject == caster) continue;
-                    IDamageable damageable = hit.GetComponent<IDamageable>();
-                    if (damageable != null)
-                    {
-                        damageable.TakeDamage(damage, (hit.transform.position - targetPosition).normalized);
-                        count++;
-                    }
-                }
-                Debug.Log($"[DamageAbility] AoE '{abilityName}' atingiu {count} alvos em raio {aoeRadius}");
-                SpawnVFX(targetPosition);
-                return true;
-
-            case AbilityType.Projectile:
-                if (projectilePrefab != null)
-                {
-                    GameObject proj = Instantiate(projectilePrefab, casterPos + direction * 0.5f, Quaternion.identity);
-                    // Se o projétil tiver Rigidbody2D, aplica velocidade
-                    Rigidbody2D projRb = proj.GetComponent<Rigidbody2D>();
-                    if (projRb != null)
-                    {
-                        projRb.linearVelocity = direction * 12f;
-                    }
-                }
-                else
-                {
-                    // Fallback projétil instantâneo
-                    if (targetEntity != null && targetEntity.TryGetComponent(out IDamageable targetDmg))
-                    {
-                        targetDmg.TakeDamage(damage, direction);
-                    }
-                }
-                SpawnVFX(targetPosition);
-                return true;
+            }
         }
 
-        return false;
+        SpawnVFX(targetPosition);
     }
 
     private void SpawnVFX(Vector3 position)
