@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Ability_MeteorStrike
   m_EditorClassIdentifier: Assembly-CSharp::DamageAbility
   abilityName: Meteoro Devastador
-  description: "Invoca um meteoro colossal do c\xE9u na posi\xE7\xE3o do cursor,
-    causando 100 de dano massivo."
+  description: "Invoca um meteoro colossal do espa\xE7o que atinge a \xE1rea do cursor
+    com for\xE7a devastadora, causando 100 de dano em massa."
   icon: {fileID: 0}
   cooldown: 15
   range: 5

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Ability_Fireball
   m_EditorClassIdentifier: Assembly-CSharp::DamageAbility
   abilityName: Bola de Fogo
-  description: "Lan\xE7a uma bola de fogo concentrada no alvo que causa 40 de dano
-    m\xE1gico."
+  description: "Dispara uma esfera flamejante em dire\xE7\xE3o ao alvo, queimando
+    o inimigo e causando 40 de dano m\xE1gico."
   icon: {fileID: 0}
   cooldown: 4
   range: 5

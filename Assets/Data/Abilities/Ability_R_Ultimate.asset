@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8998fec7cbd82546bb52159700acd70, type: 3}
   m_Name: Ability_R_Ultimate
   m_EditorClassIdentifier: Assembly-CSharp::DamageAbility
-  abilityName: SUPER ULTIMATE
+  abilityName: "F\xFAria Elemental"
+  description: "Desencadeia uma tempestade elemental suprema que dizima todos os
+    inimigos na \xE1rea, causando 120 de dano."
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   cooldown: 12
   range: 8
   damage: 120
+  manaCost: 0
   cost: 0
   type: 1
   aoeRadius: 5

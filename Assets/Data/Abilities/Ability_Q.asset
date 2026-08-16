@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8998fec7cbd82546bb52159700acd70, type: 3}
   m_Name: Ability_Q
   m_EditorClassIdentifier: Assembly-CSharp::DamageAbility
-  abilityName: SUPER Q DO LEE SIN
+  abilityName: Onda de Choque
+  description: "Lan\xE7a um proj\xE9til de energia veloz que atinge o alvo causando
+    35 de dano e interrompendo conjura\xE7\xF5es."
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   cooldown: 3.5
   range: 4
-  damage: 30
+  damage: 35
+  manaCost: 20
   cost: 0
   type: 0
   aoeRadius: 3

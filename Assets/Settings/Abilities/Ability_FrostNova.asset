@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Ability_FrostNova
   m_EditorClassIdentifier: Assembly-CSharp::DamageAbility
   abilityName: Nova de Gelo
-  description: "Explos\xE3o congelante em \xE1rea (AoE) que causa 30 de dano aos
-    inimigos ao redor."
+  description: "Libera uma onda de frio congelante em \xE1rea (AoE) que reduz o movimento
+    dos inimigos e causa 30 de dano f\xEDsico."
   icon: {fileID: 0}
   cooldown: 6
   range: 5

@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8998fec7cbd82546bb52159700acd70, type: 3}
   m_Name: Ability_E
   m_EditorClassIdentifier: Assembly-CSharp::DamageAbility
-  abilityName: SUPER E DO GRAGAS
+  abilityName: "Avan\xE7o Voraz"
+  description: "Impulsiona o personagem na dire\xE7\xE3o do inimigo e desfere uma
+    investida pesada que causa 45 de dano."
   icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   cooldown: 6
   range: 6
   damage: 45
+  manaCost: 30
   cost: 0
   type: 1
   aoeRadius: 3.5
