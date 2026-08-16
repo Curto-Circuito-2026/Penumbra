@@ -694,11 +694,11 @@ PlayerSettings:
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
   enableDirectStorage: 0
-  cloudProjectId: f025c4ab-cc5e-4d4c-9b99-275a77b19c0d
+  cloudProjectId: f98f8f2b-4a81-4fb1-9ec4-8a83b5485355
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Praia Games 2026
-  organizationId: arthurs-games
+  organizationId: games-gamers-eebe580e-c305-4f2f-a630-99fa5562cd63
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
