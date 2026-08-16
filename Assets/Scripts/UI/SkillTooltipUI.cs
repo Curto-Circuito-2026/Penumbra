@@ -18,14 +18,14 @@ public class SkillTooltipUI : MonoBehaviour
         {
             if (instance == null)
             {
-                instance = UnityEngine.Object.FindAnyObjectByType<SkillTooltipUI>();
+                instance = UnityEngine.Object.FindAnyObjectByType<SkillTooltipUI>(FindObjectsInactive.Include);
             }
             return instance;
         }
     }
 
     [Header("UI References")]
-    [Tooltip("Painel container do Tooltip.")]
+    [Tooltip("Painel container do visual do Tooltip (será ativado/desativado).")]
     [SerializeField] private GameObject tooltipPanel;
 
     [Tooltip("Texto do Nome da Habilidade.")]
@@ -75,7 +75,7 @@ public class SkillTooltipUI : MonoBehaviour
 
         parentCanvas = GetComponentInParent<Canvas>();
 
-        // Começa oculto
+        // Oculta a janela de conteúdo do tooltip no início
         HideTooltip();
     }
 
@@ -133,7 +133,7 @@ public class SkillTooltipUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Oculta a janela de Tooltip.
+    /// Oculta a janela de conteúdo do Tooltip.
     /// </summary>
     public void HideTooltip()
     {
@@ -182,3 +182,4 @@ public class SkillTooltipUI : MonoBehaviour
         }
     }
 }
+
