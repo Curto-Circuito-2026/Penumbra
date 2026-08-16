@@ -79,6 +79,9 @@ public class GameStateUI : MonoBehaviour
                 case GameState.Dialogue:
                     statusText.text = "<color=#FF6699>Status: EM DIÁLOGO</color>";
                     break;
+                case GameState.Dead:
+                    statusText.text = "<color=#FF0000>Status: MORTO</color>";
+                    break;
             }
         }
 

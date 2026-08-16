@@ -10,7 +10,8 @@ public enum GameState
     Playing,    // Jogo rodando (Gameplay) - O jogador PODE se movimentar
     Paused,     // Jogo pausado
     Menu,       // Em algum menu de interface
-    Dialogue    // Em diálogo com NPC/evento
+    Dialogue,   // Em diálogo com NPC/evento
+    Dead        // Personagem morto - Exibe tela de morte
 }
 
 public class GameStateManager : MonoBehaviour
@@ -62,7 +63,10 @@ public class GameStateManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (Application.isPlaying)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
         }
         else if (instance != this)
         {
@@ -96,24 +100,32 @@ public class GameStateManager : MonoBehaviour
     /// <param name="newState">Novo estado a ser aplicado.</param>
     public void SetState(GameState newState)
     {
-        if (currentState == newState) return;
+        bool stateChanged = currentState != newState;
 
         previousState = currentState;
         currentState = newState;
 
         ApplyStateEffects(newState);
 
-        Debug.Log($"[GameStateManager] Estado alterado de {previousState} para {currentState}");
-        OnStateChanged?.Invoke(previousState, currentState);
+        if (stateChanged)
+        {
+            Debug.Log($"[GameStateManager] Estado alterado de {previousState} para {currentState}");
+            OnStateChanged?.Invoke(previousState, currentState);
+        }
+
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateUIVisibility(newState);
+        }
     }
 
     /// <summary>
     /// Alterna entre Pausado e o estado anterior (ou Playing).
-    /// Não permite pausar enquanto em Diálogo.
+    /// Não permite pausar enquanto em Diálogo ou Morto.
     /// </summary>
     public void TogglePause()
     {
-        if (currentState == GameState.Dialogue) return;
+        if (currentState == GameState.Dialogue || currentState == GameState.Dead) return;
 
         if (currentState == GameState.Paused)
         {
@@ -130,6 +142,7 @@ public class GameStateManager : MonoBehaviour
     public void SetPaused() => SetState(GameState.Paused);
     public void SetMenu() => SetState(GameState.Menu);
     public void SetDialogue() => SetState(GameState.Dialogue);
+    public void SetDead() => SetState(GameState.Dead);
 
     /// <summary>
     /// Efeitos colaterais por estado (ex: congelar/descongelar o tempo).
