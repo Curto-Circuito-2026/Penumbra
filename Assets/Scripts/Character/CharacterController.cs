@@ -2,6 +2,15 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum CharacterState
+{
+    Idle,
+    Walking,
+    Running,
+    Dashing,
+    Dead
+}
+
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterController2D : MonoBehaviour
 {
@@ -33,12 +42,16 @@ public class CharacterController2D : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private PlayerStats playerStats;
 
     private Vector2 moveInput;
     private Vector2 lastMoveDirection = Vector2.down;
     private bool isDashing;
     private bool isRunning;
     private float staminaRegenTimer;
+
+    public CharacterState CurrentState { get; private set; } = CharacterState.Idle;
+    public bool IsDashing => isDashing || CurrentState == CharacterState.Dashing;
 
     private static readonly int MoveX = Animator.StringToHash("MoveX");
     private static readonly int MoveY = Animator.StringToHash("MoveY");
@@ -55,6 +68,7 @@ public class CharacterController2D : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        playerStats = GetComponent<PlayerStats>();
 
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
@@ -101,6 +115,8 @@ public class CharacterController2D : MonoBehaviour
 
     private void Update()
     {
+        UpdateCharacterState();
+
         if (isDashing) return;
 
         // Verifica se o jogador pode se movimentar de acordo com o estado do jogo (GameStateManager)
@@ -125,6 +141,32 @@ public class CharacterController2D : MonoBehaviour
         HandleStamina();
         UpdateVisuals();
         UpdateAnimator();
+    }
+
+    private void UpdateCharacterState()
+    {
+        if (playerStats == null) playerStats = GetComponent<PlayerStats>();
+
+        if (playerStats != null && playerStats.IsDead)
+        {
+            CurrentState = CharacterState.Dead;
+        }
+        else if (isDashing)
+        {
+            CurrentState = CharacterState.Dashing;
+        }
+        else if (isRunning)
+        {
+            CurrentState = CharacterState.Running;
+        }
+        else if (moveInput != Vector2.zero)
+        {
+            CurrentState = CharacterState.Walking;
+        }
+        else
+        {
+            CurrentState = CharacterState.Idle;
+        }
     }
 
     private void FixedUpdate()
@@ -215,6 +257,7 @@ public class CharacterController2D : MonoBehaviour
     private IEnumerator PerformDash(Vector2 inputDirection)
     {
         isDashing = true;
+        CurrentState = CharacterState.Dashing;
         currentStamina -= dashStaminaCost;
         staminaRegenTimer = staminaRegenDelay;
 
@@ -245,6 +288,7 @@ public class CharacterController2D : MonoBehaviour
 
         rb.MovePosition(targetPos);
         isDashing = false;
+        UpdateCharacterState();
     }
 
     private void UpdateVisuals()
