@@ -71,6 +71,15 @@ public class TrainingDummy : MonoBehaviour, IDamageable
             flashCoroutine = StartCoroutine(FlashColor());
         }
 
+        // Texto de Dano Flutuante e Efeito de Impacto
+        if (CombatVisualEffects.Instance != null)
+        {
+            Color textCol = amount >= 40f ? new Color(1f, 0.85f, 0.1f) : new Color(1f, 0.3f, 0.2f);
+            float textSize = amount >= 40f ? 5.5f : 4.2f;
+            CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 0.5f, $"-{amount:F0}", textCol, textSize);
+            CombatVisualEffects.Instance.PlayImpactBurst(transform.position, textCol, 1.2f);
+        }
+
         // Se a vida zerar, reseta após o tempo configurado
         if (currentHealth <= 0f)
         {
