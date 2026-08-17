@@ -2,24 +2,25 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum CharacterState
+{
+    Idle,
+    Walking,
+    Running,
+    Dashing,
+    Dead
+}
+
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterController2D : MonoBehaviour
 {
-    public enum MovementMode { GridBased, Continuous }
-
     [Header("Movement Settings")]
-    [SerializeField] private MovementMode mode = MovementMode.GridBased;
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 8.5f;
-    [SerializeField] private LayerMask obstacleLayer;
-
-    [Header("Grid Settings")]
-    [SerializeField] private float tileSize = 1f;
 
     [Header("Dash Settings")]
     [SerializeField] private float dashDistance = 3f;
     [SerializeField] private float dashSpeed = 18f;
-    [SerializeField] private int gridDashTiles = 2;
 
     [Header("Stamina Settings")]
     [SerializeField] private float maxStamina = 100f;
@@ -41,19 +42,23 @@ public class CharacterController2D : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private PlayerStats playerStats;
 
     private Vector2 moveInput;
     private Vector2 lastMoveDirection = Vector2.down;
-    private bool isMovingGrid;
     private bool isDashing;
     private bool isRunning;
     private float staminaRegenTimer;
+
+    public CharacterState CurrentState { get; private set; } = CharacterState.Idle;
+    public bool IsDashing => isDashing || CurrentState == CharacterState.Dashing;
 
     private static readonly int MoveX = Animator.StringToHash("MoveX");
     private static readonly int MoveY = Animator.StringToHash("MoveY");
     private static readonly int IsMoving = Animator.StringToHash("IsMoving");
     private static readonly int LastMoveX = Animator.StringToHash("LastMoveX");
     private static readonly int LastMoveY = Animator.StringToHash("LastMoveY");
+    private static readonly int DashTrigger = Animator.StringToHash("Dash");
 
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
@@ -63,6 +68,7 @@ public class CharacterController2D : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        playerStats = GetComponent<PlayerStats>();
 
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
@@ -109,7 +115,27 @@ public class CharacterController2D : MonoBehaviour
 
     private void Update()
     {
+        UpdateCharacterState();
+
         if (isDashing) return;
+
+        // Verifica se o jogador pode se movimentar de acordo com o estado do jogo (GameStateManager)
+        bool canMove = GameStateManager.Instance == null || GameStateManager.Instance.CanPlayerMove;
+
+        // Caso alternativo se o DialogueManager estiver ativo diretamente
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        {
+            canMove = false;
+        }
+
+        if (!canMove)
+        {
+            moveInput = Vector2.zero;
+            isRunning = false;
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+            UpdateAnimator();
+            return;
+        }
 
         HandleInput();
         HandleStamina();
@@ -117,25 +143,69 @@ public class CharacterController2D : MonoBehaviour
         UpdateAnimator();
     }
 
+    private void UpdateCharacterState()
+    {
+        if (playerStats == null) playerStats = GetComponent<PlayerStats>();
+
+        if (playerStats != null && playerStats.IsDead)
+        {
+            CurrentState = CharacterState.Dead;
+        }
+        else if (isDashing)
+        {
+            CurrentState = CharacterState.Dashing;
+        }
+        else if (isRunning)
+        {
+            CurrentState = CharacterState.Running;
+        }
+        else if (moveInput != Vector2.zero)
+        {
+            CurrentState = CharacterState.Walking;
+        }
+        else
+        {
+            CurrentState = CharacterState.Idle;
+        }
+    }
+
     private void FixedUpdate()
     {
         if (isDashing) return;
 
-        if (mode == MovementMode.Continuous)
+        bool canMove = GameStateManager.Instance == null || GameStateManager.Instance.CanPlayerMove;
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
+        {
+            canMove = false;
+        }
+
+        if (!canMove)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
+        // Se houver input manual WASD, aplica o movimento WASD
+        if (moveInput != Vector2.zero)
         {
             float speed = isRunning ? runSpeed : walkSpeed;
-            rb.MovePosition(rb.position + moveInput * (speed * Time.fixedDeltaTime));
+            rb.linearVelocity = moveInput * speed;
+        }
+        else
+        {
+            // Se NÃO houver input WASD, só zera a velocidade se não houver perseguição/pathfinding de combate ativo
+            PlayerCombatController combat = GetComponent<PlayerCombatController>();
+            if (combat == null || !combat.IsPursuingTarget)
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
         }
     }
 
     private void HandleInput()
     {
-        if (mode == MovementMode.GridBased && isMovingGrid) return;
-
         Vector2 rawInput = moveAction.ReadValue<Vector2>();
-        Vector2 discreteInput = new Vector2(Mathf.Round(rawInput.x), Mathf.Round(rawInput.y));
-
-        moveInput = discreteInput.normalized;
+        moveInput = rawInput.sqrMagnitude > 0.01f ? rawInput.normalized : Vector2.zero;
 
         if (moveInput != Vector2.zero)
         {
@@ -143,8 +213,8 @@ public class CharacterController2D : MonoBehaviour
 
             if (animator != null)
             {
-                animator.SetFloat(LastMoveX, moveInput.x);
-                animator.SetFloat(LastMoveY, moveInput.y);
+                animator.SetFloat(LastMoveX, lastMoveDirection.x);
+                animator.SetFloat(LastMoveY, lastMoveDirection.y);
             }
         }
 
@@ -153,19 +223,7 @@ public class CharacterController2D : MonoBehaviour
 
         if (dashAction.WasPressedThisFrame() && currentStamina >= dashStaminaCost)
         {
-            StartCoroutine(PerformDash(discreteInput));
-            return;
-        }
-
-        if (mode == MovementMode.GridBased && discreteInput != Vector2.zero && !isMovingGrid)
-        {
-            float speed = isRunning ? runSpeed : walkSpeed;
-            Vector3 targetPos = transform.position + new Vector3(discreteInput.x, discreteInput.y, 0f) * tileSize;
-
-            if (!IsObstacle(targetPos))
-            {
-                StartCoroutine(MoveToGridPosition(targetPos, speed));
-            }
+            StartCoroutine(PerformDash(moveInput));
         }
     }
 
@@ -199,65 +257,38 @@ public class CharacterController2D : MonoBehaviour
     private IEnumerator PerformDash(Vector2 inputDirection)
     {
         isDashing = true;
+        CurrentState = CharacterState.Dashing;
         currentStamina -= dashStaminaCost;
         staminaRegenTimer = staminaRegenDelay;
 
-        Vector2 dashDir = inputDirection != Vector2.zero ? inputDirection.normalized : lastMoveDirection;
+        Vector2 dashDir = inputDirection != Vector2.zero ? inputDirection : lastMoveDirection;
 
-        if (mode == MovementMode.Continuous)
+        // Dispara o Trigger e atualiza a direção do dash no Animator
+        if (animator != null)
         {
-            Vector2 startPos = rb.position;
-            Vector2 targetPos = startPos + dashDir * dashDistance;
-            float travelDuration = dashDistance / dashSpeed;
-            float elapsedTime = 0f;
-
-            while (elapsedTime < travelDuration)
-            {
-                elapsedTime += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsedTime / travelDuration);
-                
-                Vector2 nextPos = Vector2.Lerp(startPos, targetPos, t);
-
-                if (IsObstacle(nextPos)) break;
-
-                rb.MovePosition(nextPos);
-                yield return null;
-            }
-        }
-        else
-        {
-            Vector3 targetPos = transform.position;
-            for (int i = 1; i <= gridDashTiles; i++)
-            {
-                Vector3 nextCheck = transform.position + new Vector3(dashDir.x, dashDir.y, 0f) * (tileSize * i);
-                if (IsObstacle(nextCheck)) break;
-                targetPos = nextCheck;
-            }
-
-            yield return MoveToGridPosition(targetPos, dashSpeed);
+            animator.SetFloat(LastMoveX, dashDir.x);
+            animator.SetFloat(LastMoveY, dashDir.y);
+            animator.SetTrigger(DashTrigger);
         }
 
+        Vector2 startPos = rb.position;
+        Vector2 targetPos = startPos + dashDir * dashDistance;
+        float travelDuration = dashDistance / dashSpeed;
+        float elapsedTime = 0f;
+
+        rb.linearVelocity = Vector2.zero;
+
+        while (elapsedTime < travelDuration)
+        {
+            elapsedTime += Time.fixedDeltaTime;
+            float t = Mathf.Clamp01(elapsedTime / travelDuration);
+            rb.MovePosition(Vector2.Lerp(startPos, targetPos, t));
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.MovePosition(targetPos);
         isDashing = false;
-    }
-
-    private IEnumerator MoveToGridPosition(Vector3 targetPos, float speed)
-    {
-        isMovingGrid = true;
-
-        while (Vector3.Distance(transform.position, targetPos) > 0.001f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-            yield return null;
-        }
-
-        transform.position = targetPos;
-        isMovingGrid = false;
-    }
-
-    private bool IsObstacle(Vector3 targetPos)
-    {
-        if (obstacleLayer == 0) return false;
-        return Physics2D.OverlapCircle(targetPos, 0.2f, obstacleLayer) != null;
+        UpdateCharacterState();
     }
 
     private void UpdateVisuals()
@@ -282,10 +313,8 @@ public class CharacterController2D : MonoBehaviour
     {
         if (animator == null) return;
 
-        bool moving = mode == MovementMode.GridBased ? isMovingGrid : moveInput != Vector2.zero;
-
         animator.SetFloat(MoveX, moveInput.x);
         animator.SetFloat(MoveY, moveInput.y);
-        animator.SetBool(IsMoving, moving);
+        animator.SetBool(IsMoving, moveInput != Vector2.zero);
     }
 }

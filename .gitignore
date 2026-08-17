@@ -10,6 +10,8 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+**/ProjectSettings.asset
+**/ProjectSettings.asset.meta
 .utmp/
 /[Ll]ibrary/
 /[Tt]emp/
