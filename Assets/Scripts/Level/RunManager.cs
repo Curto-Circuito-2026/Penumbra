@@ -12,6 +12,8 @@ public struct Region
     public string title;
     public string subtitle;
     public SceneAsset scene;
+
+    public Vector2 spawnPoint;
 }
 
 public class RunManager : MonoBehaviour
