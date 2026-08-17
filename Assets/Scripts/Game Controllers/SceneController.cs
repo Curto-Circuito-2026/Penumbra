@@ -92,8 +92,15 @@ public class SceneController : MonoBehaviour
     {
         if (animationType != TransitionType.None)
         {
-            transitions[animationType].gameObject.SetActive(true);
-            activeAnimation = animationType;
+            try
+            {
+                transitions[animationType].gameObject.SetActive(true);
+                activeAnimation = animationType;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Animação não carregada");
+            }
         }
 
         StartCoroutine(LoadSceneAsync(sceneName));
