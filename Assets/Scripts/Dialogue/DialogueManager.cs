@@ -138,6 +138,8 @@ public class DialogueManager : MonoBehaviour
     /// </summary>
     private IEnumerator TypeText(DialogueNode node)
     {
+        if (node.onStart != null) { Debug.Log("raising onStart"); node.onStart.Raise(); }
+
         currentNode = node;
         isTyping = true;
 
@@ -218,6 +220,8 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
+            if (currentNode.onEnd != null){ Debug.Log("raising onEnd");  currentNode.onEnd.Raise();}
+
             // Avança para a próxima fala se existir
             if (currentNode.NextNode != null)
             {
