@@ -160,7 +160,7 @@ public class CharacterController2D : MonoBehaviour
 
         HandleInput();
         HandleStamina();
-        UpdateVisuals();
+        //UpdateVisuals();
         UpdateAnimator();
     }
 
