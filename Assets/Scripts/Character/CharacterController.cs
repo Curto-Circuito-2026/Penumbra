@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public enum CharacterState
 {
@@ -14,6 +15,8 @@ public enum CharacterState
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterController2D : MonoBehaviour
 {
+    public static CharacterController2D Instance { get; private set; }
+
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 8.5f;
@@ -65,6 +68,18 @@ public class CharacterController2D : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -111,6 +126,12 @@ public class CharacterController2D : MonoBehaviour
         moveAction.Disable();
         runAction.Disable();
         dashAction.Disable();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameObject spawn = GameObject.Find("SpawnPoint");
+        if (spawn) {this.transform.position = spawn.transform.position;}
     }
 
     private void Update()

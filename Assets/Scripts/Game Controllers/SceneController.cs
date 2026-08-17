@@ -70,6 +70,7 @@ public class SceneController : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         Debug.Log("Awake");

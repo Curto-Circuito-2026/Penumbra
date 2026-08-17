@@ -13,7 +13,6 @@ public struct Region
     public string subtitle;
     public SceneAsset scene;
 
-    public Vector2 spawnPoint;
 }
 
 public class RunManager : MonoBehaviour
@@ -43,6 +42,11 @@ public class RunManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        sceneController = FindAnyObjectByType<SceneController>();
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         string title = "";
@@ -70,7 +74,7 @@ public class RunManager : MonoBehaviour
     void PassRegion()
     {
         SceneAsset curScene = regions[runOrder[curRegion]].scene;
-        sceneController.LoadScene(curScene.name);
+        sceneController.LoadScene(curScene.name, TransitionType.CrossFade);
         curRegion += 1;
     }
 

@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Region_City.unity
     guid: 6815fd0aedfa8d64c888f3751bb888b7
   - enabled: 1
-    path: Assets/Scenes/Region_Espelho.unity
+    path: Assets/Scenes/Region_Swamp.unity
     guid: 6fc845e874f62304585ac7012adb2fad
   - enabled: 1
     path: Assets/Scenes/Region_Forest.unity
