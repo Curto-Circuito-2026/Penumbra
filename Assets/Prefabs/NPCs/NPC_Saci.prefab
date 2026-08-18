@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1938769869480293888}
   - component: {fileID: 1391580811054700582}
   - component: {fileID: 5354500315954369684}
-  - component: {fileID: 7968022869382956041}
+  - component: {fileID: 6450424048149817511}
   - component: {fileID: 7039853557563253973}
   m_Layer: 0
   m_Name: NPC_Saci
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueTrigger
   npcName: "Saci Perer\xEA"
   npcPortrait: {fileID: 0}
-  dialogueToTrigger: {fileID: 11400000, guid: 989b37e7552849a498006cb4eff81c0b, type: 2}
+  dialogueToTrigger: {fileID: 11400000, guid: c3f4d41149ce9f442ab059491fe0b013, type: 2}
   allowMouseClick: 1
   alreadyTalk: 0
   triggerOnEnter2D: 0
@@ -166,7 +166,7 @@ MonoBehaviour:
   interactionPrompt: {fileID: 7306753470296455812}
   highlightOutline: {fileID: 5529502993449898573}
   animatePrompt: 1
---- !u!114 &7968022869382956041
+--- !u!114 &6450424048149817511
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -175,18 +175,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 1333697986816283981}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a123eb5030457a0e3b706a28be909110, type: 3}
+  m_Script: {fileID: 11500000, guid: 216c41f05c2139d4bb1ec049d71a12d8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopkeeperNPC
-  shopTitle: "\u2726 REDEMOINHO DO SACI \u2726"
-  shopSubtitle: "Trapa\xE7as, travessuras velozes e truques de combate dos ventos"
-  shopkeeperIllustration: {fileID: 21300000, guid: 40a8f419fbd400e44add7fcc911c751e, type: 3}
-  itemsForSale:
-  - {fileID: 11400000, guid: a3a12eca7d4ad064b86a1428c4e3f742, type: 2}
-  - {fileID: 11400000, guid: d3c1cf513c3e4ce43a6dea3a4af440f2, type: 2}
-  - {fileID: 11400000, guid: 812eeffabb901f949b94eb53a05527d9, type: 2}
-  - {fileID: 11400000, guid: 9c6df905fc5346f4bb293700e6180bc6, type: 2}
-  openShopEvent: {fileID: 11400000, guid: 489b5d3bc2c1cb2429c2fab6d8337b9b, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::AbilitySwapNPC
+  swapTitle: ACORDOS DO SACI
+  swapSubtitle: "Um truque por um pre\xE7o... Aceite uma travessura com sua devida
+    contrapartida."
+  characterIllustration: {fileID: 21300000, guid: 40a8f419fbd400e44add7fcc911c751e, type: 3}
+  availableBoons:
+  - {fileID: 11400000, guid: f54f902cb92578d409f23903ab26a8cd, type: 2}
+  - {fileID: 11400000, guid: 20d589905914a8c4faaf81095c9b0f0b, type: 2}
+  - {fileID: 11400000, guid: 179eaf19843a5e84f9032302e5ec4d4b, type: 2}
+  - {fileID: 11400000, guid: 65d19dde1ca50bd4b84cf2a2a1f503f8, type: 2}
+  - {fileID: 11400000, guid: 0f53362144173844c8c94eb9f38a9aca, type: 2}
+  - {fileID: 11400000, guid: 39c879e299e2b0b4e98d2c84f60b736b, type: 2}
+  openSwapEvent: {fileID: 11400000, guid: 314b669510171bf4b92bf54f59a84915, type: 2}
 --- !u!114 &7039853557563253973
 MonoBehaviour:
   m_ObjectHideFlags: 0

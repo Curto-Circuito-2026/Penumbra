@@ -288,7 +288,7 @@ GameObject:
   - component: {fileID: 756054825289822765}
   - component: {fileID: 8071721248821604149}
   - component: {fileID: 4260691130494441105}
-  - component: {fileID: 471310431358987252}
+  - component: {fileID: 8784558734627791016}
   - component: {fileID: 3108818413691016651}
   m_Layer: 0
   m_Name: NPC_Iara
@@ -442,7 +442,7 @@ MonoBehaviour:
   interactionPrompt: {fileID: 3241674122352472364}
   highlightOutline: {fileID: 654580669090039287}
   animatePrompt: 1
---- !u!114 &471310431358987252
+--- !u!114 &8784558734627791016
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -451,20 +451,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 8773872977113642743}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a123eb5030457a0e3b706a28be909110, type: 3}
+  m_Script: {fileID: 11500000, guid: 216c41f05c2139d4bb1ec049d71a12d8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopkeeperNPC
-  shopTitle: "\u2726 SANTU\xC1RIO DA SEREIA IARA \u2726"
-  shopSubtitle: "Troque suas estrelas e fragmentos por encantos e rel\xEDquias das
-    \xE1guas"
-  shopkeeperIllustration: {fileID: 21300000, guid: 571451738305f5c4e91418492aa0b145, type: 3}
-  itemsForSale:
-  - {fileID: 11400000, guid: 9c6df905fc5346f4bb293700e6180bc6, type: 2}
-  - {fileID: 11400000, guid: 10e658ce7ab7832408b606807c840845, type: 2}
-  - {fileID: 11400000, guid: 5aaea8d3b5c50b7418cc36c6e246d693, type: 2}
-  - {fileID: 11400000, guid: 69b396ed000660743bc0fe36fad2af33, type: 2}
-  - {fileID: 11400000, guid: fceda14e5299a714092023a68884dd51, type: 2}
-  openShopEvent: {fileID: 11400000, guid: 0e8797c5376ffe7429bf18945c737594, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::AbilitySwapNPC
+  swapTitle: "B\xCAN\xC7\xC3OS DA SEREIA IARA"
+  swapSubtitle: "Encantos profundos, magias das mar\xE9s e regenera\xE7\xE3o espiritual."
+  characterIllustration: {fileID: 21300000, guid: 571451738305f5c4e91418492aa0b145, type: 3}
+  availableBoons:
+  - {fileID: 11400000, guid: 1100b21ebf51fbe4a8601ebfc8629456, type: 2}
+  - {fileID: 11400000, guid: 80b0609a7598c774ea6f2f139f407f7e, type: 2}
+  - {fileID: 11400000, guid: 5190a35347a9dfd418ac15df5bbccc16, type: 2}
+  - {fileID: 11400000, guid: 532fb4161421c234a9ba7030cf5a8fb4, type: 2}
+  - {fileID: 11400000, guid: e68bb734d6eb0d644929f3416076a90f, type: 2}
+  - {fileID: 11400000, guid: 7852defedb33a88439a4f9619860aea4, type: 2}
+  openSwapEvent: {fileID: 11400000, guid: 4c29a8db752493848b4180192f31f3d2, type: 2}
 --- !u!114 &3108818413691016651
 MonoBehaviour:
   m_ObjectHideFlags: 0

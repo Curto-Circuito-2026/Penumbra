@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
   speakerName: Caipora
   speakerPortrait: {fileID: 0}
-  dialogueText: "Ol\xE1, guardi\xE3o! A floresta me sussurrou sobre voc\xEA. Trago
-    ra\xEDzes curativas, cascas protetoras e a f\xFAria das matas."
+  dialogueText: "Fique esperto na floresta! Os esp\xEDritos da mata recompensam os
+    guerreiros valentes com a for\xE7a das ra\xEDzes e o fogo ancestral."
   nextNode: {fileID: 0}
   onStart: {fileID: 0}
-  onEnd: {fileID: 11400000, guid: 88cf9ed22e9a65e4ba3436de464a761b, type: 2}
+  onEnd: {fileID: 11400000, guid: 42771a7554582fd42bc1bd8c2cda347a, type: 2}

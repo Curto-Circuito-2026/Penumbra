@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 7100957406116600222}
   - component: {fileID: 2565672329124103964}
   - component: {fileID: 8399424289054393926}
-  - component: {fileID: 8163696232161290858}
+  - component: {fileID: 6443160756593094163}
   - component: {fileID: 2681304977249208445}
   m_Layer: 0
   m_Name: NPC_Caipora
@@ -441,7 +441,7 @@ MonoBehaviour:
   interactionPrompt: {fileID: 7719566581529555533}
   highlightOutline: {fileID: 3967179061500619639}
   animatePrompt: 1
---- !u!114 &8163696232161290858
+--- !u!114 &6443160756593094163
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -450,19 +450,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 7760876081620259157}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a123eb5030457a0e3b706a28be909110, type: 3}
+  m_Script: {fileID: 11500000, guid: 216c41f05c2139d4bb1ec049d71a12d8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopkeeperNPC
-  shopTitle: "\u2726 CABANA DA CAIPORA \u2726"
-  shopSubtitle: "Rel\xEDquias da mata e ra\xEDzes ancestrais para os protetores da
-    floresta"
-  shopkeeperIllustration: {fileID: 21300000, guid: 47031817ede913c4da937c9ef889e641, type: 3}
-  itemsForSale:
-  - {fileID: 11400000, guid: 9c6df905fc5346f4bb293700e6180bc6, type: 2}
-  - {fileID: 11400000, guid: 1b2a09468485aa24cb4a4acb148ba506, type: 2}
-  - {fileID: 11400000, guid: b847560354b19804d8f02edba86c817d, type: 2}
-  - {fileID: 11400000, guid: f778dfc9546ba6f40b77959a83891c69, type: 2}
-  openShopEvent: {fileID: 11400000, guid: 88cf9ed22e9a65e4ba3436de464a761b, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::AbilitySwapNPC
+  swapTitle: "B\xCAN\xC7\xC3OS DA CAIPORA"
+  swapSubtitle: "A for\xE7a da floresta e os segredos ancestrais dos guardi\xF5es
+    da mata."
+  characterIllustration: {fileID: 21300000, guid: 47031817ede913c4da937c9ef889e641, type: 3}
+  availableBoons:
+  - {fileID: 11400000, guid: 425606503b0e26c49954045330313450, type: 2}
+  - {fileID: 11400000, guid: e645d4ae24d89654a81fa7b513168891, type: 2}
+  - {fileID: 11400000, guid: f93d8550dca09e942b95bf91208fd7b9, type: 2}
+  - {fileID: 11400000, guid: df10804184528fe40858f910cfa276fc, type: 2}
+  - {fileID: 11400000, guid: 0a3354ec77d22f04789fe11fffcf6396, type: 2}
+  - {fileID: 11400000, guid: 58823709e5c2b5743a35f477b1aaa055, type: 2}
+  openSwapEvent: {fileID: 11400000, guid: 42771a7554582fd42bc1bd8c2cda347a, type: 2}
 --- !u!114 &2681304977249208445
 MonoBehaviour:
   m_ObjectHideFlags: 0
