@@ -34,22 +34,34 @@ public class ShopItemSlotUI : MonoBehaviour
 
         if (nameText != null)
         {
+            nameText.enableAutoSizing = true;
+            nameText.fontSizeMin = 11f;
+            nameText.fontSizeMax = 16f;
+            nameText.textWrappingMode = TextWrappingModes.Normal;
+
             if (item.MaxPurchases == 1)
             {
-                nameText.text = $"{item.ItemName} <size=12><color=#88CCFF>[Único]</color></size>";
+                nameText.text = $"<b>{item.ItemName}</b> <size=11><color=#88CCFF>[Único]</color></size>";
             }
             else if (item.MaxPurchases > 1)
             {
                 int remaining = Mathf.Max(0, item.MaxPurchases - purchaseCount);
-                nameText.text = $"{item.ItemName} <size=12><color=#88CCFF>[Estoque: {remaining}]</color></size>";
+                nameText.text = $"<b>{item.ItemName}</b> <size=11><color=#88CCFF>[{remaining}x]</color></size>";
             }
             else
             {
-                nameText.text = item.ItemName;
+                nameText.text = $"<b>{item.ItemName}</b>";
             }
         }
 
-        if (descriptionText != null) descriptionText.text = item.ItemDescription;
+        if (descriptionText != null)
+        {
+            descriptionText.enableAutoSizing = true;
+            descriptionText.fontSizeMin = 10f;
+            descriptionText.fontSizeMax = 13f;
+            descriptionText.textWrappingMode = TextWrappingModes.Normal;
+            descriptionText.text = item.ItemDescription;
+        }
 
         if (iconImage != null)
         {
@@ -99,8 +111,9 @@ public class ShopItemSlotUI : MonoBehaviour
             ? currentStars >= currentItem.Price 
             : currentFragments >= currentItem.Price;
 
-        string currencyIcon = currentItem.Currency == CurrencyType.Stars ? "⭐" : "★";
-        string currencyLabel = currentItem.Currency == CurrencyType.Stars ? "Estrelas" : "Frag";
+        string currencyLabel = currentItem.Currency == CurrencyType.Stars 
+            ? (currentItem.Price == 1 ? "Estrela" : "Estrelas") 
+            : (currentItem.Price == 1 ? "Fragmento" : "Fragmentos");
 
         if (nameText != null)
         {
@@ -129,7 +142,7 @@ public class ShopItemSlotUI : MonoBehaviour
             if (priceText != null)
             {
                 string priceColor = canAfford ? "#FFD700" : "#FF5555";
-                priceText.text = $"<color={priceColor}>{currencyIcon} {currentItem.Price} {currencyLabel}</color>";
+                priceText.text = $"<color={priceColor}>{currentItem.Price} {currencyLabel}</color>";
             }
 
             if (buyButton != null)

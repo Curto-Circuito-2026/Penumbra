@@ -9,7 +9,7 @@ public class ShopkeeperNPC : MonoBehaviour
 {
     [Header("Identidade da Loja")]
     [Tooltip("Título exibido no topo da janela quando este NPC abrir a loja.")]
-    [SerializeField] private string shopTitle = "✦ SANTUÁRIO DA SEREIA IARA ✦";
+    [SerializeField] private string shopTitle = "SANTUÁRIO DO CURUPIRA";
 
     [Tooltip("Subtítulo/descrição do comerciante.")]
     [SerializeField] private string shopSubtitle = "Troque suas estrelas e fragmentos por encantos e relíquias das águas";

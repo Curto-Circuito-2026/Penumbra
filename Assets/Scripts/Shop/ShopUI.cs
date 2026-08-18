@@ -155,7 +155,7 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OpenShop()
     {
-        OpenShop("✦ LOJA DAS ESTRELAS ✦", "Troque suas estrelas e fragmentos por bênçãos sagradas", defaultCatalog, null);
+        OpenShop("LOJA DAS ESTRELAS", "Troque suas estrelas e fragmentos por bênçãos sagradas", defaultCatalog, null);
     }
 
     /// <summary>
@@ -163,7 +163,7 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OpenShop(List<ShopItemSO> catalog)
     {
-        OpenShop("✦ LOJA DAS ESTRELAS ✦", "Troque suas estrelas e fragmentos por bênçãos sagradas", catalog, null);
+        OpenShop("LOJA DAS ESTRELAS", "Troque suas estrelas e fragmentos por bênçãos sagradas", catalog, null);
     }
 
     /// <summary>
@@ -199,14 +199,14 @@ public class ShopUI : MonoBehaviour
             shopSubtitleText.text = subtitle;
         }
 
-        // Atualiza a ilustração de fundo do personagem (backdrop)
+        // Atualiza a ilustração de fundo do personagem (backdrop 1920x1080)
         if (shopkeeperBackdropImage != null)
         {
             Sprite targetSprite = illustration != null ? illustration : (shopkeeperBackdropImage.sprite != null ? shopkeeperBackdropImage.sprite : defaultBackdropSprite);
             if (targetSprite != null)
             {
                 shopkeeperBackdropImage.sprite = targetSprite;
-                shopkeeperBackdropImage.preserveAspect = true;
+                shopkeeperBackdropImage.preserveAspect = false;
                 shopkeeperBackdropImage.gameObject.SetActive(true);
             }
             else
@@ -426,12 +426,12 @@ public class ShopUI : MonoBehaviour
 
         if (fragmentsBalanceText != null)
         {
-            fragmentsBalanceText.text = $"★ {frags}";
+            fragmentsBalanceText.text = $"Fragmentos: {frags}";
         }
 
         if (starsBalanceText != null)
         {
-            starsBalanceText.text = $"⭐ {stars}";
+            starsBalanceText.text = $"Estrelas: {stars}";
         }
     }
 
