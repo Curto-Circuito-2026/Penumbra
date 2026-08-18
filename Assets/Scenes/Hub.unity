@@ -3945,18 +3945,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2910922416034081801, guid: 214706b974ba72242921431c63c8d1eb, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -3138980234765749329, guid: a08ac25ac3d2fdc48b39933c5c644cf1, type: 3}
-    - target: {fileID: 3104301635423239881, guid: 214706b974ba72242921431c63c8d1eb, type: 3}
-      propertyPath: m_Interpolate
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6526929845135208931, guid: 214706b974ba72242921431c63c8d1eb, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 5f251eb6f01fac741a4c945df6a574da, type: 2}
     - target: {fileID: 7142938797776746160, guid: 214706b974ba72242921431c63c8d1eb, type: 3}
       propertyPath: m_Name
       value: Player

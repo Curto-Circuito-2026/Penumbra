@@ -62,6 +62,7 @@ public class CharacterController2D : MonoBehaviour
     private static readonly int LastMoveX = Animator.StringToHash("LastMoveX");
     private static readonly int LastMoveY = Animator.StringToHash("LastMoveY");
     private static readonly int DashTrigger = Animator.StringToHash("Dash");
+    private static readonly int MeleeTrigger = Animator.StringToHash("Melee");
 
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
@@ -347,5 +348,36 @@ public class CharacterController2D : MonoBehaviour
         if (amount <= 0f) return;
         walkSpeed += amount;
         runSpeed += amount;
+    }
+
+    /// <summary>
+    /// Define a direção em que o personagem está olhando e sincroniza os parâmetros do Animator.
+    /// </summary>
+    public void SetFacingDirection(Vector2 direction)
+    {
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            lastMoveDirection = direction.normalized;
+            if (animator != null)
+            {
+                animator.SetFloat(LastMoveX, lastMoveDirection.x);
+                animator.SetFloat(LastMoveY, lastMoveDirection.y);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de ataque Melee virando a personagem para a direção do golpe.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerMeleeAnimation(Vector2 attackDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(attackDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(MeleeTrigger);
+        }
     }
 }

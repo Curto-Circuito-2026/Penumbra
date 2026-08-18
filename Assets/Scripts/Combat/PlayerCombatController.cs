@@ -48,7 +48,7 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private int circleSegments = 40;
 
     // Cores dos Indicadores de Alcance por Habilidade/Ataque
-    private readonly Color meleeColor = new Color(1f, 0.3f, 0.3f, 0.75f);
+    private readonly Color meleeColor = new Color(0.9f, 0.96f, 1f, 0.8f);
     private readonly Color rangedColor = new Color(0.2f, 0.8f, 1f, 0.75f);
     private readonly Color qColor = new Color(0.2f, 1f, 0.5f, 0.75f);
     private readonly Color eColor = new Color(1f, 0.5f, 0.2f, 0.75f);
@@ -420,10 +420,19 @@ public class PlayerCombatController : MonoBehaviour
 
     private void PerformMeleeAttack(Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (meleeCooldownTimer > 0f) return;
 
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
+
+        // Dispara a animação de ataque Melee virando para a direção do golpe (4 direções)
+        if (characterController != null)
+        {
+            characterController.TriggerMeleeAnimation(dir);
+        }
 
         // Raycast da posição do jogador em direção ao mouse até o alcance Melee
         RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, meleeRange, enemyLayerMask);
@@ -458,6 +467,9 @@ public class PlayerCombatController : MonoBehaviour
 
     private void PerformRangedAttack(Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (rangedCooldownTimer > 0f) return;
 
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
@@ -509,6 +521,9 @@ public class PlayerCombatController : MonoBehaviour
 
     private void TryTargetOrCastAbility(int slotIndex, Ability ability, ref float cooldownTimer, Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (ability == null) return;
         if (cooldownTimer > 0f)
         {
@@ -547,6 +562,9 @@ public class PlayerCombatController : MonoBehaviour
 
     private void TryCastUltimate(Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (slotR == null) return;
         if (cooldownR > 0f)
         {
