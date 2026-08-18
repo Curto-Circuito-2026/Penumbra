@@ -213,7 +213,14 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (dialogueToTrigger == null)
         {
-            // Se for um NPC Comerciante sem diálogo, abre a loja diretamente!
+            // Se for um NPC de Troca de Habilidades ou Comerciante sem diálogo, abre diretamente!
+            var swapDirect = GetComponent<AbilitySwapNPC>();
+            if (swapDirect != null)
+            {
+                swapDirect.OpenThisSwap();
+                return;
+            }
+
             var skDirect = GetComponent<ShopkeeperNPC>();
             if (skDirect != null)
             {
@@ -227,8 +234,13 @@ public class DialogueTrigger : MonoBehaviour
 
         if (DialogueManager.Instance != null)
         {
-            var sk = GetComponent<ShopkeeperNPC>();
-            System.Action onComplete = sk != null ? (System.Action)sk.OpenThisShop : null;
+            var swapNPC = GetComponent<AbilitySwapNPC>();
+            var shopNPC = GetComponent<ShopkeeperNPC>();
+
+            System.Action onComplete = null;
+            if (swapNPC != null) onComplete = swapNPC.OpenThisSwap;
+            else if (shopNPC != null) onComplete = shopNPC.OpenThisShop;
+
             DialogueManager.Instance.StartDialogue(dialogueToTrigger, npcName, npcPortrait, onComplete);
         }
         else

@@ -56,13 +56,6 @@ public static class SetupCurrencyUI
         Debug.Log("[SetupCurrencyUI] Configuração concluída em todas as cenas!");
     }
 
-    [MenuItem("Praia Games/Debug/Resetar Estrelas Salvas (Zerar Saldo)", false, 30)]
-    public static void ResetSavedStars()
-    {
-        PlayerPrefs.DeleteKey("PLAYER_STARS_TOTAL");
-        PlayerPrefs.Save();
-        Debug.Log("[SetupCurrencyUI] ★ Saldo permanente de Estrelas foi ZERADO com sucesso no PlayerPrefs!");
-    }
 
     private static void SetupCurrencyUIInScene(UnityEngine.SceneManagement.Scene scene)
     {
@@ -127,7 +120,7 @@ public static class SetupCurrencyUI
         fragRect.offsetMax = new Vector2(-15f, -5f);
 
         TextMeshProUGUI fragTMP = fragTextObj.GetComponent<TextMeshProUGUI>();
-        fragTMP.text = "★ 0/10";
+        fragTMP.text = "Frag: 0/10";
         fragTMP.fontSize = 24f;
         fragTMP.fontStyle = FontStyles.Bold;
         fragTMP.color = new Color(1f, 0.88f, 0.25f, 1f);
@@ -144,7 +137,7 @@ public static class SetupCurrencyUI
         starsRect.offsetMax = new Vector2(-15f, 0f);
 
         TextMeshProUGUI starsTMP = starsTextObj.GetComponent<TextMeshProUGUI>();
-        starsTMP.text = "⭐ 0";
+        starsTMP.text = "Estrelas: 0";
         starsTMP.fontSize = 24f;
         starsTMP.fontStyle = FontStyles.Bold;
         starsTMP.color = new Color(1f, 0.95f, 0.5f, 1f);

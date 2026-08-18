@@ -22,8 +22,8 @@ public class CurrencyUIHUD : MonoBehaviour
     [SerializeField] private TextMeshProUGUI starsText;
 
     [Header("Formatação de Exibição")]
-    [SerializeField] private string fragmentsFormat = "★ {0}/{1}";
-    [SerializeField] private string starsFormat = "⭐ {0}";
+    [SerializeField] private string fragmentsFormat = "Frag: {0}/{1}";
+    [SerializeField] private string starsFormat = "Estrelas: {0}";
 
     [Header("Controle de Visibilidade por Estado")]
     [Tooltip("Se verdadeiro, gerencia a ativação/desativação automática deste GameObject conforme o GameState.")]
