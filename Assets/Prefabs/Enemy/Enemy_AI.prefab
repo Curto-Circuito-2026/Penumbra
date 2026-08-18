@@ -201,6 +201,11 @@ MonoBehaviour:
   animator: {fileID: 0}
   damageFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   flashDuration: 0.12
+  dropsItem: 1
+  itemToDropPrefab: {fileID: 3323540727013714034, guid: 868e9599329aca749935015874b4b4c3, type: 3}
+  dropChance: 0.75
+  minDropCount: 1
+  maxDropCount: 2
 --- !u!114 &332817723644236831
 MonoBehaviour:
   m_ObjectHideFlags: 0

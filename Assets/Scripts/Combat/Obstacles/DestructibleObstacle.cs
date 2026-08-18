@@ -26,6 +26,12 @@ public class DestructibleObstacle : MonoBehaviour, IDamageable
     [Range(0f, 1f)]
     [SerializeField] private float dropChance = 1f;
 
+    [Tooltip("Quantidade mínima de itens a dropar.")]
+    [SerializeField] private int minDropCount = 1;
+
+    [Tooltip("Quantidade máxima de itens a dropar.")]
+    [SerializeField] private int maxDropCount = 1;
+
     [Header("Animação e Efeitos Visuais")]
     [Tooltip("Animator do obstáculo (opcional). Se atribuído, disparará a trigger 'Break' ao ser destruído.")]
     [SerializeField] private Animator animator;
@@ -186,16 +192,22 @@ public class DestructibleObstacle : MonoBehaviour, IDamageable
             float randomRoll = UnityEngine.Random.value;
             if (randomRoll <= dropChance)
             {
-                GameObject droppedItem = Instantiate(itemToDropPrefab, transform.position, Quaternion.identity);
-                Debug.Log($"[DestructibleObstacle] Item '{droppedItem.name}' dropado por '{gameObject.name}'!");
-
-                // Se o item tiver Rigidbody2D, aplica um pequeno impulso de salto ao cair
-                Rigidbody2D itemRb = droppedItem.GetComponent<Rigidbody2D>();
-                if (itemRb != null)
+                int count = UnityEngine.Random.Range(minDropCount, maxDropCount + 1);
+                for (int i = 0; i < count; i++)
                 {
-                    Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
-                    itemRb.AddForce(randomDir * 2f + Vector2.up * 1.5f, ForceMode2D.Impulse);
+                    Vector3 spawnOffset = (Vector3)(UnityEngine.Random.insideUnitCircle * 0.25f);
+                    GameObject droppedItem = Instantiate(itemToDropPrefab, transform.position + spawnOffset, Quaternion.identity);
+
+                    // Se o item tiver Rigidbody2D, aplica um pequeno impulso de salto ao cair
+                    Rigidbody2D itemRb = droppedItem.GetComponent<Rigidbody2D>();
+                    if (itemRb != null)
+                    {
+                        Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
+                        itemRb.AddForce(randomDir * UnityEngine.Random.Range(1.5f, 2.5f) + Vector2.up * 1.5f, ForceMode2D.Impulse);
+                    }
                 }
+
+                Debug.Log($"[DestructibleObstacle] {count} item(ns) dropado(s) por '{gameObject.name}'!");
             }
         }
     }

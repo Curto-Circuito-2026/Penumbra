@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7216750349317481606}
   - component: {fileID: 8739442164859496148}
   - component: {fileID: 3972035493907634637}
+  - component: {fileID: 6382109482710184019}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -277,3 +278,20 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   damageFlashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.15
+--- !u!114 &6382109482710184019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7142938797776746160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c149a710200843db8e100f72ba309110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCurrency
+  starFragments: 0
+  stars: 0
+  fragmentsPerStar: 10
+  persistStars: 0
+

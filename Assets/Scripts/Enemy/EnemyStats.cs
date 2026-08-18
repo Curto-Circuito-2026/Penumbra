@@ -25,9 +25,27 @@ public class EnemyStats : MonoBehaviour, IDamageable
 
     private static readonly int DeathHash = Animator.StringToHash("Death");
 
+    [Header("Configuração de Drop de Item")]
+    [Tooltip("Se verdadeiro, o inimigo poderá dropar itens ao morrer.")]
+    [SerializeField] private bool dropsItem = true;
+
+    [Tooltip("Prefab do item a ser dropado (ex: Fragmento de Estrela).")]
+    [SerializeField] private GameObject itemToDropPrefab;
+
+    [Tooltip("Chance de drop (0 a 1). Ex: 0.7 = 70% de chance.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float dropChance = 0.7f;
+
+    [Tooltip("Quantidade mínima de itens a dropar.")]
+    [SerializeField] private int minDropCount = 1;
+
+    [Tooltip("Quantidade máxima de itens a dropar.")]
+    [SerializeField] private int maxDropCount = 2;
+
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
     public bool IsDead => isDead;
+    public bool DropsItem => dropsItem;
 
     public event Action<float, float> OnHealthChanged;
     public event Action OnEnemyDied;
@@ -105,6 +123,9 @@ public class EnemyStats : MonoBehaviour, IDamageable
             animator.SetTrigger(DeathHash);
         }
 
+        // Tenta dropar loot (fragmentos de estrela)
+        TryDropLoot();
+
         // Notifica evento de morte para a IA e o gerenciador
         OnEnemyDied?.Invoke();
 
@@ -114,6 +135,31 @@ public class EnemyStats : MonoBehaviour, IDamageable
 
         // Oculta/Destrói o objeto após animação de morte
         Destroy(gameObject, 2f);
+    }
+
+    private void TryDropLoot()
+    {
+        if (!dropsItem || itemToDropPrefab == null) return;
+
+        float roll = UnityEngine.Random.value;
+        if (roll <= dropChance)
+        {
+            int count = UnityEngine.Random.Range(minDropCount, maxDropCount + 1);
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 spawnOffset = (Vector3)(UnityEngine.Random.insideUnitCircle * 0.3f);
+                GameObject dropped = Instantiate(itemToDropPrefab, transform.position + spawnOffset, Quaternion.identity);
+
+                Rigidbody2D rb = dropped.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    Vector2 randomDir = UnityEngine.Random.insideUnitCircle.normalized;
+                    rb.AddForce(randomDir * UnityEngine.Random.Range(1.5f, 3f) + Vector2.up * 1f, ForceMode2D.Impulse);
+                }
+            }
+
+            Debug.Log($"[EnemyStats] Inimigo '{gameObject.name}' dropou {count} item(ns)!");
+        }
     }
 
     private IEnumerator FlashColor()
