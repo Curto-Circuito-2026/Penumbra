@@ -213,13 +213,23 @@ public class DialogueTrigger : MonoBehaviour
     {
         if (dialogueToTrigger == null)
         {
+            // Se for um NPC Comerciante sem diálogo, abre a loja diretamente!
+            var skDirect = GetComponent<ShopkeeperNPC>();
+            if (skDirect != null)
+            {
+                skDirect.OpenThisShop();
+                return;
+            }
+
             Debug.LogWarning($"[DialogueTrigger] Nenhum DialogueSequence atribuído no objeto: {gameObject.name}");
             return;
         }
 
         if (DialogueManager.Instance != null)
         {
-            DialogueManager.Instance.StartDialogue(dialogueToTrigger, npcName, npcPortrait);
+            var sk = GetComponent<ShopkeeperNPC>();
+            System.Action onComplete = sk != null ? (System.Action)sk.OpenThisShop : null;
+            DialogueManager.Instance.StartDialogue(dialogueToTrigger, npcName, npcPortrait, onComplete);
         }
         else
         {
