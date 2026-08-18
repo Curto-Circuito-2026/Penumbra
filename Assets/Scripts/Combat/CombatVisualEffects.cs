@@ -78,8 +78,8 @@ public class CombatVisualEffects : MonoBehaviour
         line.endWidth = 0.02f;
         line.material = new Material(Shader.Find("Sprites/Default"));
 
-        Color startCol = new Color(1f, 0.3f, 0.2f, 1f);
-        Color endCol = new Color(1f, 0.9f, 0.4f, 0.2f);
+        Color startCol = new Color(1f, 1f, 1f, 0.95f);
+        Color endCol = new Color(0.88f, 0.96f, 1f, 0.35f);
         line.startColor = startCol;
         line.endColor = endCol;
 
@@ -107,9 +107,9 @@ public class CombatVisualEffects : MonoBehaviour
                 line.SetPosition(i, pos);
             }
 
-            Color c = Color.Lerp(startCol, new Color(1f, 0.2f, 0.1f, 0f), t);
+            Color c = Color.Lerp(startCol, new Color(1f, 1f, 1f, 0f), t);
             line.startColor = c;
-            line.endColor = new Color(c.r, c.g, c.b, 0f);
+            line.endColor = new Color(0.88f, 0.96f, 1f, (1f - t) * 0.35f);
 
             yield return null;
         }
