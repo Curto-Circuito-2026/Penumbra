@@ -835,6 +835,17 @@ public class PlayerCombatController : MonoBehaviour
             rangeIndicator.enabled = false;
         }
     }
+
+    /// <summary>
+    /// Aumenta o dano de ataque corpo a corpo e à distância.
+    /// </summary>
+    public void IncreaseDamage(float amount)
+    {
+        if (amount <= 0f) return;
+        meleeDamage += amount;
+        rangedDamage += amount;
+        Debug.Log($"[PlayerCombatController] Dano aumentado em +{amount}! (Melee: {meleeDamage}, Ranged: {rangedDamage})");
+    }
     #endregion
 }
 

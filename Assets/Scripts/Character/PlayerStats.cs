@@ -100,6 +100,53 @@ public class PlayerStats : MonoBehaviour, IDamageable
     }
 
     /// <summary>
+    /// Cura o jogador na quantidade especificada sem ultrapassar a vida máxima.
+    /// </summary>
+    public void Heal(float amount)
+    {
+        if (IsDead || amount <= 0f) return;
+
+        currentHealth += amount;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+
+        Debug.Log($"[PlayerStats] Jogador curado em {amount}! Vida atual: {currentHealth}/{maxHealth}");
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    /// <summary>
+    /// Aumenta a vida máxima do jogador e restaura a vida na mesma proporção.
+    /// </summary>
+    public void IncreaseMaxHealth(float amount)
+    {
+        if (amount <= 0f) return;
+
+        maxHealth += amount;
+        currentHealth += amount;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    /// <summary>
+    /// Aumenta a mana máxima do jogador.
+    /// </summary>
+    public void IncreaseMaxMana(float amount)
+    {
+        if (amount <= 0f) return;
+
+        maxMana += amount;
+        currentMana += amount;
+        OnManaChanged?.Invoke(currentMana, maxMana);
+    }
+
+    /// <summary>
+    /// Aumenta a taxa de regeneração de mana por segundo.
+    /// </summary>
+    public void IncreaseManaRegen(float amount)
+    {
+        if (amount <= 0f) return;
+        manaRegenRate += amount;
+    }
+
+    /// <summary>
     /// Verifica se o jogador possui Mana suficiente para conjurar uma habilidade.
     /// </summary>
     public bool HasEnoughMana(float amount)

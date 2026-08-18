@@ -220,16 +220,22 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
-            if (currentNode.onEnd != null){ Debug.Log("raising onEnd");  currentNode.onEnd.Raise();}
+            DialogueNode nodeEnding = currentNode;
 
             // Avança para a próxima fala se existir
             if (currentNode.NextNode != null)
             {
+                if (nodeEnding.onEnd != null) { Debug.Log("raising onEnd"); nodeEnding.onEnd.Raise(); }
                 typingCoroutine = StartCoroutine(TypeText(currentNode.NextNode));
             }
             else
             {
                 EndDialogue();
+                if (nodeEnding != null && nodeEnding.onEnd != null)
+                {
+                    Debug.Log("raising onEnd on dialogue completion");
+                    nodeEnding.onEnd.Raise();
+                }
             }
         }
     }

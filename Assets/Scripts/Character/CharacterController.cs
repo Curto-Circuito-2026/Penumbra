@@ -338,4 +338,14 @@ public class CharacterController2D : MonoBehaviour
         animator.SetFloat(MoveY, moveInput.y);
         animator.SetBool(IsMoving, moveInput != Vector2.zero);
     }
+
+    /// <summary>
+    /// Aumenta permanentemente a velocidade de caminhada e corrida.
+    /// </summary>
+    public void IncreaseMovementSpeed(float amount)
+    {
+        if (amount <= 0f) return;
+        walkSpeed += amount;
+        runSpeed += amount;
+    }
 }
