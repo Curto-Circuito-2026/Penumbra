@@ -188,10 +188,18 @@ public class DialogueTrigger : MonoBehaviour
 
     /// <summary>
     /// Detecta o clique do mouse diretamente no Collider do NPC.
+    /// Só permite interação se o jogador estiver próximo ao NPC (isPlayerInZone).
     /// </summary>
     private void OnMouseDown()
     {
         if (!allowMouseClick) return;
+
+        // Permite interação APENAS se o jogador estiver na zona de proximidade do NPC
+        if (!isPlayerInZone) return;
+
+        // Evita reabrir diálogo acidentalmente no mesmo frame ou logo após fechar uma janela
+        if (Time.time - lastDialogueCloseTime < 0.3f) return;
+        if (GameStateManager.Instance != null && Time.frameCount == GameStateManager.Instance.StateChangeFrame) return;
 
         // Permite interação APENAS se o jogo estiver no estado Playing
         if (GameStateManager.Instance != null && !GameStateManager.Instance.CanPlayerMove) return;
