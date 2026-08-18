@@ -44,10 +44,6 @@ public class ShopUI : MonoBehaviour
     [Header("Botões e Controles")]
     [SerializeField] private Button closeButton;
 
-    [Header("Eventos e Gatilhos")]
-    [Tooltip("GameEvent que dispara a abertura da loja automaticamente (ex: onEnd do diálogo).")]
-    [SerializeField] private GameEvent openShopEvent;
-
     private readonly List<ShopItemSlotUI> activeSlots = new List<ShopItemSlotUI>();
     private bool isOpen = false;
 
@@ -62,19 +58,41 @@ public class ShopUI : MonoBehaviour
         sessionPurchases.Clear();
     }
 
-    private void OnEnable()
+    private void EnsureReferences()
     {
-        if (openShopEvent != null)
+        if (shopPanel == null)
         {
-            openShopEvent.OnEventRaised += OpenShop;
+            Transform p = transform.Find("Shop_Modal_Panel");
+            if (p != null) shopPanel = p.gameObject;
         }
-    }
 
-    private void OnDisable()
-    {
-        if (openShopEvent != null)
+        if (itemsContainer == null)
         {
-            openShopEvent.OnEventRaised -= OpenShop;
+            Transform found = transform.Find("Shop_Modal_Panel/Shop_Window/Items_ScrollView/Viewport/Content");
+            if (found == null) found = transform.Find("Shop_Window/Items_ScrollView/Viewport/Content");
+            if (found != null) itemsContainer = found.GetComponent<RectTransform>();
+        }
+
+        if (slotPrefab == null)
+        {
+            slotPrefab = Resources.Load<GameObject>("ShopItemSlot") ?? Resources.Load<GameObject>("Prefabs/UI/ShopItemSlot");
+        }
+
+        if (closeButton == null)
+        {
+            closeButton = GetComponentInChildren<Button>(true);
+        }
+
+        if (fragmentsBalanceText == null)
+        {
+            Transform f = transform.Find("Shop_Modal_Panel/Shop_Window/BottomRight_Footer/Balances_Display/Fragments_Balance");
+            if (f != null) fragmentsBalanceText = f.GetComponent<TextMeshProUGUI>();
+        }
+
+        if (starsBalanceText == null)
+        {
+            Transform s = transform.Find("Shop_Modal_Panel/Shop_Window/BottomRight_Footer/Balances_Display/Stars_Balance");
+            if (s != null) starsBalanceText = s.GetComponent<TextMeshProUGUI>();
         }
     }
 
@@ -90,6 +108,8 @@ public class ShopUI : MonoBehaviour
             return;
         }
 
+        EnsureReferences();
+
         if (closeButton != null)
         {
             closeButton.onClick.RemoveAllListeners();
@@ -104,6 +124,7 @@ public class ShopUI : MonoBehaviour
 
     private void Start()
     {
+        EnsureReferences();
         if (shopPanel != null && isOpen)
         {
             RefreshBalances();
@@ -158,6 +179,7 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OpenShop(string title, string subtitle, List<ShopItemSO> catalog, Sprite illustration)
     {
+        EnsureReferences();
         isOpen = true;
         openFrame = Time.frameCount;
 
@@ -204,11 +226,12 @@ public class ShopUI : MonoBehaviour
             GameStateManager.Instance.SetMenu();
         }
 
-        PopulateCatalog(catalog != null && catalog.Count > 0 ? catalog : defaultCatalog);
+        List<ShopItemSO> finalCatalog = (catalog != null && catalog.Count > 0) ? catalog : defaultCatalog;
+        PopulateCatalog(finalCatalog);
         RefreshBalances();
         SubscribeCurrencyEvents();
 
-        Debug.Log($"[ShopUI] Loja '{title}' aberta com sucesso!");
+        Debug.Log($"[ShopUI] Loja '{title}' aberta com {finalCatalog?.Count ?? 0} itens!");
     }
 
     /// <summary>
@@ -243,9 +266,20 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     private void PopulateCatalog(List<ShopItemSO> items)
     {
+        EnsureReferences();
         activeSlots.Clear();
 
-        if (itemsContainer == null || slotPrefab == null) return;
+        if (itemsContainer == null)
+        {
+            Debug.LogError("[ShopUI] itemsContainer (Content) é NULO no ShopUI!");
+            return;
+        }
+
+        if (slotPrefab == null)
+        {
+            Debug.LogError("[ShopUI] slotPrefab é NULO no ShopUI! Não foi possível instanciar os cards de itens.");
+            return;
+        }
 
         // Limpa slots antigos
         foreach (Transform child in itemsContainer)
@@ -253,7 +287,11 @@ public class ShopUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (items == null) return;
+        if (items == null || items.Count == 0)
+        {
+            Debug.LogWarning("[ShopUI] A lista de itens recebida está vazia ou nula!");
+            return;
+        }
 
         foreach (var item in items)
         {
@@ -267,9 +305,14 @@ public class ShopUI : MonoBehaviour
                 slot.Setup(item, this, currentBought);
                 activeSlots.Add(slot);
             }
+            else
+            {
+                Debug.LogError($"[ShopUI] ShopItemSlotUI não foi encontrado no slotPrefab '{slotPrefab.name}'!");
+            }
         }
 
         RefreshAllSlots();
+        Debug.Log($"[ShopUI] Grade populada com sucesso: {activeSlots.Count} itens disponíveis à venda.");
     }
 
     /// <summary>

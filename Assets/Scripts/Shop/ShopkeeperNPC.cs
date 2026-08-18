@@ -52,13 +52,21 @@ public class ShopkeeperNPC : MonoBehaviour
     /// </summary>
     public void OpenThisShop()
     {
-        if (ShopUI.Instance != null)
+        Debug.Log($"[ShopkeeperNPC] '{gameObject.name}' abrindo loja '{shopTitle}' com {itemsForSale.Count} itens configurados.");
+        
+        ShopUI targetShop = ShopUI.Instance;
+        if (targetShop == null)
         {
-            ShopUI.Instance.OpenShop(shopTitle, shopSubtitle, itemsForSale, shopkeeperIllustration);
+            targetShop = Object.FindAnyObjectByType<ShopUI>(FindObjectsInactive.Include);
+        }
+
+        if (targetShop != null)
+        {
+            targetShop.OpenShop(shopTitle, shopSubtitle, itemsForSale, shopkeeperIllustration);
         }
         else
         {
-            Debug.LogWarning($"[ShopkeeperNPC] ShopUI.Instance não encontrado ao tentar abrir '{shopTitle}'!");
+            Debug.LogError($"[ShopkeeperNPC] ShopUI não foi encontrado na cena ao tentar abrir '{shopTitle}'!");
         }
     }
 }

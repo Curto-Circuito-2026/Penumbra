@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b569d930102358ec1f504e06fc709550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemSO
-  itemName: "B\xEAn\xE7\xE3o Estelar"
-  itemDescription: Restaura 50 pontos de vida.
+  itemName: "L\xE1grima de Iara"
+  itemDescription: Cura completamente todos os pontos de vida.
   itemIcon: {fileID: 0}
-  price: 1
+  price: 2
   currency: 0
   effectType: 0
-  effectValue: 50
-  maxPurchases: 0
+  effectValue: 999
+  maxPurchases: 1
