@@ -19,6 +19,11 @@ public class AbilityBoonCardUI : MonoBehaviour
     [SerializeField] private Image cardBorderImage;
     [SerializeField] private Image cardBackgroundImage;
 
+    [SerializeField] private Sprite StarFullSprite;
+    [SerializeField] private Sprite StarEmptySprite;
+    [SerializeField] private Image StarElement;
+
+
     [Header("Controles")]
     [SerializeField] private Button selectButton;
     [SerializeField] private TextMeshProUGUI buyButtonText;
@@ -111,11 +116,11 @@ public class AbilityBoonCardUI : MonoBehaviour
         int playerStars = currency != null ? currency.Stars : 0;
         bool canAfford = playerStars >= currentBoon.StarCost;
 
+        if (canAfford) {StarElement.sprite = StarFullSprite;} else { StarElement.sprite = StarEmptySprite;}
         if (costText != null)
         {
-            string costColor = canAfford ? "#FFD700" : "#FF6666";
-            string costLabel = currentBoon.StarCost == 1 ? "1 Estrela" : $"{currentBoon.StarCost} Estrelas";
-            costText.text = $"<color={costColor}><b>{costLabel}</b></color>";
+            string costLabel = currentBoon.StarCost.ToString();
+            costText.text = $"{costLabel}";
         }
 
         if (buyButtonText != null)
