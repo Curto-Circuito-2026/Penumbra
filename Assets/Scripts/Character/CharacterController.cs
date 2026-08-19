@@ -64,6 +64,7 @@ public class CharacterController2D : MonoBehaviour
     private static readonly int DashTrigger = Animator.StringToHash("Dash");
     private static readonly int MeleeTrigger = Animator.StringToHash("Melee");
     private static readonly int RangedTrigger = Animator.StringToHash("Ranged");
+    private static readonly int CastTrigger = Animator.StringToHash("Cast");
 
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
@@ -394,6 +395,21 @@ public class CharacterController2D : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger(RangedTrigger);
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de conjuração de magia (Cast) virando a personagem para a direção visada.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerCastAnimation(Vector2 castDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(castDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(CastTrigger);
         }
     }
 }
