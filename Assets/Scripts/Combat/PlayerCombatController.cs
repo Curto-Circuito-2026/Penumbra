@@ -106,17 +106,14 @@ public class PlayerCombatController : MonoBehaviour
         mainCamera = Camera.main;
         calculatedPath = new NavMeshPath();
 
-        if (enemyLayerMask == 0)
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (enemyLayer != -1)
         {
-            int enemyLayer = LayerMask.NameToLayer("Enemy");
-            if (enemyLayer != -1)
-            {
-                enemyLayerMask = 1 << enemyLayer;
-            }
-            else
-            {
-                enemyLayerMask = ~0; // Fallback
-            }
+            enemyLayerMask = (1 << enemyLayer) | LayerMask.GetMask("Default");
+        }
+        else
+        {
+            enemyLayerMask = ~0; // Fallback
         }
 
         // Setup do LineRenderer para o indicador de alcance
@@ -436,7 +433,7 @@ public class PlayerCombatController : MonoBehaviour
 
         // Raycast da posição do jogador em direção ao mouse até o alcance Melee
         RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, meleeRange, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
+        GameObject targetEnemy = (hit.collider != null && hit.collider.gameObject != gameObject && !hit.collider.transform.IsChildOf(transform)) ? hit.collider.gameObject : null;
 
         Debug.Log($"[PlayerCombatController] Ataque Melee Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
 
@@ -446,7 +443,8 @@ public class PlayerCombatController : MonoBehaviour
             CombatVisualEffects.Instance.PlayMeleeSlash(transform.position, dir);
         }
 
-        if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+        IDamageable damageable = targetEnemy != null ? (targetEnemy.GetComponent<IDamageable>() ?? targetEnemy.GetComponentInParent<IDamageable>()) : null;
+        if (damageable != null && !(damageable is CharacterController2D))
         {
             damageable.TakeDamage(meleeDamage, dir);
             AddUltimateCharge(chargePerHit);
@@ -454,11 +452,17 @@ public class PlayerCombatController : MonoBehaviour
         else
         {
             // Procura inimigos por OverlapCircle no arco curto em frente
-            Collider2D hitCol = Physics2D.OverlapCircle(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.6f, enemyLayerMask);
-            if (hitCol != null && hitCol.TryGetComponent(out IDamageable hitDmg))
+            Collider2D[] hitCols = Physics2D.OverlapCircleAll(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.7f, enemyLayerMask);
+            foreach (var col in hitCols)
             {
-                hitDmg.TakeDamage(meleeDamage, dir);
-                AddUltimateCharge(chargePerHit);
+                if (col.gameObject == gameObject || col.transform.IsChildOf(transform)) continue;
+                IDamageable hitDmg = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+                if (hitDmg != null && !(hitDmg is CharacterController2D))
+                {
+                    hitDmg.TakeDamage(meleeDamage, dir);
+                    AddUltimateCharge(chargePerHit);
+                    break;
+                }
             }
         }
 
@@ -496,7 +500,7 @@ public class PlayerCombatController : MonoBehaviour
 
         // Raycast da posição da mão na direção do mouse até o alcance máximo
         RaycastHit2D hit = Physics2D.Raycast(spawnPos, dir, rangedRange, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
+        GameObject targetEnemy = (hit.collider != null && hit.collider.gameObject != gameObject && !hit.collider.transform.IsChildOf(transform)) ? hit.collider.gameObject : null;
         Vector3 impactPos = hit.collider != null ? (Vector3)hit.point : spawnPos + dir * castDist;
 
         Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional (Lança arremessada). Primeiro inimigo: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
@@ -505,27 +509,35 @@ public class PlayerCombatController : MonoBehaviour
         {
             CombatVisualEffects.Instance.PlayRangedProjectile(spawnPos, impactPos, () =>
             {
-                if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+                IDamageable dmg = targetEnemy != null ? (targetEnemy.GetComponent<IDamageable>() ?? targetEnemy.GetComponentInParent<IDamageable>()) : null;
+                if (dmg != null && !(dmg is CharacterController2D))
                 {
-                    damageable.TakeDamage(rangedDamage, dir);
+                    dmg.TakeDamage(rangedDamage, dir);
                     AddUltimateCharge(chargePerHit);
                 }
                 else
                 {
-                    Collider2D hitCol = Physics2D.OverlapCircle(impactPos, 0.8f, enemyLayerMask);
-                    if (hitCol != null && hitCol.TryGetComponent(out IDamageable hitDmg))
+                    Collider2D[] hitCols = Physics2D.OverlapCircleAll(impactPos, 1.2f, enemyLayerMask);
+                    foreach (var col in hitCols)
                     {
-                        hitDmg.TakeDamage(rangedDamage, dir);
-                        AddUltimateCharge(chargePerHit);
+                        if (col.gameObject == gameObject || col.transform.IsChildOf(transform)) continue;
+                        IDamageable hitDmg = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+                        if (hitDmg != null && !(hitDmg is CharacterController2D))
+                        {
+                            hitDmg.TakeDamage(rangedDamage, dir);
+                            AddUltimateCharge(chargePerHit);
+                            break;
+                        }
                     }
                 }
             });
         }
         else
         {
-            if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+            IDamageable dmg = targetEnemy != null ? (targetEnemy.GetComponent<IDamageable>() ?? targetEnemy.GetComponentInParent<IDamageable>()) : null;
+            if (dmg != null && !(dmg is CharacterController2D))
             {
-                damageable.TakeDamage(rangedDamage, dir);
+                dmg.TakeDamage(rangedDamage, dir);
                 AddUltimateCharge(chargePerHit);
             }
         }
@@ -580,20 +592,29 @@ public class PlayerCombatController : MonoBehaviour
 
         float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
         float castDist = Mathf.Min(mouseDist, ability.Range);
-        if (castDist < 0.5f) castDist = ability.Range;
 
-        // Raycast da posição do jogador na direção do mouse até o alcance máximo da habilidade
-        // Se houver um inimigo na frente entre o jogador e o ponto mirado, o Raycast acerta o primeiro!
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, ability.Range, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 targetPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+        // A habilidade é lançada exatamente no ponto do mouse (limitado pelo alcance máximo)
+        Vector3 targetPos = transform.position + dir * castDist;
 
-        bool success = ability.Cast(gameObject, targetPos, targetEnemy);
-        if (success)
+        // Dispara a animação de Casting na direção do feitiço (4 direções)
+        if (characterController != null)
         {
-            if (playerStats != null) playerStats.UseMana(ability.ManaCost);
-            cooldownTimer = ability.Cooldown;
-            OnAbilityCooldownUpdated?.Invoke(slotIndex, cooldownTimer, ability.Cooldown);
+            characterController.TriggerCastAnimation(dir);
+        }
+
+        if (playerStats != null) playerStats.UseMana(ability.ManaCost);
+        cooldownTimer = ability.Cooldown;
+        OnAbilityCooldownUpdated?.Invoke(slotIndex, cooldownTimer, ability.Cooldown);
+
+        StartCoroutine(ExecuteDelayedAbilityCast(ability, targetPos, 0.22f));
+    }
+
+    private IEnumerator ExecuteDelayedAbilityCast(Ability ability, Vector3 targetPos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (ability != null)
+        {
+            ability.Cast(gameObject, targetPos, null);
         }
     }
 
@@ -626,21 +647,31 @@ public class PlayerCombatController : MonoBehaviour
 
         float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
         float castDist = Mathf.Min(mouseDist, slotR.Range);
-        if (castDist < 0.5f) castDist = slotR.Range;
 
-        // Raycast na direção do mouse até o alcance da Ultimate
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, slotR.Range, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 targetPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+        // A Ultimate cai exatamente onde o mouse está mirando (limitado pelo alcance)!
+        Vector3 targetPos = transform.position + dir * castDist;
 
-        bool success = slotR.Cast(gameObject, targetPos, targetEnemy);
-        if (success)
+        // Dispara a animação de Casting na direção da Ultimate
+        if (characterController != null)
         {
-            if (playerStats != null) playerStats.UseMana(slotR.ManaCost);
-            ultimateCharge = 0f;
-            cooldownR = slotR.Cooldown;
-            OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
-            OnAbilityCooldownUpdated?.Invoke(2, cooldownR, slotR.Cooldown);
+            characterController.TriggerCastAnimation(dir);
+        }
+
+        if (playerStats != null) playerStats.UseMana(slotR.ManaCost);
+        ultimateCharge = 0f;
+        cooldownR = slotR.Cooldown;
+        OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
+        OnAbilityCooldownUpdated?.Invoke(2, cooldownR, slotR.Cooldown);
+
+        StartCoroutine(ExecuteDelayedUltimateCast(targetPos, 0.25f));
+    }
+
+    private IEnumerator ExecuteDelayedUltimateCast(Vector3 targetPos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (slotR != null)
+        {
+            slotR.Cast(gameObject, targetPos, null);
         }
     }
 

@@ -18,10 +18,41 @@ public class DamageAbility : Ability
     [Tooltip("Efeito visual / VFX gerado no impacto/local do conjuração.")]
     [SerializeField] private GameObject vfxPrefab;
 
+    private Vector3 GetCastSpawnPosition(GameObject caster, Vector3 direction)
+    {
+        if (caster == null) return Vector3.zero;
+
+        // Elevação do tronco/ombro da Naia a partir dos pés (altura da mão)
+        Vector3 spawnPos = caster.transform.position + new Vector3(0f, 0.55f, 0f);
+
+        // Deslocamento para a mão lateral conforme a direção do disparo
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            // Lateral (Direita ou Esquerda)
+            spawnPos += new Vector3(Mathf.Sign(direction.x) * 0.35f, 0f, 0f);
+        }
+        else if (direction.y > 0)
+        {
+            // Cima
+            spawnPos += new Vector3(0.12f, 0.15f, 0f);
+        }
+        else
+        {
+            // Baixo
+            spawnPos += new Vector3(-0.1f, -0.1f, 0f);
+        }
+
+        return spawnPos;
+    }
+
     public override bool Cast(GameObject caster, Vector3 targetPosition, GameObject targetEntity)
     {
-        Vector3 casterPos = caster != null ? caster.transform.position : targetPosition;
+        Vector3 rawDirection = (targetPosition - (caster != null ? caster.transform.position : targetPosition)).normalized;
+        if (rawDirection.sqrMagnitude < 0.001f) rawDirection = Vector3.right;
+
+        Vector3 casterPos = caster != null ? GetCastSpawnPosition(caster, rawDirection) : targetPosition;
         Vector3 direction = (targetPosition - casterPos).normalized;
+        if (direction.sqrMagnitude < 0.001f) direction = rawDirection;
 
         bool hasVFX = CombatVisualEffects.Instance != null;
 
@@ -49,7 +80,7 @@ public class DamageAbility : Ability
             }
             else
             {
-                // Visual Q: Bola de Fogo / Projétil Flamejante com Explosão
+                // Visual Q: Bola de Fogo / Projétil Flamejante saindo da mão com Explosão no alvo
                 CombatVisualEffects.Instance.PlayAbilityQFireball(casterPos, targetPosition, () =>
                 {
                     ApplyDamage(caster, targetPosition, targetEntity, direction);
@@ -65,39 +96,47 @@ public class DamageAbility : Ability
         }
     }
 
+    private bool IsCasterOrAlly(GameObject obj, GameObject caster)
+    {
+        if (obj == null) return true;
+        if (caster != null && (obj == caster || obj.transform.IsChildOf(caster.transform) || caster.transform.IsChildOf(obj.transform))) return true;
+
+        // Se o conjurador for o Player, nunca causa dano no próprio Player
+        if (caster != null && (caster.CompareTag("Player") || caster.GetComponentInParent<CharacterController2D>() != null))
+        {
+            if (obj.CompareTag("Player") || obj.GetComponentInParent<CharacterController2D>() != null || obj.GetComponentInParent<PlayerStats>() != null)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void ApplyDamage(GameObject caster, Vector3 targetPosition, GameObject targetEntity, Vector3 direction)
     {
-        if (type == AbilityType.AoE)
+        float impactRadius = (type == AbilityType.AoE) ? aoeRadius : 1.3f;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(targetPosition, impactRadius);
+        int count = 0;
+
+        foreach (Collider2D hit in hits)
         {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(targetPosition, aoeRadius);
-            int count = 0;
-            foreach (Collider2D hit in hits)
+            if (hit == null) continue;
+            if (IsCasterOrAlly(hit.gameObject, caster)) continue;
+
+            IDamageable damageable = hit.GetComponent<IDamageable>() ?? hit.GetComponentInParent<IDamageable>();
+            if (damageable != null && !(damageable is CharacterController2D) && !(damageable is PlayerStats))
             {
-                if (hit.gameObject == caster) continue;
-                if (hit.TryGetComponent(out IDamageable damageable))
+                damageable.TakeDamage(damage, direction);
+                count++;
+
+                // Se for SingleTarget, atinge apenas o primeiro alvo válido dentro do raio de impacto
+                if (type == AbilityType.SingleTarget)
                 {
-                    damageable.TakeDamage(damage, (hit.transform.position - targetPosition).normalized);
-                    count++;
-                }
-            }
-            Debug.Log($"[DamageAbility] Habilidade AoE '{abilityName}' atingiu {count} alvos em raio {aoeRadius}");
-        }
-        else
-        {
-            if (targetEntity != null && targetEntity.TryGetComponent(out IDamageable targetDmg))
-            {
-                targetDmg.TakeDamage(damage, direction);
-                Debug.Log($"[DamageAbility] Habilidade '{abilityName}' causou {damage} de dano a {targetEntity.name}");
-            }
-            else
-            {
-                Collider2D hitCol = Physics2D.OverlapCircle(targetPosition, 0.8f);
-                if (hitCol != null && hitCol.gameObject != caster && hitCol.TryGetComponent(out IDamageable hitDmg))
-                {
-                    hitDmg.TakeDamage(damage, direction);
+                    break;
                 }
             }
         }
+        Debug.Log($"[DamageAbility] Habilidade '{abilityName}' atingiu {count} alvos em raio {impactRadius} no ponto {targetPosition}");
 
         SpawnVFX(targetPosition);
     }
