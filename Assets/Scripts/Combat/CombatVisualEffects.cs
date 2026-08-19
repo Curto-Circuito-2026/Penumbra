@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 
@@ -35,6 +36,7 @@ public class CombatVisualEffects : MonoBehaviour
         }
     }
 
+    [SerializeField] private Sprite projectileSprite;
     private Camera mainCamera;
 
     private void Awake()
@@ -118,13 +120,43 @@ public class CombatVisualEffects : MonoBehaviour
     }
     #endregion
 
-    #region 2. RMB - Ataque Ranged (Projétil de Energia)
+    #region 2. RMB - Ataque Ranged (Projétil Naia)
     /// <summary>
-    /// Spawna um projétil de energia voando até o alvo e gerando explosão de impacto.
+    /// Spawna um projétil voando até o alvo e gerando impacto ao colidir.
     /// </summary>
     public void PlayRangedProjectile(Vector3 origin, Vector3 targetPos, Action onImpact = null)
     {
         StartCoroutine(AnimateRangedBolt(origin, targetPos, onImpact));
+    }
+
+    private Sprite GetProjectileSprite()
+    {
+        if (projectileSprite != null) return projectileSprite;
+
+#if UNITY_EDITOR
+        string[] guids = UnityEditor.AssetDatabase.FindAssets("naia_projectile t:Texture2D");
+        if (guids.Length > 0)
+        {
+            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+            Sprite[] sprites = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().ToArray();
+            if (sprites.Length > 0)
+            {
+                projectileSprite = sprites[0];
+                return projectileSprite;
+            }
+        }
+#endif
+        var loadedSprites = Resources.FindObjectsOfTypeAll<Sprite>();
+        foreach (var s in loadedSprites)
+        {
+            if (s.name.Contains("naia_projectile"))
+            {
+                projectileSprite = s;
+                break;
+            }
+        }
+
+        return projectileSprite ?? CreateCircleSprite();
     }
 
     private IEnumerator AnimateRangedBolt(Vector3 origin, Vector3 targetPos, Action onImpact)
@@ -132,22 +164,30 @@ public class CombatVisualEffects : MonoBehaviour
         GameObject bolt = new GameObject("VFX_RangedBolt");
         bolt.transform.position = origin;
 
+        Vector3 flightDir = (targetPos - origin).normalized;
+        if (flightDir.sqrMagnitude > 0.001f)
+        {
+            float angle = Mathf.Atan2(flightDir.y, flightDir.x) * Mathf.Rad2Deg;
+            bolt.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
         SpriteRenderer sr = bolt.AddComponent<SpriteRenderer>();
-        sr.sprite = CreateCircleSprite();
-        sr.color = new Color(0.2f, 0.8f, 1f, 1f);
-        bolt.transform.localScale = new Vector3(0.4f, 0.4f, 1f);
+        sr.sprite = GetProjectileSprite();
+        sr.color = Color.white;
+        sr.sortingOrder = 10;
+        bolt.transform.localScale = new Vector3(1f, 1f, 1f);
 
         TrailRenderer trail = bolt.AddComponent<TrailRenderer>();
         trail.time = 0.15f;
-        trail.startWidth = 0.25f;
+        trail.startWidth = 0.18f;
         trail.endWidth = 0.0f;
         trail.material = new Material(Shader.Find("Sprites/Default"));
-        trail.startColor = new Color(0.3f, 0.85f, 1f, 0.9f);
-        trail.endColor = new Color(0.1f, 0.4f, 1f, 0f);
+        trail.startColor = new Color(0.7f, 0.95f, 1f, 0.8f);
+        trail.endColor = new Color(0.3f, 0.7f, 1f, 0f);
 
-        float speed = 18f;
+        float speed = 20f;
         float dist = Vector3.Distance(origin, targetPos);
-        float duration = dist / speed;
+        float duration = Mathf.Max(0.05f, dist / speed);
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
@@ -159,7 +199,7 @@ public class CombatVisualEffects : MonoBehaviour
         }
 
         onImpact?.Invoke();
-        PlayImpactBurst(targetPos, new Color(0.2f, 0.8f, 1f, 1f), 1.2f);
+        PlayImpactBurst(targetPos, new Color(0.4f, 0.85f, 1f, 1f), 1.2f);
         Destroy(bolt, 0.1f);
     }
     #endregion

@@ -475,21 +475,35 @@ public class PlayerCombatController : MonoBehaviour
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
-        float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
+        // Dispara a animação de ataque à distância virando para a direção do disparo (4 direções)
+        if (characterController != null)
+        {
+            characterController.TriggerRangedAnimation(dir);
+        }
+
+        StartCoroutine(ExecuteDelayedRangedAttack(dir, mouseWorldPos, 0.28f));
+        rangedCooldownTimer = rangedCooldown;
+    }
+
+    private IEnumerator ExecuteDelayedRangedAttack(Vector3 dir, Vector3 mouseWorldPos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        Vector3 spawnPos = GetRangedSpawnPosition(dir);
+        float mouseDist = Vector3.Distance(spawnPos, mouseWorldPos);
         float castDist = Mathf.Min(mouseDist, rangedRange);
         if (castDist < 0.5f) castDist = rangedRange;
 
-        // Raycast da posição do jogador na direção do mouse até o alcance máximo
-        // Encontra o PRIMEIRO inimigo que estiver na frente entre o jogador e a mira!
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rangedRange, enemyLayerMask);
+        // Raycast da posição da mão na direção do mouse até o alcance máximo
+        RaycastHit2D hit = Physics2D.Raycast(spawnPos, dir, rangedRange, enemyLayerMask);
         GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 impactPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+        Vector3 impactPos = hit.collider != null ? (Vector3)hit.point : spawnPos + dir * castDist;
 
-        Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
+        Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional (Lança arremessada). Primeiro inimigo: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
 
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.PlayRangedProjectile(transform.position, impactPos, () =>
+            CombatVisualEffects.Instance.PlayRangedProjectile(spawnPos, impactPos, () =>
             {
                 if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
                 {
@@ -515,8 +529,31 @@ public class PlayerCombatController : MonoBehaviour
                 AddUltimateCharge(chargePerHit);
             }
         }
+    }
 
-        rangedCooldownTimer = rangedCooldown;
+    private Vector3 GetRangedSpawnPosition(Vector3 dir)
+    {
+        // Elevação do tronco/ombro da Naia a partir dos pés
+        Vector3 baseOffset = new Vector3(0f, 0.55f, 0f);
+
+        // Deslocamento da mão conforme a direção do arremesso
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            // Lateral (Direita ou Esquerda)
+            baseOffset += new Vector3(Mathf.Sign(dir.x) * 0.35f, 0f, 0f);
+        }
+        else if (dir.y > 0)
+        {
+            // Cima
+            baseOffset += new Vector3(0.12f, 0.15f, 0f);
+        }
+        else
+        {
+            // Baixo
+            baseOffset += new Vector3(-0.1f, -0.1f, 0f);
+        }
+
+        return transform.position + baseOffset;
     }
 
     private void TryTargetOrCastAbility(int slotIndex, Ability ability, ref float cooldownTimer, Vector3 mouseWorldPos)
