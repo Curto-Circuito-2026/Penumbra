@@ -63,6 +63,7 @@ public class CharacterController2D : MonoBehaviour
     private static readonly int LastMoveY = Animator.StringToHash("LastMoveY");
     private static readonly int DashTrigger = Animator.StringToHash("Dash");
     private static readonly int MeleeTrigger = Animator.StringToHash("Melee");
+    private static readonly int RangedTrigger = Animator.StringToHash("Ranged");
 
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
@@ -378,6 +379,21 @@ public class CharacterController2D : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger(MeleeTrigger);
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de ataque à distância (Ranged) virando a personagem para a direção do disparo.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerRangedAnimation(Vector2 attackDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(attackDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(RangedTrigger);
         }
     }
 }
