@@ -415,14 +415,15 @@ public class EnemyAIController : MonoBehaviour
         Vector3 moveVelocity = (agent != null && agent.enabled && agent.isOnNavMesh) ? agent.velocity : Vector3.zero;
         if (moveVelocity.sqrMagnitude > 0.05f)
         {
-            spriteRenderer.flipX = moveVelocity.x < 0f;
+            // Sprites desenhados voltados para a esquerda viram para a direita (flipX = true)
+            spriteRenderer.flipX = moveVelocity.x > 0f;
         }
         else if (TargetPlayer != null)
         {
             float dx = TargetPlayer.position.x - transform.position.x;
             if (Mathf.Abs(dx) > 0.1f)
             {
-                spriteRenderer.flipX = dx < 0f;
+                spriteRenderer.flipX = dx > 0f;
             }
         }
     }

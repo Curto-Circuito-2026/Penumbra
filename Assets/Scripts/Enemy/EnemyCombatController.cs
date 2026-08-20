@@ -83,10 +83,12 @@ public class EnemyCombatController : MonoBehaviour
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, meleeRange, targetLayers);
         foreach (var hit in hits)
         {
-            if (hit.collider == null || hit.collider.isTrigger) continue;
-            if (hit.collider.gameObject == gameObject || hit.collider.transform.IsChildOf(transform)) continue;
+            if (hit.collider == null) continue;
+            if (hit.collider.gameObject == gameObject || hit.collider.transform.IsChildOf(transform) || hit.collider.transform.root == transform.root) continue;
+            if (hit.collider.CompareTag("Enemy") || hit.collider.GetComponentInParent<EnemyStats>() != null) continue;
 
-            if (hit.collider.TryGetComponent(out IDamageable damageable))
+            IDamageable damageable = hit.collider.GetComponent<IDamageable>() ?? hit.collider.GetComponentInParent<IDamageable>();
+            if (damageable != null && !(damageable is EnemyStats))
             {
                 damageable.TakeDamage(meleeDamage, dir);
                 hitTarget = true;
@@ -100,10 +102,12 @@ public class EnemyCombatController : MonoBehaviour
             Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.6f, targetLayers);
             foreach (var col in cols)
             {
-                if (col == null || col.isTrigger) continue;
-                if (col.gameObject == gameObject || col.transform.IsChildOf(transform)) continue;
+                if (col == null) continue;
+                if (col.gameObject == gameObject || col.transform.IsChildOf(transform) || col.transform.root == transform.root) continue;
+                if (col.CompareTag("Enemy") || col.GetComponentInParent<EnemyStats>() != null) continue;
 
-                if (col.TryGetComponent(out IDamageable hitDmg))
+                IDamageable hitDmg = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+                if (hitDmg != null && !(hitDmg is EnemyStats))
                 {
                     hitDmg.TakeDamage(meleeDamage, dir);
                     break;
@@ -130,8 +134,8 @@ public class EnemyCombatController : MonoBehaviour
 
         Debug.Log($"[EnemyCombatController] '{gameObject.name}' disparou Tiro Ranged em Linha Reta na direção {dir}.");
 
-        // Offset de spawn de 0.8 unidades para sair limpo da frente do colisor do inimigo
-        Vector3 spawnPos = transform.position + dir * 0.8f;
+        // Offset de spawn de 0.9 unidades para sair limpo da frente do colisor do inimigo
+        Vector3 spawnPos = transform.position + dir * 0.9f;
 
         // Muzzle flash de disparo na boca da arma
         if (CombatVisualEffects.Instance != null)
@@ -154,14 +158,28 @@ public class EnemyCombatController : MonoBehaviour
         {
             // Fallback visual com Raycast se nenhum prefab foi atribuído
             Vector3 targetImpactPos = transform.position + dir * 8f;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 8f, targetLayers);
-            if (hit.collider != null) targetImpactPos = hit.point;
-
-            CombatVisualEffects.Instance.PlayRangedProjectile(transform.position, targetImpactPos, () =>
+            RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, 8f, targetLayers);
+            GameObject hitTargetObj = null;
+            foreach (var h in hits)
             {
-                if (hit.collider != null && hit.collider.TryGetComponent(out IDamageable dmg))
+                if (h.collider == null) continue;
+                if (h.collider.gameObject == gameObject || h.collider.transform.IsChildOf(transform) || h.collider.transform.root == transform.root) continue;
+                if (h.collider.CompareTag("Enemy") || h.collider.GetComponentInParent<EnemyStats>() != null) continue;
+
+                hitTargetObj = h.collider.gameObject;
+                targetImpactPos = h.point;
+                break;
+            }
+
+            CombatVisualEffects.Instance.PlayRangedProjectile(spawnPos, targetImpactPos, () =>
+            {
+                if (hitTargetObj != null)
                 {
-                    dmg.TakeDamage(rangedDamage, dir);
+                    IDamageable dmg = hitTargetObj.GetComponent<IDamageable>() ?? hitTargetObj.GetComponentInParent<IDamageable>();
+                    if (dmg != null && !(dmg is EnemyStats))
+                    {
+                        dmg.TakeDamage(rangedDamage, dir);
+                    }
                 }
             });
         }

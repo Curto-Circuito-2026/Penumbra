@@ -99,12 +99,20 @@ public class DamageAbility : Ability
     private bool IsCasterOrAlly(GameObject obj, GameObject caster)
     {
         if (obj == null) return true;
-        if (caster != null && (obj == caster || obj.transform.IsChildOf(caster.transform) || caster.transform.IsChildOf(obj.transform))) return true;
+        if (caster != null && (obj == caster || obj.transform.IsChildOf(caster.transform) || caster.transform.IsChildOf(obj.transform) || obj.transform.root == caster.transform.root)) return true;
 
         // Se o conjurador for o Player, nunca causa dano no próprio Player
-        if (caster != null && (caster.CompareTag("Player") || caster.GetComponentInParent<CharacterController2D>() != null))
+        if (caster != null && (caster.CompareTag("Player") || caster.GetComponentInParent<CharacterController2D>() != null || caster.GetComponentInParent<PlayerStats>() != null))
         {
             if (obj.CompareTag("Player") || obj.GetComponentInParent<CharacterController2D>() != null || obj.GetComponentInParent<PlayerStats>() != null)
+            {
+                return true;
+            }
+        }
+        // Se o conjurador for um Inimigo, nunca causa dano em aliados inimigos
+        if (caster != null && (caster.CompareTag("Enemy") || caster.GetComponentInParent<EnemyStats>() != null))
+        {
+            if (obj.CompareTag("Enemy") || obj.GetComponentInParent<EnemyStats>() != null)
             {
                 return true;
             }

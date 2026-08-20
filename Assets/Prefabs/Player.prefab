@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3104301635423239881}
   - component: {fileID: 6526929845135208931}
   - component: {fileID: 7149708552570307092}
+  - component: {fileID: 7149708552570307093}
   - component: {fileID: 4857732292045075119}
   - component: {fileID: 7216750349317481606}
   - component: {fileID: 8739442164859496148}
@@ -149,7 +150,44 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!58 &7149708552570307092
+--- !u!70 &7149708552570307092
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7142938797776746160}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.7709518}
+  m_Size: {x: 0.75, y: 1.5968953}
+  m_Direction: 0
+--- !u!58 &7149708552570307093
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,8 +221,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: 0, y: 0.15}
+  m_Radius: 0.35
 --- !u!114 &4857732292045075119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,8 +308,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ad62bb350c4fa49835b2f46a45aacf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  maxHealth: 100
-  currentHealth: 100
+  maxHealth: 2071.9
+  currentHealth: 2071.9
   maxMana: 100
   currentMana: 100
   manaRegenRate: 8
@@ -290,7 +328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c149a710200843db8e100f72ba309110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCurrency
-  starFragments: 0
-  stars: 0
+  starFragments: 5
+  stars: 5
   fragmentsPerStar: 10
   persistStars: 0
