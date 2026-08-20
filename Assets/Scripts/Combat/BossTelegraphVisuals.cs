@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -178,54 +179,71 @@ public class BossTelegraphVisuals : MonoBehaviour
         Destroy(trailObj);
     }
 
-    /// <summary>
-    /// Spawna um avatar/fantasma de fogo da serpente que cruza a tela em alta velocidade ao longo de uma linha, deixando rastro de chamas.
-    /// O corpo real do Boitatá permanece parado no centro da fase!
-    /// </summary>
-    public void SpawnFireSerpentDash(Vector3 start, Vector3 end, float duration, float damage, LayerMask playerMask)
+    [Header("Modular Serpent Sprites")]
+    [SerializeField] private Sprite[] serpentHeadSprites;
+    [SerializeField] private Sprite serpentBodyStraightSprite;
+    [SerializeField] private Sprite serpentBodyCurveSprite;
+    [SerializeField] private Sprite[] serpentTailSprites;
+
+    private void EnsureSerpentSpritesLoaded()
     {
-        StartCoroutine(AnimateFireSerpentDash(start, end, duration, damage, playerMask));
-    }
-
-    private IEnumerator AnimateFireSerpentDash(Vector3 start, Vector3 end, float duration, float damage, LayerMask playerMask)
-    {
-        GameObject phantom = new GameObject("VFX_FireSerpentPhantom");
-        phantom.transform.position = start;
-
-        Vector3 moveDir = (end - start).normalized;
-        float angle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
-        phantom.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-
-        SpriteRenderer sr = phantom.AddComponent<SpriteRenderer>();
-        sr.sprite = circleSprite ?? CreateCircleSprite();
-        sr.color = new Color(1f, 0.4f, 0.05f, 1f);
-        sr.sortingOrder = 14;
-        phantom.transform.localScale = new Vector3(1.8f, 1.2f, 1f);
-
-        TrailRenderer trail = phantom.AddComponent<TrailRenderer>();
-        trail.time = 0.4f;
-        trail.startWidth = 1.5f;
-        trail.endWidth = 0.1f;
-        trail.material = new Material(Shader.Find("Sprites/Default"));
-        trail.startColor = new Color(1f, 0.6f, 0.15f, 0.95f);
-        trail.endColor = new Color(1f, 0.1f, 0f, 0f);
-
-        // Deixa o rastro de chamas no chão
-        CreateFireTrail(start, end, 1.3f, 2.5f, damage, playerMask);
-
-        float elapsed = 0f;
-        while (elapsed < duration)
+        if (serpentHeadSprites != null && serpentHeadSprites.Length > 0 &&
+            serpentBodyStraightSprite != null && serpentBodyCurveSprite != null &&
+            serpentTailSprites != null && serpentTailSprites.Length > 0)
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-            phantom.transform.position = Vector3.Lerp(start, end, t);
-
-            TryDamagePlayer(phantom.transform.position, 1.3f, damage, moveDir, allowDashImmunity: false);
-
-            yield return null;
+            return;
         }
 
-        Destroy(phantom);
+        List<Sprite> heads = new List<Sprite>();
+        List<Sprite> tails = new List<Sprite>();
+
+#if UNITY_EDITOR
+        var loaded = UnityEditor.AssetDatabase.LoadAllAssetsAtPath("Assets/Sprites/Boitata/boitata_spritesheet.png").OfType<Sprite>();
+        foreach (var s in loaded)
+        {
+            if (s == null) continue;
+            string n = s.name.ToLower();
+            if (n.Contains("head") || n == "boitata_spritesheet_7" || n == "boitata_spritesheet_11" || n.Contains("mod_head")) heads.Add(s);
+            else if (n.Contains("straight") || n == "boitata_spritesheet_5" || n == "boitata_mod_body_straight") serpentBodyStraightSprite = s;
+            else if (n.Contains("curve") || n == "boitata_spritesheet_3" || n == "boitata_mod_body_curve") serpentBodyCurveSprite = s;
+            else if (n.Contains("tail") || n == "boitata_spritesheet_4" || n == "boitata_spritesheet_2" || n == "boitata_spritesheet_6" || n.Contains("mod_tail")) tails.Add(s);
+        }
+#else
+        Sprite[] allSprites = Resources.FindObjectsOfTypeAll<Sprite>();
+        foreach (var s in allSprites)
+        {
+            if (s == null) continue;
+            string n = s.name.ToLower();
+            if (n.Contains("head") || n == "boitata_spritesheet_7" || n == "boitata_spritesheet_11" || n.Contains("mod_head")) heads.Add(s);
+            else if (n.Contains("straight") || n == "boitata_spritesheet_5" || n == "boitata_mod_body_straight") serpentBodyStraightSprite = s;
+            else if (n.Contains("curve") || n == "boitata_spritesheet_3" || n == "boitata_mod_body_curve") serpentBodyCurveSprite = s;
+            else if (n.Contains("tail") || n == "boitata_spritesheet_4" || n == "boitata_spritesheet_2" || n == "boitata_spritesheet_6" || n.Contains("mod_tail")) tails.Add(s);
+        }
+#endif
+
+        if (heads.Count > 0) serpentHeadSprites = heads.ToArray();
+        if (tails.Count > 0) serpentTailSprites = tails.ToArray();
+    }
+
+    /// <summary>
+    /// Spawna uma serpente modular segmentada do Boitatá com suporte a curvas em waypoints.
+    /// No ponto da curva, o gomo correspondente utiliza boitata_mod_body_curve perfeitamente alinhado.
+    /// </summary>
+    public void SpawnFireSerpentDash(Vector3[] waypoints, float moveSpeed, float damage, LayerMask playerMask)
+    {
+        EnsureSerpentSpritesLoaded();
+
+        GameObject serpentObj = new GameObject("ModularBoitataSerpent");
+        ModularBoitataSerpent serpent = serpentObj.AddComponent<ModularBoitataSerpent>();
+        serpent.SetSprites(serpentHeadSprites, serpentBodyStraightSprite, serpentBodyCurveSprite, serpentTailSprites);
+
+        float calculatedSpeed = moveSpeed > 0f ? moveSpeed : 15.5f;
+        serpent.Launch(waypoints, calculatedSpeed, damage);
+    }
+
+    public void SpawnFireSerpentDash(Vector3 start, Vector3 end, float moveSpeed, float damage, LayerMask playerMask)
+    {
+        SpawnFireSerpentDash(new Vector3[] { start, end }, moveSpeed, damage, playerMask);
     }
     #endregion
 
@@ -399,7 +417,7 @@ public class BossTelegraphVisuals : MonoBehaviour
     /// <summary>
     /// Cria 4 feixes de fogo contínuos em cruz que giram 360 graus forçando o jogador a correr ao redor do Boss.
     /// </summary>
-    public IEnumerator AnimateSpinningFireBeamsRoutine(Transform centerTransform, int beamCount, float length, float spinDuration, float totalRotations, float damage, LayerMask playerMask)
+    public IEnumerator AnimateSpinningFireBeamsRoutine(Transform centerTransform, int beamCount, float length, float spinDuration, float totalRotations, float damage, LayerMask playerMask, Func<Vector3> positionProvider = null)
     {
         List<GameObject> beamObjects = new List<GameObject>();
         List<LineRenderer> lineRenderers = new List<LineRenderer>();
@@ -424,6 +442,10 @@ public class BossTelegraphVisuals : MonoBehaviour
         float elapsed = 0f;
         float damageTickTimer = 0f;
 
+        Vector3 currentOrigin = positionProvider != null 
+            ? positionProvider() 
+            : (centerTransform != null ? centerTransform.position : Vector3.zero);
+
         while (elapsed < spinDuration)
         {
             elapsed += Time.deltaTime;
@@ -432,7 +454,13 @@ public class BossTelegraphVisuals : MonoBehaviour
             float t = elapsed / spinDuration;
             float currentAngle = t * 360f * totalRotations;
 
-            Vector3 origin = centerTransform != null ? centerTransform.position : Vector3.zero;
+            Vector3 targetOrigin = positionProvider != null 
+                ? positionProvider() 
+                : (centerTransform != null ? centerTransform.position : Vector3.zero);
+
+            // Desliza suavemente a origem em direção ao rabo com MoveTowards contínuo
+            currentOrigin = Vector3.MoveTowards(currentOrigin, targetOrigin, 6.0f * Time.deltaTime);
+            Vector3 origin = currentOrigin;
 
             for (int i = 0; i < beamCount; i++)
             {

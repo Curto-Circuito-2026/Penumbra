@@ -30,6 +30,23 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     [SerializeField] private float spinningBeamDamage = 25f;
     [SerializeField] private LayerMask playerLayerMask;
 
+    [Header("Configurações da Investida (Dash)")]
+    [Tooltip("Velocidade com que a serpente cruza a tela.")]
+    [SerializeField] private float dashSpeed = 15.5f;
+    [Tooltip("Tempo de exibição do aviso de perigo antes da investida.")]
+    [SerializeField] private float dashTelegraphDuration = 0.65f;
+    [Tooltip("Intervalo entre cada investida consecutiva.")]
+    [SerializeField] private float dashInterval = 0.95f;
+    [Tooltip("Quantidade mínima de investidas (em 100% de vida).")]
+    [SerializeField] private int minDashCount = 2;
+    [Tooltip("Quantidade máxima de investidas (ao atingir vida baixa).")]
+    [SerializeField] private int maxDashCount = 5;
+    [Tooltip("Porcentagem de vida onde atinge a quantidade máxima de investidas (0.20 = 20%).")]
+    [Range(0.05f, 0.5f)]
+    [SerializeField] private float lowHealthThreshold = 0.20f;
+    [Tooltip("Cor do aviso telegrafado (sombra).")]
+    [SerializeField] private Color dashTelegraphColor = new Color(0.08f, 0.06f, 0.12f, 0.65f);
+
     [Header("Recompensas de Morte")]
     [Tooltip("Quantidade de estrelas inteiras forjadas a dropar ao morrer.")]
     [SerializeField] private int minStarDrop = 3;
@@ -51,6 +68,9 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     private float attackCooldownTimer = 2f;
     private int attackCycleIndex = 0;
 
+    private Animator animator;
+    private static readonly int RoarTrigger = Animator.StringToHash("Roar");
+
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
     public bool IsDead => isDead;
@@ -58,6 +78,7 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     private void Awake()
     {
         currentHealth = maxHealth;
+        if (animator == null) animator = GetComponent<Animator>();
         if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
         if (rb == null) rb = GetComponent<Rigidbody2D>();
         if (fireTrail == null) fireTrail = GetComponentInChildren<TrailRenderer>();
@@ -93,6 +114,7 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         ScreenBounds bounds = GetScreenBounds();
         homePosition = bounds.center;
         transform.position = homePosition;
+        transform.rotation = Quaternion.identity;
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) playerTransform = playerObj.transform;
@@ -110,16 +132,9 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     {
         if (isDead) return;
 
-        // O Boitatá permanece 100% fixo e imóvel no centro da fase/tela
+        // O Boitatá permanece 100% fixo, ereto e estável no centro da fase/tela
         transform.position = homePosition;
-
-        // Gira suavemente a cabeça na direção da Naia
-        if (playerTransform != null)
-        {
-            Vector2 toPlayer = (playerTransform.position - transform.position).normalized;
-            float angle = Mathf.Atan2(toPlayer.y, toPlayer.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, Mathf.LerpAngle(transform.eulerAngles.z, angle, Time.deltaTime * 6f));
-        }
+        transform.rotation = Quaternion.identity;
     }
 
     #region Loop de IA e Habilidades do Chefe
@@ -134,30 +149,30 @@ public class BoitataBossController : MonoBehaviour, IDamageable
                 attackCooldownTimer -= Time.deltaTime;
                 if (attackCooldownTimer <= 0f)
                 {
-                    // Alterna entre os 4 ataques:
-                    // 0 = Investidas Aleatórias Cruzando a Tela (Avatares de fogo)
-                    // 1 = Chuva de Meteoros na Tela
-                    // 2 = Super 360 de Bolas de Fogo (com esquiva de Dash)
-                    // 3 = Catavento Giratório 360° de Chamas (Grade giratória)
-                    switch (attackCycleIndex % 4)
+                    // Executa os 4 ataques em ordem sequencial para teste:
+                    // 0: Investidas Modulares (Dash com curvas)
+                    // 1: Chuva de Meteoros com Sombras
+                    // 2: Anel 360 de Bolas de Fogo pela Boca
+                    // 3: Catavento de Chamas Giratório pelo Rabo
+                    int attackType = attackCycleIndex % 4;
+
+                    switch (attackType)
                     {
                         case 0:
                             yield return StartCoroutine(PerformHashtagGridAttack());
-                            attackCooldownTimer = UnityEngine.Random.Range(3f, 4f);
                             break;
                         case 1:
                             yield return StartCoroutine(PerformMeteorRainAttack());
-                            attackCooldownTimer = UnityEngine.Random.Range(3f, 4f);
                             break;
                         case 2:
                             yield return StartCoroutine(PerformSuper360FireRingAttack());
-                            attackCooldownTimer = UnityEngine.Random.Range(3f, 4f);
                             break;
                         case 3:
                             yield return StartCoroutine(PerformSpinningFireBeamsAttack());
-                            attackCooldownTimer = UnityEngine.Random.Range(3.5f, 4.5f);
                             break;
                     }
+
+                    attackCooldownTimer = 2.0f;
                     attackCycleIndex++;
                 }
             }
@@ -206,91 +221,86 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
     #region Ataque 1: Investidas de Fogo Cruzando a Tela
     /// <summary>
-    /// Spawna linhas de aviso em direções aleatórias cruzando a tela de ponta a ponta.
-    /// O Boitatá permanece imóvel no centro e dispara avatares de fogo que rasgam a tela pelas linhas.
+    /// Spawna linhas de aviso em direções aleatórias cruzando a tela com curvas.
+    /// O número de investidas escala com a vida perdida (2 a 100% de vida até 5 a <= 20% de vida).
     /// </summary>
     private IEnumerator PerformHashtagGridAttack()
     {
         isExecutingAttack = true;
 
-        if (spriteRenderer != null)
-        {
-            // Flash laranja anunciando o ataque pesado
-            Tween.Color(spriteRenderer, new Color(1f, 0.6f, 0f, 1f), 0.3f);
-        }
-
         ScreenBounds bounds = GetScreenBounds(0.06f);
 
-        // Gera 4 a 5 linhas de corte cruzadas em direções aleatórias cobrindo a tela
-        List<(Vector3 start, Vector3 end)> paths = new List<(Vector3 start, Vector3 end)>();
+        // Calcula a quantidade de investidas com base na vida
+        float healthPercent = Mathf.Clamp01(currentHealth / maxHealth);
+        float healthRange = Mathf.Max(0.01f, 1f - lowHealthThreshold);
+        float t = Mathf.Clamp01((1f - healthPercent) / healthRange); // 0 em 100% até 1 em lowHealthThreshold
+        int baseCount = Mathf.RoundToInt(Mathf.Lerp(minDashCount, maxDashCount, t));
+        int dashCount = Mathf.Clamp(baseCount + UnityEngine.Random.Range(0, 2) - UnityEngine.Random.Range(0, 1), minDashCount, maxDashCount);
 
-        // 1. Corte horizontal inclinado de um lado a outro
-        float y1 = UnityEngine.Random.Range(bounds.minY + 0.5f, bounds.maxY - 0.5f);
-        float y2 = UnityEngine.Random.Range(bounds.minY + 0.5f, bounds.maxY - 0.5f);
-        paths.Add((new Vector3(bounds.minX, y1, 0f), new Vector3(bounds.maxX, y2, 0f)));
-
-        // 2. Corte vertical inclinado de cima a baixo
-        float x1 = UnityEngine.Random.Range(bounds.minX + 0.5f, bounds.maxX - 0.5f);
-        float x2 = UnityEngine.Random.Range(bounds.minX + 0.5f, bounds.maxX - 0.5f);
-        paths.Add((new Vector3(x1, bounds.maxY, 0f), new Vector3(x2, bounds.minY, 0f)));
-
-        // 3. Corte diagonal aleatório de um canto a outro
-        if (UnityEngine.Random.value > 0.5f)
-        {
-            paths.Add((new Vector3(bounds.minX, bounds.minY, 0f), new Vector3(bounds.maxX, bounds.maxY, 0f)));
-        }
-        else
-        {
-            paths.Add((new Vector3(bounds.minX, bounds.maxY, 0f), new Vector3(bounds.maxX, bounds.minY, 0f)));
-        }
-
-        // 4. Corte que passa através da posição atual da Naia de um lado da tela ao outro
-        if (playerTransform != null)
-        {
-            Vector3 playerPos = playerTransform.position;
-            bool fromHorizontal = UnityEngine.Random.value > 0.5f;
-            if (fromHorizontal)
-            {
-                paths.Add((new Vector3(bounds.minX, playerPos.y, 0f), new Vector3(bounds.maxX, playerPos.y + UnityEngine.Random.Range(-1.5f, 1.5f), 0f)));
-            }
-            else
-            {
-                paths.Add((new Vector3(playerPos.x, bounds.maxY, 0f), new Vector3(playerPos.x + UnityEngine.Random.Range(-1.5f, 1.5f), bounds.minY, 0f)));
-            }
-        }
-
-        // 1. Spawna as linhas telegrafadas de perigo na tela
-        Color dangerColor = new Color(1f, 0.2f, 0.05f, 0.5f);
-        float telegraphDuration = 1.3f;
-
-        foreach (var path in paths)
-        {
-            BossTelegraphVisuals.Instance.CreateDangerLine(path.start, path.end, 1.3f, telegraphDuration, dangerColor);
-        }
-
-        yield return new WaitForSeconds(telegraphDuration);
-
-        // 2. O Boitatá fica PARADO no centro e dispara avatares de fogo da serpente ao longo de cada faixa
-        foreach (var path in paths)
+        // Dispara cada investida com seu próprio aviso telegrafado de sombra
+        for (int i = 0; i < dashCount; i++)
         {
             if (isDead) yield break;
 
-            Vector3 moveDir = (path.end - path.start).normalized;
-            float angle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            Vector3[] path = GenerateRandomDashPath(bounds);
 
-            // Spawna avatar de fogo que cruza a tela em alta velocidade e causa dano
-            BossTelegraphVisuals.Instance.SpawnFireSerpentDash(path.start, path.end, 0.35f, dashDamage, playerLayerMask);
+            // 1. Spawna a telegrafia de sombra para o caminho atual
+            for (int k = 0; k < path.Length - 1; k++)
+            {
+                BossTelegraphVisuals.Instance.CreateDangerLine(path[k], path[k + 1], 1.3f, dashTelegraphDuration, dashTelegraphColor);
+            }
 
-            yield return new WaitForSeconds(0.25f);
-        }
+            yield return new WaitForSeconds(dashTelegraphDuration);
 
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = Color.white;
+            if (isDead) yield break;
+
+            // 2. Dispara a serpente rasgando o caminho na velocidade configurada
+            BossTelegraphVisuals.Instance.SpawnFireSerpentDash(path, dashSpeed, dashDamage, playerLayerMask);
+
+            yield return new WaitForSeconds(dashInterval);
         }
 
         isExecutingAttack = false;
+    }
+
+    private Vector3[] GenerateRandomDashPath(ScreenBounds bounds)
+    {
+        int pattern = UnityEngine.Random.Range(0, 4);
+        float cornerX = UnityEngine.Random.Range(bounds.minX + 2.5f, bounds.maxX - 2.5f);
+        float cornerY = UnityEngine.Random.Range(bounds.minY + 2f, bounds.maxY - 2f);
+        Vector3 corner = new Vector3(cornerX, cornerY, 0f);
+
+        switch (pattern)
+        {
+            case 0: // Esquerda -> Corner -> (Baixo ou Cima)
+                bool exitDown = UnityEngine.Random.value > 0.5f;
+                return new Vector3[] {
+                    new Vector3(bounds.minX, cornerY, 0f),
+                    corner,
+                    new Vector3(cornerX, exitDown ? bounds.minY : bounds.maxY, 0f)
+                };
+            case 1: // Topo -> Corner -> (Direita ou Esquerda)
+                bool exitRight = UnityEngine.Random.value > 0.5f;
+                return new Vector3[] {
+                    new Vector3(cornerX, bounds.maxY, 0f),
+                    corner,
+                    new Vector3(exitRight ? bounds.maxX : bounds.minX, cornerY, 0f)
+                };
+            case 2: // Direita -> Corner -> (Cima ou Baixo)
+                bool exitUp = UnityEngine.Random.value > 0.5f;
+                return new Vector3[] {
+                    new Vector3(bounds.maxX, cornerY, 0f),
+                    corner,
+                    new Vector3(cornerX, exitUp ? bounds.maxY : bounds.minY, 0f)
+                };
+            default: // Baixo -> Corner -> (Esquerda ou Direita)
+                bool exitLeft = UnityEngine.Random.value > 0.5f;
+                return new Vector3[] {
+                    new Vector3(cornerX, bounds.minY, 0f),
+                    corner,
+                    new Vector3(exitLeft ? bounds.minX : bounds.maxX, cornerY, 0f)
+                };
+        }
     }
     #endregion
 
@@ -302,15 +312,11 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     {
         isExecutingAttack = true;
 
-        // 1. Animação de erguer a cabeça e cuspir para o alto
-        if (spriteRenderer != null)
-        {
-            Tween.Color(spriteRenderer, new Color(1f, 0.4f, 0.1f, 1f), 0.4f);
-        }
+        if (animator != null) animator.SetTrigger(RoarTrigger);
 
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.PlayImpactBurst(transform.position + Vector3.up * 1f, new Color(1f, 0.5f, 0.1f), 2f);
+            CombatVisualEffects.Instance.PlayImpactBurst(transform.position + Vector3.up * 1.05f, new Color(1f, 0.5f, 0.1f), 2f);
             CombatVisualEffects.Instance.TriggerCameraShake(0.2f, 0.2f);
         }
 
@@ -358,76 +364,160 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(1.4f);
 
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = Color.white;
-        }
-
         isExecutingAttack = false;
     }
     #endregion
 
-    #region Ataque 3: Super 360 de Bolas de Fogo (com esquiva de Dash)
+    #region Posicionamento Dinâmico de Partes do Corpo por Sprite Ativo
     /// <summary>
-    /// Dispara 2 ondas de bolas de fogo em 360 graus que viajam até o final da tela.
+    /// Calcula a posição exata da chama na ponta do rabo do Boitatá com base no sprite atualmente renderizado pelo Animator.
+    /// </summary>
+    public Vector3 GetCurrentTailFlamePosition()
+    {
+        if (spriteRenderer == null || spriteRenderer.sprite == null)
+        {
+            return transform.position + new Vector3(2.8f, 1.8f, 0f);
+        }
+
+        string sName = spriteRenderer.sprite.name;
+        Vector3 localOffset;
+
+        switch (sName)
+        {
+            case "boitata_idle_1":
+                // Cauda erguida alta no ar com chama apontando para cima
+                localOffset = new Vector3(2.80f, 2.41f, 0f);
+                break;
+            case "boitata_idle_2":
+                // Cauda esticada horizontalmente para a direita
+                localOffset = new Vector3(3.43f, 1.06f, 0f);
+                break;
+            case "boitata_idle_3":
+                // Cauda ondulando perto do chão
+                localOffset = new Vector3(2.85f, 0.62f, 0f);
+                break;
+            case "boitata_breath_prep":
+            case "boitata_breath_fire":
+                localOffset = new Vector3(2.80f, 2.41f, 0f);
+                break;
+            default:
+                localOffset = new Vector3(2.9f, 1.5f, 0f);
+                break;
+        }
+
+        if (spriteRenderer.flipX)
+        {
+            localOffset.x = -localOffset.x;
+        }
+
+        return transform.position + localOffset;
+    }
+
+    /// <summary>
+    /// Calcula a posição exata da boca aberta do Boitatá com base no sprite atualmente renderizado.
+    /// </summary>
+    public Vector3 GetCurrentMouthPosition()
+    {
+        if (spriteRenderer == null || spriteRenderer.sprite == null)
+        {
+            return transform.position + Vector3.up * 1.5f;
+        }
+
+        string sName = spriteRenderer.sprite.name;
+        Vector3 localOffset;
+
+        switch (sName)
+        {
+            case "boitata_breath_fire":
+            case "boitata_breath_prep":
+                // Boca aberta virada para cima
+                localOffset = new Vector3(-0.58f, 2.05f, 0f);
+                break;
+            default:
+                // Boca frontal
+                localOffset = new Vector3(-0.10f, 2.15f, 0f);
+                break;
+        }
+
+        if (spriteRenderer.flipX)
+        {
+            localOffset.x = -localOffset.x;
+        }
+
+        return transform.position + localOffset;
+    }
+    #endregion
+
+    #region Ataque 3: Super 360 de Bolas de Fogo (Saindo da Boca ao Abrir)
+    /// <summary>
+    /// Dispara 2 ondas de bolas de fogo em 360 graus que viajam até o final da tela, saindo diretamente da boca no momento em que ela abre.
     /// O jogador pode usar o Dash por baixo delas sem tomar dano!
     /// </summary>
     private IEnumerator PerformSuper360FireRingAttack()
     {
         isExecutingAttack = true;
 
-        if (spriteRenderer != null)
-        {
-            Tween.Color(spriteRenderer, new Color(1f, 0.35f, 0.05f, 1f), 0.35f);
-        }
+        // 1. Inicia o Roar e aguarda exatamente 0.25s para o momento em que a boca se abre
+        if (animator != null) animator.SetTrigger(RoarTrigger);
+        yield return new WaitForSeconds(0.25f);
+
+        Vector3 mouthPos = GetCurrentMouthPosition();
 
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.PlayImpactBurst(transform.position, new Color(1f, 0.6f, 0.1f), 1.8f);
+            CombatVisualEffects.Instance.PlayImpactBurst(mouthPos, new Color(1f, 0.6f, 0.1f), 1.8f);
             CombatVisualEffects.Instance.TriggerCameraShake(0.2f, 0.18f);
         }
 
-        yield return new WaitForSeconds(0.4f);
-
-        // 1ª Onda: 16 bolas de fogo expandindo em anel
-        BossTelegraphVisuals.Instance.Spawn360FireballRing(transform.position, 16, 6.5f, fireRingDamage, playerLayerMask);
+        // 1ª Onda: 16 bolas de fogo expandindo em anel a partir da boca
+        BossTelegraphVisuals.Instance.Spawn360FireballRing(mouthPos, 16, 6.5f, fireRingDamage, playerLayerMask);
 
         yield return new WaitForSeconds(0.35f);
 
-        // 2ª Onda intercalada: 16 bolas de fogo mais velozes
-        BossTelegraphVisuals.Instance.Spawn360FireballRing(transform.position, 16, 7.5f, fireRingDamage, playerLayerMask);
+        // 2ª Onda intercalada: 16 bolas de fogo mais velozes saindo da boca
+        mouthPos = GetCurrentMouthPosition();
+        BossTelegraphVisuals.Instance.Spawn360FireballRing(mouthPos, 16, 7.5f, fireRingDamage, playerLayerMask);
 
         yield return new WaitForSeconds(1.8f);
-
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = Color.white;
-        }
 
         isExecutingAttack = false;
     }
     #endregion
 
-    #region Ataque 4: Catavento de Chamas Giratório 360°
+    private Vector3 smoothedTailFlamePos;
+
     /// <summary>
-    /// Projeta 4 feixes de fogo contínuos em cruz (#) e gira 360 graus na arena, obrigando o jogador a correr ao redor.
+    /// Calcula e interpola suavemente a posição da chama do rabo do Boitatá para movimentos contínuos e orgânicos.
+    /// </summary>
+    public Vector3 GetSmoothTailFlamePosition()
+    {
+        Vector3 target = GetCurrentTailFlamePosition();
+        if (smoothedTailFlamePos == Vector3.zero)
+        {
+            smoothedTailFlamePos = target;
+        }
+        smoothedTailFlamePos = Vector3.MoveTowards(smoothedTailFlamePos, target, 6.0f * Time.deltaTime);
+        return smoothedTailFlamePos;
+    }
+
+    #region Ataque 4: Catavento de Chamas Giratório 360° (Saindo do Fogo do Rabo)
+    /// <summary>
+    /// Projeta 4 feixes de fogo contínuos em formato de '+' a partir da chama da cauda e gira 360 graus na arena, acompanhando o rabo ativo suavemente.
     /// </summary>
     private IEnumerator PerformSpinningFireBeamsAttack()
     {
         isExecutingAttack = true;
 
-        if (spriteRenderer != null)
-        {
-            Tween.Color(spriteRenderer, new Color(1f, 0.85f, 0.2f, 1f), 0.35f);
-        }
+        smoothedTailFlamePos = GetCurrentTailFlamePosition();
+        Vector3 initialTailPos = smoothedTailFlamePos;
 
-        // Telegrafia inicial: linhas em cruz rápida
+        // Telegrafia inicial: linhas em cruz rápida saindo exatamente do fogo da cauda
         float beamLength = 11f;
         Color dangerColor = new Color(1f, 0.3f, 0.1f, 0.45f);
-        BossTelegraphVisuals.Instance.CreateDangerLine(transform.position, transform.position + Vector3.right * beamLength, 0.8f, 0.8f, dangerColor);
-        BossTelegraphVisuals.Instance.CreateDangerLine(transform.position, transform.position + Vector3.left * beamLength, 0.8f, 0.8f, dangerColor);
-        BossTelegraphVisuals.Instance.CreateDangerLine(transform.position, transform.position + Vector3.up * beamLength, 0.8f, 0.8f, dangerColor);
-        BossTelegraphVisuals.Instance.CreateDangerLine(transform.position, transform.position + Vector3.down * beamLength, 0.8f, 0.8f, dangerColor);
+        BossTelegraphVisuals.Instance.CreateDangerLine(initialTailPos, initialTailPos + Vector3.right * beamLength, 0.8f, 0.8f, dangerColor);
+        BossTelegraphVisuals.Instance.CreateDangerLine(initialTailPos, initialTailPos + Vector3.left * beamLength, 0.8f, 0.8f, dangerColor);
+        BossTelegraphVisuals.Instance.CreateDangerLine(initialTailPos, initialTailPos + Vector3.up * beamLength, 0.8f, 0.8f, dangerColor);
+        BossTelegraphVisuals.Instance.CreateDangerLine(initialTailPos, initialTailPos + Vector3.down * beamLength, 0.8f, 0.8f, dangerColor);
 
         yield return new WaitForSeconds(0.8f);
 
@@ -436,29 +526,27 @@ public class BoitataBossController : MonoBehaviour, IDamageable
             CombatVisualEffects.Instance.TriggerCameraShake(0.35f, 0.2f);
         }
 
-        // Gira 360 graus completos durante 4.2 segundos
+        // Gira 360 graus completos durante 4.2 segundos saindo da cauda e acompanhando o rabo suavemente com MoveTowards
         yield return StartCoroutine(BossTelegraphVisuals.Instance.AnimateSpinningFireBeamsRoutine(
             transform,
-            4,                  // 4 feixes (cruz / grade #)
+            4,                  // 4 feixes em cruz (+)
             beamLength,         // Alcance cobrindo a tela inteira
             4.2f,               // Duração da rotação
             1f,                 // 360 graus (1 volta completa)
             spinningBeamDamage, // Dano por tick
-            playerLayerMask
+            playerLayerMask,
+            () => GetSmoothTailFlamePosition() // Desliza suavemente acompanhando a respiração/ondulação do rabo
         ));
 
         yield return new WaitForSeconds(0.4f);
-
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = Color.white;
-        }
 
         isExecutingAttack = false;
     }
     #endregion
 
     #region Dano, Vida e Derrota
+    private Coroutine flashCoroutine;
+
     public void TakeDamage(float amount, Vector3 hitDirection)
     {
         if (isDead) return;
@@ -474,25 +562,33 @@ public class BoitataBossController : MonoBehaviour, IDamageable
             BossHealthBarUI.Instance.UpdateHealth(currentHealth, maxHealth);
         }
 
-        // Feedback Visual
+        // Feedback Visual de Dano Flutuante e Partículas
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 1f, $"-{amount:F0}", new Color(1f, 0.85f, 0.2f), 5f);
-            CombatVisualEffects.Instance.PlayImpactBurst(transform.position, Color.white, 1.2f);
+            CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 1.5f, $"-{amount:F0}", new Color(1f, 0.2f, 0.2f), 4.2f);
+            CombatVisualEffects.Instance.PlayImpactBurst(transform.position + Vector3.up * 0.8f, new Color(1f, 0.3f, 0.2f), 1f);
         }
 
-        // Flash de dano
+        // Flash de dano vermelho apenas ao ser atingido
         if (spriteRenderer != null)
         {
-            Tween.Color(spriteRenderer, new Color(1f, 0.3f, 0.3f, 1f), 0.1f).OnComplete(() =>
-            {
-                if (spriteRenderer != null && !isExecutingAttack) spriteRenderer.color = Color.white;
-            });
+            if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+            flashCoroutine = StartCoroutine(DamageFlashRoutine());
         }
 
         if (currentHealth <= 0f)
         {
             Die();
+        }
+    }
+
+    private IEnumerator DamageFlashRoutine()
+    {
+        spriteRenderer.color = new Color(1f, 0.25f, 0.25f, 1f);
+        yield return new WaitForSeconds(0.12f);
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.white;
         }
     }
 
