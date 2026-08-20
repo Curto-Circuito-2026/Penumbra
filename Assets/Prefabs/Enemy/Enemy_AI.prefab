@@ -134,7 +134,7 @@ CapsuleCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 849825301688804441}
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -213,7 +213,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 1.3499999
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -239,6 +239,10 @@ MonoBehaviour:
   animator: {fileID: 0}
   damageFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   flashDuration: 0.12
+  useWorldHealthBar: 1
+  healthBarYOffset: 0.85
+  hideHealthBarWhenFull: 1
+  worldHealthBar: {fileID: 0}
   dropsItem: 1
   itemToDropPrefab: {fileID: 3323540727013714034, guid: 868e9599329aca749935015874b4b4c3, type: 3}
   dropChance: 0.75
@@ -287,7 +291,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 513
   projectilePrefab: {fileID: 7019116218804259763, guid: e0105c711d4b9b249bb691be13b26ad0, type: 3}
-  agent: {fileID: 0}
+  showGizmos: 1
+  showGizmoLabels: 1
+  agent: {fileID: 3084376152914269509}
   rb: {fileID: 0}
   enemyStats: {fileID: 0}
   combatController: {fileID: 0}

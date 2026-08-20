@@ -47,6 +47,13 @@ public class EnemyAIController : MonoBehaviour
     [Tooltip("Prefab do Projétil em linha reta (mesmo do Player).")]
     [SerializeField] private GameObject projectilePrefab;
 
+    [Header("Debug e Gizmos")]
+    [Tooltip("Exibe os círculos de alcance (Visão, Melee, Ranged, Parada) na Scene View.")]
+    [SerializeField] private bool showGizmos = true;
+
+    [Tooltip("Exibe as legendas de texto com os valores exatos de metros de cada raio.")]
+    [SerializeField] private bool showGizmoLabels = true;
+
     [Header("Componentes")]
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Rigidbody2D rb;
@@ -439,42 +446,137 @@ public class EnemyAIController : MonoBehaviour
         }
     }
 
+    private void OnValidate()
+    {
+        if (enemyConfig != null)
+        {
+            canUseMelee = enemyConfig.canUseMelee;
+            canUseRanged = enemyConfig.canUseRanged;
+            detectionRadius = enemyConfig.detectionRadius;
+            meleeRange = enemyConfig.meleeRange;
+            rangedRange = enemyConfig.rangedRange;
+            attackCooldown = enemyConfig.attackCooldown;
+            movementSpeed = enemyConfig.moveSpeed;
+            if (enemyConfig.projectilePrefab != null) projectilePrefab = enemyConfig.projectilePrefab;
+        }
+
+        if (agent == null) agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.speed = movementSpeed;
+            float stopDist = canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f;
+            agent.stoppingDistance = Mathf.Max(0.8f, stopDist);
+        }
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        // 1. Raio de Detecção (Círculo Amarelo)
-        Gizmos.color = new Color(1f, 0.9f, 0.2f, 0.6f);
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, detectionRadius);
+        if (!showGizmos) return;
 
-        // 2. Raio Melee (Círculo Vermelho)
-        if (canUseMelee)
+        // Se estiver selecionado no Editor, OnDrawGizmosSelected cuidará do desenho completo e destacado
+        if (UnityEditor.Selection.activeGameObject == gameObject || (UnityEditor.Selection.activeTransform != null && UnityEditor.Selection.activeTransform.IsChildOf(transform)))
         {
-            Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.8f);
-            UnityEditor.Handles.color = Gizmos.color;
-            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, meleeRange);
+            return;
         }
 
-        // 3. Raio Ranged (Círculo Azul Ciano)
-        if (canUseRanged)
+        // Desenho suave quando não selecionado (linhas sutis)
+        DrawGizmoRanges(false);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!showGizmos) return;
+
+        // Desenho destacado com preenchimento quando o inimigo estiver selecionado na Scene ou Hierarchy
+        DrawGizmoRanges(true);
+    }
+
+    private void DrawGizmoRanges(bool isSelected)
+    {
+        Vector3 pos = transform.position;
+
+        // 1. Raio de Detecção de Visão (Amarelo / Dourado)
+        if (detectionRadius > 0f)
         {
-            Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.8f);
-            UnityEditor.Handles.color = Gizmos.color;
-            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, rangedRange);
+            Color detectionColor = isSelected ? new Color(1f, 0.85f, 0.1f, 0.95f) : new Color(1f, 0.85f, 0.1f, 0.35f);
+            UnityEditor.Handles.color = detectionColor;
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, detectionRadius);
+
+            if (isSelected)
+            {
+                UnityEditor.Handles.color = new Color(1f, 0.85f, 0.1f, 0.05f);
+                UnityEditor.Handles.DrawSolidDisc(pos, Vector3.forward, detectionRadius);
+
+                if (showGizmoLabels)
+                {
+                    DrawGizmoLabel(pos + Vector3.up * detectionRadius, $"👁️ Visão ({detectionRadius:F1}m)", new Color(1f, 0.9f, 0.3f));
+                }
+            }
         }
 
-        // 4. Linha de Visão (Verde = Livre, Vermelho = Bloqueada)
-        if (TargetPlayer != null)
+        // 2. Raio Ranged / Distância de Tiro (Azul Ciano)
+        if (canUseRanged && rangedRange > 0f)
+        {
+            Color rangedColor = isSelected ? new Color(0f, 0.8f, 1f, 0.95f) : new Color(0f, 0.8f, 1f, 0.35f);
+            UnityEditor.Handles.color = rangedColor;
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, rangedRange);
+
+            if (isSelected)
+            {
+                UnityEditor.Handles.color = new Color(0f, 0.8f, 1f, 0.08f);
+                UnityEditor.Handles.DrawSolidDisc(pos, Vector3.forward, rangedRange);
+
+                if (showGizmoLabels)
+                {
+                    DrawGizmoLabel(pos + Vector3.right * rangedRange, $"🏹 Ranged ({rangedRange:F1}m)", new Color(0.3f, 0.9f, 1f));
+                }
+            }
+        }
+
+        // 3. Raio Melee / Faca (Vermelho Coral)
+        if (canUseMelee && meleeRange > 0f)
+        {
+            Color meleeColor = isSelected ? new Color(1f, 0.25f, 0.25f, 0.95f) : new Color(1f, 0.25f, 0.25f, 0.4f);
+            UnityEditor.Handles.color = meleeColor;
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, meleeRange);
+
+            if (isSelected)
+            {
+                UnityEditor.Handles.color = new Color(1f, 0.25f, 0.25f, 0.15f);
+                UnityEditor.Handles.DrawSolidDisc(pos, Vector3.forward, meleeRange);
+
+                if (showGizmoLabels)
+                {
+                    DrawGizmoLabel(pos + Vector3.left * meleeRange, $"🗡️ Melee ({meleeRange:F1}m)", new Color(1f, 0.4f, 0.4f));
+                }
+            }
+        }
+
+        // 4. Distância de Parada do Agente (Verde Claro)
+        if (isSelected && agent != null && agent.stoppingDistance > 0f)
+        {
+            UnityEditor.Handles.color = new Color(0.3f, 1f, 0.4f, 0.8f);
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, agent.stoppingDistance);
+
+            if (showGizmoLabels)
+            {
+                DrawGizmoLabel(pos + Vector3.down * agent.stoppingDistance, $"🛑 Parada ({agent.stoppingDistance:F1}m)", new Color(0.4f, 1f, 0.5f));
+            }
+        }
+
+        // 5. Linha de Visão em Tempo de Execução (Verde = Livre, Vermelho = Bloqueada por parede)
+        if (TargetPlayer != null && Application.isPlaying)
         {
             bool hasLos = HasLineOfSightToTarget();
-            Gizmos.color = hasLos ? Color.green : Color.red;
-            Gizmos.DrawLine(transform.position, TargetPlayer.position);
+            Gizmos.color = hasLos ? new Color(0.2f, 1f, 0.2f, 0.9f) : new Color(1f, 0.2f, 0.2f, 0.9f);
+            Gizmos.DrawLine(pos, TargetPlayer.position);
         }
 
-        // 5. Caminho do NavMesh
+        // 6. Caminho do NavMesh
         if (agent != null && agent.enabled && agent.isOnNavMesh && agent.hasPath)
         {
-            Gizmos.color = Color.magenta;
+            Gizmos.color = new Color(1f, 0f, 1f, 0.9f);
             Vector3[] corners = agent.path.corners;
             for (int i = 0; i < corners.Length - 1; i++)
             {
@@ -482,15 +584,22 @@ public class EnemyAIController : MonoBehaviour
             }
         }
 
-        // 6. Texto com Nome do Estado Atual sobre a cabeça do Inimigo
-        string stateName = CurrentState != null ? CurrentState.GetType().Name.Replace("Enemy", "").Replace("State", "") : "NULL";
-        GUIStyle style = new GUIStyle();
-        style.normal.textColor = Color.yellow;
-        style.fontSize = 12;
-        style.fontStyle = FontStyle.Bold;
+        // 7. Nome do Estado Atual em Play Mode
+        if (Application.isPlaying && showGizmoLabels)
+        {
+            string stateName = CurrentState != null ? CurrentState.GetType().Name.Replace("Enemy", "").Replace("State", "") : "NULL";
+            DrawGizmoLabel(pos + Vector3.up * 1.5f, $"[IA: {stateName}]", Color.yellow);
+        }
+    }
+
+    private void DrawGizmoLabel(Vector3 position, string text, Color textColor)
+    {
+        GUIStyle style = new GUIStyle(UnityEditor.EditorStyles.boldLabel);
+        style.normal.textColor = textColor;
+        style.fontSize = 11;
         style.alignment = TextAnchor.MiddleCenter;
 
-        UnityEditor.Handles.Label(transform.position + Vector3.up * 1.2f, $"[IA: {stateName}]", style);
+        UnityEditor.Handles.Label(position, text, style);
     }
 #endif
 }
