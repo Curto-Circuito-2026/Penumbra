@@ -166,13 +166,15 @@ public class EnemyAIController : MonoBehaviour
 
     private void Start()
     {
+        // Garante que o inimigo e o NavMeshAgent estejam no plano Z = 0
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0f);
+
         if (baseMovementSpeed <= 0f) baseMovementSpeed = movementSpeed;
 
         // Garante o alinhamento com o NavMesh no início
         if (agent != null && agent.enabled && !agent.isOnNavMesh)
         {
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(transform.position, out hit, 3.0f, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
             {
                 agent.Warp(hit.position);
             }
@@ -257,7 +259,7 @@ public class EnemyAIController : MonoBehaviour
     }
 
     /// <summary>
-    /// Localiza o Transform do Player na cena.
+    /// Localiza o Transform do Player na cena por Tag ou pelo componente CharacterController2D.
     /// </summary>
     public void FindPlayerTarget()
     {
@@ -266,6 +268,15 @@ public class EnemyAIController : MonoBehaviour
         {
             TargetPlayer = playerObj.transform;
             playerStats = playerObj.GetComponent<PlayerStats>();
+            return;
+        }
+
+        // Fallback procurando pelo CharacterController2D do jogador
+        CharacterController2D playerCC = FindFirstObjectByType<CharacterController2D>();
+        if (playerCC != null)
+        {
+            TargetPlayer = playerCC.transform;
+            playerStats = playerCC.GetComponent<PlayerStats>();
         }
     }
 
