@@ -14,6 +14,7 @@ public struct Region
     public string title;
     public string subtitle;
     public SceneAsset scene;
+    public Vector2 spawnPoint;
 
 }
 
@@ -90,17 +91,19 @@ public class RunManager : MonoBehaviour
     {
         deathScreen.SetActive(false);
         sceneController.LoadScene("Hub", TransitionType.CrossFade);
+        playerStats.transform.position = new Vector3(-0.05f, -0.5f, playerStats.transform.position.z);
     }
 
 
     public void StartRun()
     {
         curRegion = 0;
-        int[] regions = { 0, 1, 2 };
-        runOrder = regions.OrderBy(x => Random.value).ToList();
+        int[] regionVals = { 0, 1, 2 };
+        runOrder = regionVals.OrderBy(x => Random.value).ToList();
         runOrder.Append(3);
         Tween.UIAnchoredPositionX(startRunScreen.GetComponent<RectTransform>(), -1920f, 1f, Ease.InOutSine).OnComplete(() =>
         {
+            playerStats.transform.position = new Vector3(regions[runOrder[curRegion]].spawnPoint.x, regions[runOrder[curRegion]].spawnPoint.y, playerStats.transform.position.z);
             PassRegion();
         });
 

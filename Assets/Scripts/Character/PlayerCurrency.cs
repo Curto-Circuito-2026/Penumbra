@@ -235,8 +235,8 @@ public class PlayerCurrency : MonoBehaviour
     /// </summary>
     private void HandlePlayerDied()
     {
-        CameraManager camManager = GameObject.Find("Main Camera").GetComponent<CameraManager>();
-        if(camManager) camManager.SetTarget(this.transform);
+        CameraManager camManager = Camera.main.GetComponent<CameraManager>();
+        if (camManager) { camManager.SetTarget(this.transform); Camera.main.orthographicSize = 5f; }
         Debug.Log("[PlayerCurrency] Jogador morreu! Processando conversão de fragmentos de estrela para estrelas...");
         int frags = staticRunFragments;
         ConvertFragmentsToStars();

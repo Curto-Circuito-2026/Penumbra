@@ -3250,6 +3250,7 @@ GameObject:
   - component: {fileID: 1191017208}
   - component: {fileID: 1191017207}
   - component: {fileID: 1191017206}
+  - component: {fileID: 1191017210}
   m_Layer: 5
   m_Name: background
   m_TagString: Untagged
@@ -3341,6 +3342,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1191017210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191017205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4faf054efe7137c4886a90a843d6068f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraSeeker
 --- !u!1 &1206698259
 GameObject:
   m_ObjectHideFlags: 0
@@ -5639,15 +5652,19 @@ MonoBehaviour:
   - title: Floresta aaa
     subtitle: Boitata
     scene: {fileID: 102900000, guid: d4826160e1df10e47a1ea83a8b6ef174, type: 3}
+    spawnPoint: {x: 444, y: 253}
   - title: Cidade aaa
     subtitle: Matinta Sinistra
     scene: {fileID: 102900000, guid: d4826160e1df10e47a1ea83a8b6ef174, type: 3}
+    spawnPoint: {x: 444, y: 253}
   - title: Sei la regiao 3
     subtitle: regiao 3 sla
     scene: {fileID: 102900000, guid: d4826160e1df10e47a1ea83a8b6ef174, type: 3}
+    spawnPoint: {x: 444, y: 253}
   - title: Regiao Boss
     subtitle: da Cuca
     scene: {fileID: 102900000, guid: 10e9cd3ac42d3f34fadb1eddf2a96bcb, type: 3}
+    spawnPoint: {x: 444, y: 253}
   cinematicManager: {fileID: 51770919}
   sceneController: {fileID: 1519875259}
   startRunScreen: {fileID: 1378699936}

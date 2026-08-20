@@ -74,6 +74,7 @@ public class CameraManager : MonoBehaviour
     }
     public void SetTarget(Transform newTarget)
     {
+        Debug.Log(newTarget);
         target = newTarget;
         isFollowing = true;
     }
