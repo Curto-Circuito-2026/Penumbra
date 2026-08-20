@@ -47,6 +47,9 @@ public class PlayerCurrency : MonoBehaviour
     public int Stars => stars;
     public int FragmentsPerStar => fragmentsPerStar;
 
+
+    [SerializeField] RunManager runManager;
+
     // Eventos para atualização de interface e efeitos
     public event Action<int> OnStarFragmentsChanged;
     public event Action<int> OnStarsChanged;
@@ -232,8 +235,14 @@ public class PlayerCurrency : MonoBehaviour
     /// </summary>
     private void HandlePlayerDied()
     {
+        CameraManager camManager = GameObject.Find("Main Camera").GetComponent<CameraManager>();
+        if(camManager) camManager.SetTarget(this.transform);
         Debug.Log("[PlayerCurrency] Jogador morreu! Processando conversão de fragmentos de estrela para estrelas...");
+        int frags = staticRunFragments;
         ConvertFragmentsToStars();
+
+        runManager.ShowDeathScreen(frags);
+
     }
 
     private void SaveStars()

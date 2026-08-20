@@ -16,7 +16,6 @@ public class AbilityBoonCardUI : MonoBehaviour
 
     [Header("Elementos Visuais")]
     [SerializeField] private Image iconImage;
-    [SerializeField] private Image cardBorderImage;
     [SerializeField] private Image cardBackgroundImage;
 
     [SerializeField] private Sprite StarFullSprite;
@@ -88,11 +87,7 @@ public class AbilityBoonCardUI : MonoBehaviour
             }
         }
 
-        // 6. Cor da Borda conforme a Raridade
-        if (cardBorderImage != null && ColorUtility.TryParseHtmlString(rarityColorHex, out Color borderCol))
-        {
-            cardBorderImage.color = new Color(borderCol.r, borderCol.g, borderCol.b, 0.75f);
-        }
+       
 
         // 7. Botão de Seleção
         if (selectButton != null)
@@ -133,20 +128,9 @@ public class AbilityBoonCardUI : MonoBehaviour
             string costLabel = currentBoon.StarCost.ToString();
             costText.text = $"{costLabel}";
         }
-
-        if (buyButtonText != null)
-        {
-            string costUnit = currentBoon.StarCost == 1 ? "Estrela" : "Estrelas";
-            buyButtonText.text = canAfford ? $"Adquirir ({currentBoon.StarCost} {costUnit})" : "Faltam Estrelas";
-        }
-
-        if (selectButton != null)
-        {
-            selectButton.interactable = canAfford;
-        }
     }
 
-    private void OnSelectClicked()
+    public void OnSelectClicked()
     {
         if (parentUI != null && currentBoon != null)
         {

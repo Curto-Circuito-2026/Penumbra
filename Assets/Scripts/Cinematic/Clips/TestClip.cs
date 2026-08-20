@@ -36,6 +36,7 @@ public class TestClip : ICinematicClip
         while(enemy.moving || main.moving){yield return null;}
         parent.camManager.SetTarget(main.transform);
 
+        parent.gameStateManager.SetState(GameState.Playing);
         Destroy(gameObject);
        
     }

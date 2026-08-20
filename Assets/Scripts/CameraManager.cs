@@ -1,8 +1,11 @@
 using PrimeTween;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraManager : MonoBehaviour
 {
+    public static CameraManager Instance { get; private set; }
+
     [SerializeField] public Transform target;
 
     Camera cam;
@@ -15,6 +18,16 @@ public class CameraManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
         cam = GetComponent<Camera>();
     }
 

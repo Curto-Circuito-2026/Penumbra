@@ -86,6 +86,8 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     [Tooltip("GameEvent ScriptableObject opcional disparado na morte do Boss.")]
     [SerializeField] private GameEvent onBossDefeatedEvent;
 
+    [SerializeField] BossTrigger bossIntro;
+
     public event Action OnBossDied;
 
     public float CurrentHealth => currentHealth;
@@ -149,6 +151,13 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     /// </summary>
     public void StartCombat()
     {
+        CinematicManager cinematicManager = GameObject.Find("CinematicManager").GetComponent<CinematicManager>();
+
+        if (cinematicManager != null) {
+            bossIntro.Boss = this.gameObject;
+            cinematicManager.PlayClip(bossIntro.gameObject);
+        }
+
         if (isCombatActive || isDead) return;
         isCombatActive = true;
 

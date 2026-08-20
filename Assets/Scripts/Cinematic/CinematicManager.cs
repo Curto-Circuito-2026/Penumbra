@@ -23,7 +23,7 @@ public class CinematicManager : MonoBehaviour
     private TMP_Text titleText;
     private TMP_Text subtitleText;
 
-    [SerializeField] GameStateManager gameStateManager;
+    [SerializeField] public GameStateManager gameStateManager;
 
     private void Awake()
     {
@@ -66,12 +66,11 @@ public class CinematicManager : MonoBehaviour
 
     public void PlayClip(GameObject clip)
     {
-        gameStateManager.SetState(GameState.Dialogue);
+        gameStateManager.SetState(GameState.Menu);
         GameObject i = Instantiate(clip, transform);
         ICinematicClip c = i.GetComponent<ICinematicClip>();
         c.SetParent(this);
         StartCoroutine(c.Play());
-        gameStateManager.SetState(GameState.Playing);
         //Debug.Log("end");
         //Destroy(i);
     }

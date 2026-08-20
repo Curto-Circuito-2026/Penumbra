@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 6801628627941128727}
   - component: {fileID: 5601006950461468055}
   - component: {fileID: 7646974901505564953}
+  - component: {fileID: 3730648432031564349}
   m_Layer: 8
   m_Name: Boss_Boitata
   m_TagString: Enemy
@@ -126,7 +127,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.8, y: 1.8, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 640510267304334449}
@@ -226,8 +227,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 2.4214442, y: 1.1462286}
-  m_Size: {x: 0.6710318, y: 0.6710331}
+  m_Offset: {x: 16.42, y: 8.57}
+  m_Size: {x: 2.13, y: 5.31}
   m_Direction: 0
 --- !u!58 &8477367091190606223
 CircleCollider2D:
@@ -263,8 +264,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 1.2
+  m_Offset: {x: 0.09, y: 3.97}
+  m_Radius: 5.13
 --- !u!50 &8102481181390675654
 Rigidbody2D:
   serializedVersion: 5
@@ -350,9 +351,15 @@ MonoBehaviour:
   fightZoneCollider: {fileID: 0}
   autoStartCombat: 0
   arenaSize: {x: 14, y: 10}
+  spinningCenterTransform: {fileID: 0}
   spriteRenderer: {fileID: 3256397915707258394}
   rb: {fileID: 8102481181390675654}
   fireTrail: {fileID: 0}
+  onBossDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  onBossDefeatedEvent: {fileID: 0}
+  bossIntro: {fileID: 0}
 --- !u!70 &5601006950461468055
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -387,8 +394,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.2343732, y: 0.81854624}
-  m_Size: {x: 1.8828292, y: 1.8828295}
+  m_Offset: {x: 7.84, y: 5.27}
+  m_Size: {x: 10.24, y: 1.8828295}
   m_Direction: 0
 --- !u!70 &7646974901505564953
 CapsuleCollider2D:
@@ -424,6 +431,42 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.5153165, y: 1.2760632}
-  m_Size: {x: 1.2274634, y: 2.9215088}
+  m_Offset: {x: -4.44, y: 5.08}
+  m_Size: {x: 3.28, y: 11.79}
   m_Direction: 0
+--- !u!58 &3730648432031564349
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7218878346371269521}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -3.05, y: 13.4}
+  m_Radius: 2.62
