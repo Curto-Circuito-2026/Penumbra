@@ -89,6 +89,18 @@ public class Projectile : MonoBehaviour
             if (caster.CompareTag("Enemy") && (col.CompareTag("Enemy") || col.GetComponentInParent<EnemyStats>() != null)) return true;
         }
 
+        // Ignora explicitamente Fightzone, triggers de arena, boundaries e áreas de transição sem IDamageable
+        string colName = col.gameObject.name;
+        if (colName.IndexOf("Fightzone", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Fighzone", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Trigger", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Zone", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Bounds", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            IDamageable d = col.GetComponent<IDamageable>();
+            if (d == null) return true;
+        }
+
         // Ignora triggers que não possuem IDamageable
         if (col.isTrigger)
         {

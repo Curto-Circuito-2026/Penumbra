@@ -319,10 +319,19 @@ public class PlayerCombatController : MonoBehaviour
     private void HandleMouseHoverAndVisuals()
     {
         Vector3 mouseWorldPos = GetMouseWorldPosition();
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, enemyLayerMask);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mouseWorldPos, Vector2.zero, 0.1f, enemyLayerMask);
+        GameObject hoveredEnemy = null;
+        foreach (var h in hits)
+        {
+            if (IsValidEnemyTarget(h.collider, out _))
+            {
+                hoveredEnemy = h.collider.gameObject;
+                break;
+            }
+        }
 
         // 1. Destaque Visual do Inimigo focado / atacado
-        GameObject hoveredOrTargeted = hit.collider != null ? hit.collider.gameObject : currentTarget;
+        GameObject hoveredOrTargeted = hoveredEnemy ?? currentTarget;
 
         if (hoveredOrTargeted != null && targetSelectionRing != null)
         {
@@ -363,7 +372,7 @@ public class PlayerCombatController : MonoBehaviour
         }
 
         // 4. Indicadores de Alcance Visual padrão
-        if (hit.collider != null)
+        if (hoveredEnemy != null)
         {
             float displayRange = (pendingAction == PendingActionType.Ranged) ? rangedRange : (pendingAction != PendingActionType.None ? GetRequiredRange(pendingAction) : meleeRange);
             Color rangeCol = GetColorForAction(pendingAction != PendingActionType.None ? pendingAction : PendingActionType.Melee);
@@ -434,14 +443,16 @@ public class PlayerCombatController : MonoBehaviour
         // Raycast da posição do jogador em direção ao mouse até o alcance Melee
         RaycastHit2D[] meleeHits = Physics2D.RaycastAll(transform.position, dir, meleeRange, enemyLayerMask);
         GameObject targetEnemy = null;
+        IDamageable targetDmg = null;
+
         foreach (var h in meleeHits)
         {
-            if (h.collider == null) continue;
-            if (h.collider.gameObject == gameObject || h.collider.transform.IsChildOf(transform) || h.collider.transform.root == transform.root) continue;
-            if (h.collider.CompareTag("Player") || h.collider.GetComponentInParent<CharacterController2D>() != null || h.collider.GetComponentInParent<PlayerStats>() != null) continue;
-
-            targetEnemy = h.collider.gameObject;
-            break;
+            if (IsValidEnemyTarget(h.collider, out IDamageable dmg))
+            {
+                targetEnemy = h.collider.gameObject;
+                targetDmg = dmg;
+                break;
+            }
         }
 
         Debug.Log($"[PlayerCombatController] Ataque Melee Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
@@ -452,10 +463,9 @@ public class PlayerCombatController : MonoBehaviour
             CombatVisualEffects.Instance.PlayMeleeSlash(transform.position, dir);
         }
 
-        IDamageable damageable = targetEnemy != null ? (targetEnemy.GetComponent<IDamageable>() ?? targetEnemy.GetComponentInParent<IDamageable>()) : null;
-        if (damageable != null && !(damageable is CharacterController2D) && !(damageable is PlayerStats))
+        if (targetDmg != null)
         {
-            damageable.TakeDamage(meleeDamage, dir);
+            targetDmg.TakeDamage(meleeDamage, dir);
             AddUltimateCharge(chargePerHit);
         }
         else
@@ -464,11 +474,7 @@ public class PlayerCombatController : MonoBehaviour
             Collider2D[] hitCols = Physics2D.OverlapCircleAll(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.7f, enemyLayerMask);
             foreach (var col in hitCols)
             {
-                if (col.gameObject == gameObject || col.transform.IsChildOf(transform) || col.transform.root == transform.root) continue;
-                if (col.CompareTag("Player") || col.GetComponentInParent<CharacterController2D>() != null || col.GetComponentInParent<PlayerStats>() != null) continue;
-
-                IDamageable hitDmg = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
-                if (hitDmg != null && !(hitDmg is CharacterController2D) && !(hitDmg is PlayerStats))
+                if (IsValidEnemyTarget(col, out IDamageable hitDmg))
                 {
                     hitDmg.TakeDamage(meleeDamage, dir);
                     AddUltimateCharge(chargePerHit);
@@ -512,17 +518,18 @@ public class PlayerCombatController : MonoBehaviour
         // Raycast da posição da mão na direção do mouse até o alcance máximo
         RaycastHit2D[] rangedHits = Physics2D.RaycastAll(spawnPos, dir, rangedRange, enemyLayerMask);
         GameObject targetEnemy = null;
+        IDamageable targetDmg = null;
         Vector3 impactPos = spawnPos + dir * castDist;
 
         foreach (var h in rangedHits)
         {
-            if (h.collider == null) continue;
-            if (h.collider.gameObject == gameObject || h.collider.transform.IsChildOf(transform) || h.collider.transform.root == transform.root) continue;
-            if (h.collider.CompareTag("Player") || h.collider.GetComponentInParent<CharacterController2D>() != null || h.collider.GetComponentInParent<PlayerStats>() != null) continue;
-
-            targetEnemy = h.collider.gameObject;
-            impactPos = h.point;
-            break;
+            if (IsValidEnemyTarget(h.collider, out IDamageable dmg))
+            {
+                targetEnemy = h.collider.gameObject;
+                targetDmg = dmg;
+                impactPos = h.point;
+                break;
+            }
         }
 
         Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional (Lança arremessada). Primeiro inimigo: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
@@ -531,10 +538,9 @@ public class PlayerCombatController : MonoBehaviour
         {
             CombatVisualEffects.Instance.PlayRangedProjectile(spawnPos, impactPos, () =>
             {
-                IDamageable dmg = targetEnemy != null ? (targetEnemy.GetComponent<IDamageable>() ?? targetEnemy.GetComponentInParent<IDamageable>()) : null;
-                if (dmg != null && !(dmg is CharacterController2D) && !(dmg is PlayerStats))
+                if (targetDmg != null)
                 {
-                    dmg.TakeDamage(rangedDamage, dir);
+                    targetDmg.TakeDamage(rangedDamage, dir);
                     AddUltimateCharge(chargePerHit);
                 }
                 else
@@ -542,11 +548,7 @@ public class PlayerCombatController : MonoBehaviour
                     Collider2D[] hitCols = Physics2D.OverlapCircleAll(impactPos, 1.2f, enemyLayerMask);
                     foreach (var col in hitCols)
                     {
-                        if (col.gameObject == gameObject || col.transform.IsChildOf(transform) || col.transform.root == transform.root) continue;
-                        if (col.CompareTag("Player") || col.GetComponentInParent<CharacterController2D>() != null || col.GetComponentInParent<PlayerStats>() != null) continue;
-
-                        IDamageable hitDmg = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
-                        if (hitDmg != null && !(hitDmg is CharacterController2D) && !(hitDmg is PlayerStats))
+                        if (IsValidEnemyTarget(col, out IDamageable hitDmg))
                         {
                             hitDmg.TakeDamage(rangedDamage, dir);
                             AddUltimateCharge(chargePerHit);
@@ -556,15 +558,60 @@ public class PlayerCombatController : MonoBehaviour
                 }
             });
         }
-        else
+        else if (targetDmg != null)
         {
-            IDamageable dmg = targetEnemy != null ? (targetEnemy.GetComponent<IDamageable>() ?? targetEnemy.GetComponentInParent<IDamageable>()) : null;
-            if (dmg != null && !(dmg is CharacterController2D) && !(dmg is PlayerStats))
-            {
-                dmg.TakeDamage(rangedDamage, dir);
-                AddUltimateCharge(chargePerHit);
-            }
+            targetDmg.TakeDamage(rangedDamage, dir);
+            AddUltimateCharge(chargePerHit);
         }
+    }
+
+    /// <summary>
+    /// Valida se o colisor atingido pertence a um inimigo ou entidade com IDamageable, ignorando explicitamente zonas, delimitadores e triggers sem vida.
+    /// </summary>
+    private bool IsValidEnemyTarget(Collider2D col, out IDamageable damageable)
+    {
+        damageable = null;
+        if (col == null) return false;
+
+        // Ignora o próprio player e seus filhos/pais
+        if (col.gameObject == gameObject || col.transform.IsChildOf(transform) || col.transform.root == transform.root) return false;
+        if (col.CompareTag("Player") || col.GetComponentInParent<CharacterController2D>() != null || col.GetComponentInParent<PlayerStats>() != null) return false;
+
+        // Ignora explicitamente Fightzone, triggers de arena, boundaries e áreas de transição
+        string colName = col.gameObject.name;
+        if (colName.IndexOf("Fightzone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Fighzone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Trigger", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Zone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Bounds", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            damageable = col.GetComponent<IDamageable>();
+            return damageable != null && !(damageable is CharacterController2D) && !(damageable is PlayerStats);
+        }
+
+        // Tenta obter IDamageable no próprio objeto ou no pai (ex: partes de Boss ou inimigos compostos)
+        damageable = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+
+        // Se for um Trigger e não tiver IDamageable, ignora
+        if (col.isTrigger && damageable == null)
+        {
+            return false;
+        }
+
+        // Se não tiver IDamageable e não estiver na layer Enemy, ignora
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (damageable == null && (enemyLayer == -1 || col.gameObject.layer != enemyLayer))
+        {
+            return false;
+        }
+
+        // Não aplica dano ao Player
+        if (damageable is CharacterController2D || damageable is PlayerStats)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private Vector3 GetRangedSpawnPosition(Vector3 dir)
