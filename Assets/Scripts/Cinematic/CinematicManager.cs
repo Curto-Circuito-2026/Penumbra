@@ -66,13 +66,13 @@ public class CinematicManager : MonoBehaviour
 
     public void PlayClip(GameObject clip)
     {
-        gameStateManager.SetState(GameState.Menu);
+        if (gameStateManager == null) gameStateManager = GameStateManager.Instance;
+        if (gameStateManager != null) gameStateManager.SetState(GameState.Cutscene);
+
         GameObject i = Instantiate(clip, transform);
         ICinematicClip c = i.GetComponent<ICinematicClip>();
         c.SetParent(this);
         StartCoroutine(c.Play());
-        //Debug.Log("end");
-        //Destroy(i);
     }
 
     public void ShowTitle(string title, string subTitle)

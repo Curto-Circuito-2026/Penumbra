@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.AI.Assistant.Agents;
 using UnityEngine;
 
 public class BossTrigger : ICinematicClip
@@ -32,8 +31,16 @@ public class BossTrigger : ICinematicClip
 
         while (enemy.moving || main.moving) { yield return null; }
         parent.camManager.SetTarget(main.transform);
-        parent.gameStateManager.SetState(GameState.Playing);
-        Destroy(gameObject);
 
+        if (parent != null && parent.gameStateManager != null)
+        {
+            parent.gameStateManager.SetState(GameState.Playing);
+        }
+        else if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.SetState(GameState.Playing);
+        }
+
+        Destroy(gameObject);
     }
 }

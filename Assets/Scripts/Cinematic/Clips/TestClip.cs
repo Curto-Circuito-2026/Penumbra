@@ -36,7 +36,15 @@ public class TestClip : ICinematicClip
         while(enemy.moving || main.moving){yield return null;}
         parent.camManager.SetTarget(main.transform);
 
-        parent.gameStateManager.SetState(GameState.Playing);
+        if (parent != null && parent.gameStateManager != null)
+        {
+            parent.gameStateManager.SetState(GameState.Playing);
+        }
+        else if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.SetState(GameState.Playing);
+        }
+
         Destroy(gameObject);
        
     }

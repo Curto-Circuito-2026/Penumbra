@@ -11,6 +11,7 @@ public enum GameState
     Paused,     // Jogo pausado
     Menu,       // Em algum menu de interface
     Dialogue,   // Em diálogo com NPC/evento
+    Cutscene,   // Em cena de corte / animação cinemática
     Dead        // Personagem morto - Exibe tela de morte
 }
 
@@ -134,7 +135,7 @@ public class GameStateManager : MonoBehaviour
     /// </summary>
     public void TogglePause()
     {
-        if (currentState == GameState.Dialogue || currentState == GameState.Dead || currentState == GameState.Menu) return;
+        if (currentState == GameState.Dialogue || currentState == GameState.Dead || currentState == GameState.Menu || currentState == GameState.Cutscene) return;
 
         if (currentState == GameState.Paused)
         {
@@ -151,6 +152,7 @@ public class GameStateManager : MonoBehaviour
     public void SetPaused() => SetState(GameState.Paused);
     public void SetMenu() => SetState(GameState.Menu);
     public void SetDialogue() => SetState(GameState.Dialogue);
+    public void SetCutscene() => SetState(GameState.Cutscene);
     public void SetDead() => SetState(GameState.Dead);
 
     /// <summary>
