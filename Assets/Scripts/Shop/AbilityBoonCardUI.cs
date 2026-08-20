@@ -116,7 +116,18 @@ public class AbilityBoonCardUI : MonoBehaviour
         int playerStars = currency != null ? currency.Stars : 0;
         bool canAfford = playerStars >= currentBoon.StarCost;
 
-        if (canAfford) {StarElement.sprite = StarFullSprite;} else { StarElement.sprite = StarEmptySprite;}
+        if (StarElement != null)
+        {
+            if (canAfford && StarFullSprite != null)
+            {
+                StarElement.sprite = StarFullSprite;
+            }
+            else if (!canAfford && StarEmptySprite != null)
+            {
+                StarElement.sprite = StarEmptySprite;
+            }
+        }
+
         if (costText != null)
         {
             string costLabel = currentBoon.StarCost.ToString();

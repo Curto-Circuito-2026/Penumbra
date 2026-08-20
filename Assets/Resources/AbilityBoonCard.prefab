@@ -436,6 +436,9 @@ MonoBehaviour:
   iconImage: {fileID: 5615333332967586410}
   cardBorderImage: {fileID: 6290976819877717781}
   cardBackgroundImage: {fileID: 4500510246066961302}
+  StarFullSprite: {fileID: 0}
+  StarEmptySprite: {fileID: 0}
+  StarElement: {fileID: 0}
   selectButton: {fileID: 2961179940984731054}
   buyButtonText: {fileID: 0}
 --- !u!1 &4094081972481441541
