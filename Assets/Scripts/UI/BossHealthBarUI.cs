@@ -50,6 +50,53 @@ public class BossHealthBarUI : MonoBehaviour
         canvasGroup.interactable = false;
     }
 
+    private void OnEnable()
+    {
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.OnStateChanged += HandleGameStateChanged;
+        }
+        PlayerStats.OnAnyPlayerDied += HandlePlayerDied;
+    }
+
+    private void OnDisable()
+    {
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.OnStateChanged -= HandleGameStateChanged;
+        }
+        PlayerStats.OnAnyPlayerDied -= HandlePlayerDied;
+    }
+
+    private void HandleGameStateChanged(GameState previousState, GameState newState)
+    {
+        if (newState == GameState.Dead || newState == GameState.Menu)
+        {
+            HideImmediate();
+        }
+    }
+
+    private void HandlePlayerDied()
+    {
+        HideImmediate();
+    }
+
+    /// <summary>
+    /// Oculta instantaneamente a barra de vida do Boss sem delay ou animação.
+    /// </summary>
+    public void HideImmediate()
+    {
+        isVisible = false;
+        if (ghostCoroutine != null) StopCoroutine(ghostCoroutine);
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0f;
+            canvasGroup.blocksRaycasts = false;
+            canvasGroup.interactable = false;
+        }
+        gameObject.SetActive(false);
+    }
+
     /// <summary>
     /// Exibe e inicializa a barra de vida do Boss com animação de descida e fade in.
     /// </summary>

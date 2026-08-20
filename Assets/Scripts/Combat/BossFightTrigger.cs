@@ -34,6 +34,25 @@ public class BossFightTrigger : MonoBehaviour
         FindBossReference();
     }
 
+    private void OnEnable()
+    {
+        PlayerStats.OnAnyPlayerRespawned += HandlePlayerRespawned;
+    }
+
+    private void OnDisable()
+    {
+        PlayerStats.OnAnyPlayerRespawned -= HandlePlayerRespawned;
+    }
+
+    private void HandlePlayerRespawned()
+    {
+        FindBossReference();
+        if (bossController == null || !bossController.IsDead)
+        {
+            hasTriggered = false;
+        }
+    }
+
     private void FindBossReference()
     {
         if (bossController == null)

@@ -39,6 +39,10 @@ public class PlayerStats : MonoBehaviour, IDamageable
     public event Action OnPlayerDied;
     public event Action OnPlayerRespawned;
 
+    // Eventos Estáticos Globais para sistemas sem referência direta
+    public static event Action OnAnyPlayerDied;
+    public static event Action OnAnyPlayerRespawned;
+
     private void Awake()
     {
         if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
@@ -178,8 +182,9 @@ public class PlayerStats : MonoBehaviour, IDamageable
         IsDead = true;
         Debug.Log("[PlayerStats] O jogador morreu!");
 
-        // Notifica evento de Morte
+        // Notifica eventos de Morte
         OnPlayerDied?.Invoke();
+        OnAnyPlayerDied?.Invoke();
 
         // Altera o estado do jogo para Dead no GameStateManager
         if (GameStateManager.Instance != null)
@@ -212,6 +217,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnManaChanged?.Invoke(currentMana, maxMana);
         OnPlayerRespawned?.Invoke();
+        OnAnyPlayerRespawned?.Invoke();
 
         Debug.Log("[PlayerStats] Jogador reiniciado com sucesso! Status alterado para JOGANDO.");
     }

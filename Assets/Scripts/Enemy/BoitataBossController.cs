@@ -130,6 +130,62 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
     private Vector3 homePosition;
 
+    private void OnEnable()
+    {
+        PlayerStats.OnAnyPlayerDied += HandlePlayerDied;
+        PlayerStats.OnAnyPlayerRespawned += HandlePlayerRespawned;
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.OnStateChanged += HandleGameStateChanged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        PlayerStats.OnAnyPlayerDied -= HandlePlayerDied;
+        PlayerStats.OnAnyPlayerRespawned -= HandlePlayerRespawned;
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.OnStateChanged -= HandleGameStateChanged;
+        }
+    }
+
+    private void HandleGameStateChanged(GameState previousState, GameState newState)
+    {
+        if (newState == GameState.Dead || newState == GameState.Menu)
+        {
+            HandlePlayerDied();
+        }
+    }
+
+    private void HandlePlayerDied()
+    {
+        if (isDead) return;
+
+        // Se o player morreu, interrompe os ataques do Boss, reseta seu estado e oculta a barra
+        StopAllCoroutines();
+        isExecutingAttack = false;
+        isCombatActive = false;
+        currentHealth = maxHealth;
+        attackCycleIndex = 0;
+        attackCooldownTimer = 2f;
+
+        if (BossHealthBarUI.Instance != null)
+        {
+            BossHealthBarUI.Instance.HideImmediate();
+        }
+    }
+
+    private void HandlePlayerRespawned()
+    {
+        if (isDead) return;
+
+        transform.position = homePosition;
+        currentHealth = maxHealth;
+        isCombatActive = false;
+        isExecutingAttack = false;
+    }
+
     private void Start()
     {
         homePosition = transform.position;
@@ -151,9 +207,9 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     /// </summary>
     public void StartCombat()
     {
-        CinematicManager cinematicManager = GameObject.Find("CinematicManager").GetComponent<CinematicManager>();
+        CinematicManager cinematicManager = GameObject.Find("CinematicManager") != null ? GameObject.Find("CinematicManager").GetComponent<CinematicManager>() : (CinematicManager.Instance ?? UnityEngine.Object.FindAnyObjectByType<CinematicManager>());
 
-        if (cinematicManager != null) {
+        if (cinematicManager != null && bossIntro != null) {
             bossIntro.Boss = this.gameObject;
             cinematicManager.PlayClip(bossIntro.gameObject);
         }
@@ -192,7 +248,7 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     {
         yield return new WaitForSeconds(1.5f); // Pausa inicial de entrada épica
 
-        while (!isDead)
+        while (!isDead && isCombatActive)
         {
             if (!isExecutingAttack)
             {
