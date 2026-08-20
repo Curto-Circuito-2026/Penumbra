@@ -25,6 +25,23 @@ public class EnemyStats : MonoBehaviour, IDamageable
 
     private static readonly int DeathHash = Animator.StringToHash("Death");
 
+    [Header("Barra de Vida no Mundo (Opcional)")]
+    [Tooltip("Se desmarcado, este inimigo/prefab NÃO terá barra de vida no mundo.")]
+    [SerializeField] private bool useWorldHealthBar = true;
+    [SerializeField] private float healthBarYOffset = 0.85f;
+    [SerializeField] private bool hideHealthBarWhenFull = true;
+    [SerializeField] private EnemyWorldHealthBar worldHealthBar;
+
+    public bool UseWorldHealthBar
+    {
+        get => useWorldHealthBar;
+        set
+        {
+            useWorldHealthBar = value;
+            UpdateWorldHealthBarState();
+        }
+    }
+
     [Header("Configuração de Drop de Item")]
     [Tooltip("Se verdadeiro, o inimigo poderá dropar itens ao morrer.")]
     [SerializeField] private bool dropsItem = true;
@@ -63,6 +80,45 @@ public class EnemyStats : MonoBehaviour, IDamageable
             originalColor = spriteRenderer.color;
         }
     }
+
+    private void Start()
+    {
+        UpdateWorldHealthBarState();
+    }
+
+    public void UpdateWorldHealthBarState()
+    {
+        if (useWorldHealthBar)
+        {
+            if (worldHealthBar == null)
+            {
+                worldHealthBar = GetComponentInChildren<EnemyWorldHealthBar>();
+                if (worldHealthBar == null)
+                {
+                    worldHealthBar = gameObject.AddComponent<EnemyWorldHealthBar>();
+                }
+            }
+            worldHealthBar.enabled = true;
+            worldHealthBar.SetVisible(true);
+            worldHealthBar.Configure(healthBarYOffset, hideHealthBarWhenFull);
+        }
+        else if (worldHealthBar != null)
+        {
+            worldHealthBar.enabled = false;
+            worldHealthBar.SetVisible(false);
+        }
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (!Application.isPlaying && worldHealthBar != null)
+        {
+            worldHealthBar.enabled = useWorldHealthBar;
+            worldHealthBar.SetVisible(useWorldHealthBar);
+        }
+    }
+#endif
 
     /// <summary>
     /// Escala a vida máxima e atual do inimigo com base no multiplicador da fase.
