@@ -119,16 +119,16 @@ public class CharacterController2D : MonoBehaviour
 
     private void OnEnable()
     {
-        moveAction.Enable();
-        runAction.Enable();
-        dashAction.Enable();
+        moveAction?.Enable();
+        runAction?.Enable();
+        dashAction?.Enable();
     }
 
     private void OnDisable()
     {
-        moveAction.Disable();
-        runAction.Disable();
-        dashAction.Disable();
+        moveAction?.Disable();
+        runAction?.Disable();
+        dashAction?.Disable();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

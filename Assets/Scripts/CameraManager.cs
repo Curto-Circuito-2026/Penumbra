@@ -18,8 +18,36 @@ public class CameraManager : MonoBehaviour
         cam = GetComponent<Camera>();
     }
 
+    private void Start()
+    {
+        FindPlayerTarget();
+    }
+
+    private void FindPlayerTarget()
+    {
+        if (target != null) return;
+
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null)
+        {
+            target = playerObj.transform;
+            return;
+        }
+
+        CharacterController2D playerCC = Object.FindAnyObjectByType<CharacterController2D>();
+        if (playerCC != null)
+        {
+            target = playerCC.transform;
+        }
+    }
+
     private void LateUpdate()
     {
+        if (target == null)
+        {
+            FindPlayerTarget();
+        }
+
         if (!isFollowing || target == null) return;
 
         Vector3 targetPosition = target.position + offset;
