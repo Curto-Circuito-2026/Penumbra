@@ -133,8 +133,8 @@ public class CharacterController2D : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        GameObject spawn = GameObject.Find("SpawnPoint");
-        if (spawn) {this.transform.position = spawn.transform.position;}
+        //GameObject spawn = GameObject.Find("SpawnPoint");
+        //if (spawn) {this.transform.position = spawn.transform.position;}
     }
 
     private void Update()

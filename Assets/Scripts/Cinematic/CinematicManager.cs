@@ -66,7 +66,7 @@ public class CinematicManager : MonoBehaviour
 
     public void PlayClip(GameObject clip)
     {
-        gameStateManager.SetState(GameState.Menu);
+        gameStateManager.SetState(GameState.Dialogue);
         GameObject i = Instantiate(clip, transform);
         ICinematicClip c = i.GetComponent<ICinematicClip>();
         c.SetParent(this);
