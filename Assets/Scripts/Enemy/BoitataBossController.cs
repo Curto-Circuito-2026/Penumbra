@@ -53,9 +53,16 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     [SerializeField] private int maxStarDrop = 5;
     [SerializeField] private GameObject starPickupPrefab;
 
-    [Header("Configurações da Arena")]
-    [SerializeField] private Vector2 arenaCenter = Vector2.zero;
+    [Header("Configurações da Arena & FightZone")]
+    [Tooltip("Collider2D da área de combate (Fightzone). Se for nulo, busca automaticamente no pai Boss_room ou na cena.")]
+    [SerializeField] private Collider2D fightZoneCollider;
+    [Tooltip("Se verdadeiro, inicia o combate automaticamente no Start (útil para testes isolados sem trigger).")]
+    [SerializeField] private bool autoStartCombat = false;
     [SerializeField] private Vector2 arenaSize = new Vector2(14f, 10f);
+
+    [Header("Pontos de Origem de Habilidades")]
+    [Tooltip("Transform do objeto 'Circle' (ou cauda animada) que serve de centro do Catavento Giratório de Fogo.")]
+    [SerializeField] private Transform spinningCenterTransform;
 
     [Header("Componentes")]
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -65,19 +72,31 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     private Transform playerTransform;
     private bool isDead = false;
     private bool isExecutingAttack = false;
+    private bool isCombatActive = false;
     private float attackCooldownTimer = 2f;
     private int attackCycleIndex = 0;
 
     private Animator animator;
     private static readonly int RoarTrigger = Animator.StringToHash("Roar");
 
+    [Header("Eventos de Morte")]
+    [Tooltip("Evento Unity chamado no Inspector ao derrotar o Boss (ex: abrir portas, tocar cutscene, liberar passagem).")]
+    [SerializeField] private UnityEngine.Events.UnityEvent onBossDeath;
+
+    [Tooltip("GameEvent ScriptableObject opcional disparado na morte do Boss.")]
+    [SerializeField] private GameEvent onBossDefeatedEvent;
+
+    public event Action OnBossDied;
+
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
     public bool IsDead => isDead;
+    public bool IsCombatActive => isCombatActive;
 
     private void Awake()
     {
         currentHealth = maxHealth;
+        if (spinningCenterTransform == null) spinningCenterTransform = transform.Find("Circle");
         if (animator == null) animator = GetComponent<Animator>();
         if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
         if (rb == null) rb = GetComponent<Rigidbody2D>();
@@ -111,13 +130,27 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        ScreenBounds bounds = GetScreenBounds();
-        homePosition = bounds.center;
-        transform.position = homePosition;
+        homePosition = transform.position;
         transform.rotation = Quaternion.identity;
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) playerTransform = playerObj.transform;
+
+        EnsureFightZoneReference();
+
+        if (autoStartCombat)
+        {
+            StartCombat();
+        }
+    }
+
+    /// <summary>
+    /// Inicia o combate do Chefe (disparado pelo BossFightTrigger ao entrar na sala do Boss).
+    /// </summary>
+    public void StartCombat()
+    {
+        if (isCombatActive || isDead) return;
+        isCombatActive = true;
 
         // Inicia a barra de vida no topo da tela
         if (BossHealthBarUI.Instance != null)
@@ -125,14 +158,22 @@ public class BoitataBossController : MonoBehaviour, IDamageable
             BossHealthBarUI.Instance.ShowBoss(bossName, currentHealth, maxHealth);
         }
 
+        if (animator != null) animator.SetTrigger(RoarTrigger);
+
+        if (CombatVisualEffects.Instance != null)
+        {
+            CombatVisualEffects.Instance.TriggerCameraShake(0.4f, 0.25f);
+        }
+
         StartCoroutine(BossLoopRoutine());
+        Debug.Log($"[Boitatá] Combate iniciado via Trigger! Barra de vida ativada.");
     }
 
     private void Update()
     {
         if (isDead) return;
 
-        // O Boitatá permanece 100% fixo, ereto e estável no centro da fase/tela
+        // O Boitatá permanece fixo na sua posição de base na sala
         transform.position = homePosition;
         transform.rotation = Quaternion.identity;
     }
@@ -149,9 +190,9 @@ public class BoitataBossController : MonoBehaviour, IDamageable
                 attackCooldownTimer -= Time.deltaTime;
                 if (attackCooldownTimer <= 0f)
                 {
-                    // Executa os 4 ataques em ordem sequencial para teste:
-                    // 0: Investidas Modulares (Dash com curvas)
-                    // 1: Chuva de Meteoros com Sombras
+                    // Executa os 4 ataques em ordem sequencial:
+                    // 0: Investidas Modulares no FightZone (Dash com curvas)
+                    // 1: Chuva de Meteoros dentro do FightZone
                     // 2: Anel 360 de Bolas de Fogo pela Boca
                     // 3: Catavento de Chamas Giratório pelo Rabo
                     int attackType = attackCycleIndex % 4;
@@ -181,59 +222,53 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     }
     #endregion
 
-    private struct ScreenBounds
+    public Bounds GetFightZoneBounds()
     {
-        public float minX;
-        public float maxX;
-        public float minY;
-        public float maxY;
-        public Vector3 center;
-    }
-
-    private ScreenBounds GetScreenBounds(float padding = 0.08f)
-    {
-        Camera cam = Camera.main;
-        if (cam == null)
+        EnsureFightZoneReference();
+        if (fightZoneCollider != null)
         {
-            Vector3 c = Vector3.zero;
-            return new ScreenBounds
-            {
-                minX = c.x - 7.5f,
-                maxX = c.x + 7.5f,
-                minY = c.y - 4.5f,
-                maxY = c.y + 4.5f,
-                center = c
-            };
+            return fightZoneCollider.bounds;
         }
 
-        Vector3 bl = cam.ViewportToWorldPoint(new Vector3(padding, padding, -cam.transform.position.z));
-        Vector3 tr = cam.ViewportToWorldPoint(new Vector3(1f - padding, 1f - padding, -cam.transform.position.z));
-
-        return new ScreenBounds
-        {
-            minX = Mathf.Min(bl.x, tr.x),
-            maxX = Mathf.Max(bl.x, tr.x),
-            minY = Mathf.Min(bl.y, tr.y),
-            maxY = Mathf.Max(bl.y, tr.y),
-            center = new Vector3((bl.x + tr.x) * 0.5f, (bl.y + tr.y) * 0.5f, 0f)
-        };
+        return new Bounds(homePosition, new Vector3(arenaSize.x, arenaSize.y, 1f));
     }
 
-    #region Ataque 1: Investidas de Fogo Cruzando a Tela
+    private void EnsureFightZoneReference()
+    {
+        if (fightZoneCollider != null) return;
+
+        if (transform.parent != null)
+        {
+            Transform fz = transform.parent.Find("Fightzone") ?? transform.parent.Find("Fighzone") ?? transform.parent.Find("FightZone");
+            if (fz != null && fz.TryGetComponent(out Collider2D col))
+            {
+                fightZoneCollider = col;
+                return;
+            }
+        }
+
+        GameObject found = GameObject.Find("Fightzone") ?? GameObject.Find("Fighzone") ?? GameObject.Find("FightZone");
+        if (found != null && found.TryGetComponent(out Collider2D col2))
+        {
+            fightZoneCollider = col2;
+        }
+    }
+
+    #region Ataque 1: Investidas de Fogo Cruzando o FightZone
     /// <summary>
-    /// Spawna linhas de aviso em direções aleatórias cruzando a tela com curvas.
+    /// Spawna linhas de aviso em direções aleatórias cruzando o Fightzone com curvas.
     /// O número de investidas escala com a vida perdida (2 a 100% de vida até 5 a <= 20% de vida).
     /// </summary>
     private IEnumerator PerformHashtagGridAttack()
     {
         isExecutingAttack = true;
 
-        ScreenBounds bounds = GetScreenBounds(0.06f);
+        Bounds bounds = GetFightZoneBounds();
 
         // Calcula a quantidade de investidas com base na vida
         float healthPercent = Mathf.Clamp01(currentHealth / maxHealth);
         float healthRange = Mathf.Max(0.01f, 1f - lowHealthThreshold);
-        float t = Mathf.Clamp01((1f - healthPercent) / healthRange); // 0 em 100% até 1 em lowHealthThreshold
+        float t = Mathf.Clamp01((1f - healthPercent) / healthRange);
         int baseCount = Mathf.RoundToInt(Mathf.Lerp(minDashCount, maxDashCount, t));
         int dashCount = Mathf.Clamp(baseCount + UnityEngine.Random.Range(0, 2) - UnityEngine.Random.Range(0, 1), minDashCount, maxDashCount);
 
@@ -263,11 +298,16 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         isExecutingAttack = false;
     }
 
-    private Vector3[] GenerateRandomDashPath(ScreenBounds bounds)
+    private Vector3[] GenerateRandomDashPath(Bounds bounds)
     {
+        float minX = bounds.min.x;
+        float maxX = bounds.max.x;
+        float minY = bounds.min.y;
+        float maxY = bounds.max.y;
+
         int pattern = UnityEngine.Random.Range(0, 4);
-        float cornerX = UnityEngine.Random.Range(bounds.minX + 2.5f, bounds.maxX - 2.5f);
-        float cornerY = UnityEngine.Random.Range(bounds.minY + 2f, bounds.maxY - 2f);
+        float cornerX = UnityEngine.Random.Range(minX + 2.0f, maxX - 2.0f);
+        float cornerY = UnityEngine.Random.Range(minY + 1.5f, maxY - 1.5f);
         Vector3 corner = new Vector3(cornerX, cornerY, 0f);
 
         switch (pattern)
@@ -275,38 +315,38 @@ public class BoitataBossController : MonoBehaviour, IDamageable
             case 0: // Esquerda -> Corner -> (Baixo ou Cima)
                 bool exitDown = UnityEngine.Random.value > 0.5f;
                 return new Vector3[] {
-                    new Vector3(bounds.minX, cornerY, 0f),
+                    new Vector3(minX, cornerY, 0f),
                     corner,
-                    new Vector3(cornerX, exitDown ? bounds.minY : bounds.maxY, 0f)
+                    new Vector3(cornerX, exitDown ? minY : maxY, 0f)
                 };
             case 1: // Topo -> Corner -> (Direita ou Esquerda)
                 bool exitRight = UnityEngine.Random.value > 0.5f;
                 return new Vector3[] {
-                    new Vector3(cornerX, bounds.maxY, 0f),
+                    new Vector3(cornerX, maxY, 0f),
                     corner,
-                    new Vector3(exitRight ? bounds.maxX : bounds.minX, cornerY, 0f)
+                    new Vector3(exitRight ? maxX : minX, cornerY, 0f)
                 };
             case 2: // Direita -> Corner -> (Cima ou Baixo)
                 bool exitUp = UnityEngine.Random.value > 0.5f;
                 return new Vector3[] {
-                    new Vector3(bounds.maxX, cornerY, 0f),
+                    new Vector3(maxX, cornerY, 0f),
                     corner,
-                    new Vector3(cornerX, exitUp ? bounds.maxY : bounds.minY, 0f)
+                    new Vector3(cornerX, exitUp ? maxY : minY, 0f)
                 };
             default: // Baixo -> Corner -> (Esquerda ou Direita)
                 bool exitLeft = UnityEngine.Random.value > 0.5f;
                 return new Vector3[] {
-                    new Vector3(cornerX, bounds.minY, 0f),
+                    new Vector3(cornerX, minY, 0f),
                     corner,
-                    new Vector3(exitLeft ? bounds.minX : bounds.maxX, cornerY, 0f)
+                    new Vector3(exitLeft ? minX : maxX, cornerY, 0f)
                 };
         }
     }
     #endregion
 
-    #region Ataque 2: Chuva de Bolas de Fogo na Tela com Sombras
+    #region Ataque 2: Chuva de Bolas de Fogo no Fightzone com Sombras
     /// <summary>
-    /// O Boitatá cospe fogo para o céu e sombras circulares aparecem na tela anunciando a queda dos meteoros.
+    /// O Boitatá cospe fogo para o céu e sombras circulares aparecem dentro do Fightzone anunciando a queda dos meteoros.
     /// </summary>
     private IEnumerator PerformMeteorRainAttack()
     {
@@ -322,33 +362,37 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(0.5f);
 
-        ScreenBounds bounds = GetScreenBounds(0.08f);
+        Bounds bounds = GetFightZoneBounds();
+        float minX = bounds.min.x;
+        float maxX = bounds.max.x;
+        float minY = bounds.min.y;
+        float maxY = bounds.max.y;
 
-        // 2. Determina 5 a 6 posições de impacto distribuídas estritamente dentro da tela
+        // Determina 5 a 6 posições de impacto distribuídas estritamente dentro do Fightzone
         List<Vector3> targetPositions = new List<Vector3>();
 
         if (playerTransform != null)
         {
-            // Mira onde o jogador está, limitado à tela
-            float px = Mathf.Clamp(playerTransform.position.x, bounds.minX + 0.5f, bounds.maxX - 0.5f);
-            float py = Mathf.Clamp(playerTransform.position.y, bounds.minY + 0.5f, bounds.maxY - 0.5f);
+            // Mira onde o jogador está, limitado ao Fightzone
+            float px = Mathf.Clamp(playerTransform.position.x, minX + 0.5f, maxX - 0.5f);
+            float py = Mathf.Clamp(playerTransform.position.y, minY + 0.5f, maxY - 0.5f);
             targetPositions.Add(new Vector3(px, py, 0f));
 
             // Posição próxima à previsão de movimento
             Vector3 offset = (Vector3)UnityEngine.Random.insideUnitCircle * 2.2f;
             targetPositions.Add(new Vector3(
-                Mathf.Clamp(px + offset.x, bounds.minX + 0.5f, bounds.maxX - 0.5f),
-                Mathf.Clamp(py + offset.y, bounds.minY + 0.5f, bounds.maxY - 0.5f),
+                Mathf.Clamp(px + offset.x, minX + 0.5f, maxX - 0.5f),
+                Mathf.Clamp(py + offset.y, minY + 0.5f, maxY - 0.5f),
                 0f
             ));
         }
 
-        // Preenche com mais 4 posições aleatórias espalhadas pela tela visível
+        // Preenche com mais 4 posições aleatórias espalhadas pela área do Fightzone
         for (int i = 0; i < 4; i++)
         {
             Vector3 randomPos = new Vector3(
-                UnityEngine.Random.Range(bounds.minX + 0.5f, bounds.maxX - 0.5f),
-                UnityEngine.Random.Range(bounds.minY + 0.5f, bounds.maxY - 0.5f),
+                UnityEngine.Random.Range(minX + 0.5f, maxX - 0.5f),
+                UnityEngine.Random.Range(minY + 0.5f, maxY - 0.5f),
                 0f
             );
             targetPositions.Add(randomPos);
@@ -368,12 +412,22 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     }
     #endregion
 
-    #region Posicionamento Dinâmico de Partes do Corpo por Sprite Ativo
+    #region Posicionamento Dinâmico de Partes do Corpo por Sprite Ativo ou Objeto Circle
     /// <summary>
-    /// Calcula a posição exata da chama na ponta do rabo do Boitatá com base no sprite atualmente renderizado pelo Animator.
+    /// Calcula a posição exata da chama na ponta do rabo do Boitatá com base no objeto 'Circle' animado ou no sprite ativo.
     /// </summary>
     public Vector3 GetCurrentTailFlamePosition()
     {
+        if (spinningCenterTransform == null)
+        {
+            spinningCenterTransform = transform.Find("Circle");
+        }
+
+        if (spinningCenterTransform != null)
+        {
+            return spinningCenterTransform.position;
+        }
+
         if (spriteRenderer == null || spriteRenderer.sprite == null)
         {
             return transform.position + new Vector3(2.8f, 1.8f, 0f);
@@ -486,11 +540,18 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
     private Vector3 smoothedTailFlamePos;
 
-    /// <summary>
-    /// Calcula e interpola suavemente a posição da chama do rabo do Boitatá para movimentos contínuos e orgânicos.
-    /// </summary>
     public Vector3 GetSmoothTailFlamePosition()
     {
+        if (spinningCenterTransform == null)
+        {
+            spinningCenterTransform = transform.Find("Circle");
+        }
+
+        if (spinningCenterTransform != null)
+        {
+            return spinningCenterTransform.position;
+        }
+
         Vector3 target = GetCurrentTailFlamePosition();
         if (smoothedTailFlamePos == Vector3.zero)
         {
@@ -511,8 +572,11 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         smoothedTailFlamePos = GetCurrentTailFlamePosition();
         Vector3 initialTailPos = smoothedTailFlamePos;
 
+        Bounds bounds = GetFightZoneBounds();
+        float beamLength = Mathf.Max(bounds.extents.x, bounds.extents.y) * 1.5f;
+        if (beamLength < 8f) beamLength = 11f;
+
         // Telegrafia inicial: linhas em cruz rápida saindo exatamente do fogo da cauda
-        float beamLength = 11f;
         Color dangerColor = new Color(1f, 0.3f, 0.1f, 0.45f);
         BossTelegraphVisuals.Instance.CreateDangerLine(initialTailPos, initialTailPos + Vector3.right * beamLength, 0.8f, 0.8f, dangerColor);
         BossTelegraphVisuals.Instance.CreateDangerLine(initialTailPos, initialTailPos + Vector3.left * beamLength, 0.8f, 0.8f, dangerColor);
@@ -615,6 +679,14 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
         Debug.Log("[Boitatá] O Chefe foi Derrotado! Concedendo estrelas forjadas ao jogador...");
 
+        // Dispara eventos para sistemas externos (cutscenes, portas, diálogos)
+        OnBossDied?.Invoke();
+        onBossDeath?.Invoke();
+        if (onBossDefeatedEvent != null)
+        {
+            onBossDefeatedEvent.Raise();
+        }
+
         if (BossHealthBarUI.Instance != null)
         {
             BossHealthBarUI.Instance.HideBoss(true);
@@ -686,10 +758,18 @@ public class BoitataBossController : MonoBehaviour, IDamageable
                 }
             }
         }
-
         tex.SetPixels(cols);
         tex.Apply();
         return Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f));
+    }
+    #endregion
+
+    #region Gizmos no Editor
+    private void OnDrawGizmosSelected()
+    {
+        Bounds b = GetFightZoneBounds();
+        Gizmos.color = new Color(1f, 0.45f, 0.1f, 0.9f);
+        Gizmos.DrawWireCube(b.center, b.size);
     }
     #endregion
 }
