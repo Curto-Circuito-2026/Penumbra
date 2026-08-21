@@ -23,6 +23,22 @@ public class EnemyAIController : MonoBehaviour
     [Tooltip("Permite o uso de tiros Ranged em linha reta.")]
     [SerializeField] private bool canUseRanged = true;
 
+    [Header("Comportamento Creeper / Explosão Suicide")]
+    [Tooltip("Permite o inimigo agir como Creeper: corre até o player e explode.")]
+    [SerializeField] private bool canExplode = false;
+
+    [Tooltip("Distância do player em que inicia a contagem do pavio/animação de explosão.")]
+    [SerializeField] private float explosionTriggerDistance = 1.8f;
+
+    [Tooltip("Raio da explosão em área.")]
+    [SerializeField] private float explosionRadius = 2.8f;
+
+    [Tooltip("Dano causado pela explosão no centro.")]
+    [SerializeField] private float explosionDamage = 40f;
+
+    [Tooltip("Tempo de pavio/animação de preparação antes da detonação em segundos.")]
+    [SerializeField] private float explosionFuseTime = 0.55f;
+
     [Header("Alcances e Detecção")]
     [Tooltip("Raio de detecção de visão do Player.")]
     [SerializeField] private float detectionRadius = 10f;
@@ -35,6 +51,12 @@ public class EnemyAIController : MonoBehaviour
 
     [Tooltip("Tempo de recarga entre ataques em segundos.")]
     [SerializeField] private float attackCooldown = 1.5f;
+
+    [Tooltip("Tempo de espera na animação de ataque ranged até instanciar o projétil em segundos.")]
+    [SerializeField] private float rangedAttackWindupDelay = 0.28f;
+
+    [Tooltip("Duração total da animação de ataque ranged em segundos.")]
+    [SerializeField] private float rangedAttackDuration = 0.45f;
 
     [Tooltip("Velocidade de movimentação no NavMesh.")]
     [SerializeField] private float movementSpeed = 3.5f;
@@ -68,6 +90,7 @@ public class EnemyAIController : MonoBehaviour
     public EnemyChaseState ChaseState { get; private set; }
     public EnemyMeleeAttackState MeleeAttackState { get; private set; }
     public EnemyRangedAttackState RangedAttackState { get; private set; }
+    public EnemyExplodeState ExplodeState { get; private set; }
     public EnemyDeadState DeadState { get; private set; }
 
     // Alvo do Player
@@ -81,13 +104,22 @@ public class EnemyAIController : MonoBehaviour
 
     public bool CanUseMelee => canUseMelee;
     public bool CanUseRanged => canUseRanged;
+    public bool CanExplode => canExplode;
+    public float ExplosionTriggerDistance => explosionTriggerDistance;
+    public float ExplosionRadius => explosionRadius;
+    public float ExplosionDamage => explosionDamage;
+    public float ExplosionFuseTime => explosionFuseTime;
     public float DetectionRadius => detectionRadius;
     public float MeleeRange => meleeRange;
     public float RangedRange => rangedRange;
     public float AttackCooldown => attackCooldown;
+    public float RangedAttackWindupDelay => rangedAttackWindupDelay;
+    public float RangedAttackDuration => rangedAttackDuration;
     public bool IsAttackOnCooldown => attackCooldownTimer > 0f;
     public GameObject ProjectilePrefab => projectilePrefab;
     public EnemyCombatController CombatController => combatController;
+    public EnemyStats EnemyStats => enemyStats;
+    public Animator Animator => animator;
 
     // Hashes do Animator idênticos ao do Player
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
@@ -128,7 +160,7 @@ public class EnemyAIController : MonoBehaviour
 
         if (obstacleLayerMask == 0)
         {
-            obstacleLayerMask = LayerMask.GetMask("Obstacle", "Default");
+            obstacleLayerMask = LayerMask.GetMask("Obstacle");
         }
 
         // Aplica EnemyConfigSO se fornecido
@@ -136,6 +168,11 @@ public class EnemyAIController : MonoBehaviour
         {
             canUseMelee = enemyConfig.canUseMelee;
             canUseRanged = enemyConfig.canUseRanged;
+            canExplode = enemyConfig.canExplode;
+            explosionTriggerDistance = enemyConfig.explosionTriggerDistance;
+            explosionRadius = enemyConfig.explosionRadius;
+            explosionDamage = enemyConfig.explosionDamage;
+            explosionFuseTime = enemyConfig.explosionFuseTime;
             detectionRadius = enemyConfig.detectionRadius;
             meleeRange = enemyConfig.meleeRange;
             rangedRange = enemyConfig.rangedRange;
@@ -152,6 +189,7 @@ public class EnemyAIController : MonoBehaviour
         ChaseState = new EnemyChaseState(this);
         MeleeAttackState = new EnemyMeleeAttackState(this);
         RangedAttackState = new EnemyRangedAttackState(this);
+        ExplodeState = new EnemyExplodeState(this);
         DeadState = new EnemyDeadState(this);
     }
 
@@ -230,7 +268,7 @@ public class EnemyAIController : MonoBehaviour
 
     private void Update()
     {
-        if (enemyStats != null && enemyStats.IsDead) return;
+        if (enemyStats != null && enemyStats.IsDead && CurrentState != ExplodeState) return;
 
         // Atualiza timer de cooldown de ataque
         if (attackCooldownTimer > 0f)
@@ -246,7 +284,10 @@ public class EnemyAIController : MonoBehaviour
         }
 
         // Atualiza virada do sprite (flip)
-        UpdateSpriteFacing();
+        if (CurrentState != ExplodeState)
+        {
+            UpdateSpriteFacing();
+        }
     }
 
     /// <summary>
@@ -320,21 +361,25 @@ public class EnemyAIController : MonoBehaviour
     {
         if (!IsTargetAlive()) return false;
 
-        Vector3 origin = transform.position;
-        Vector3 targetPos = TargetPlayer.position;
+        Vector3 origin = transform.position + Vector3.up * 0.35f;
+        Vector3 targetPos = TargetPlayer.position + Vector3.up * 0.35f;
         Vector3 direction = (targetPos - origin).normalized;
         float distance = Vector3.Distance(origin, targetPos);
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, distance, obstacleLayerMask);
+        LayerMask mask = obstacleLayerMask != 0 ? obstacleLayerMask : LayerMask.GetMask("Obstacle");
+        if (mask == 0) return true;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, distance, mask);
         foreach (var hit in hits)
         {
             if (hit.collider == null || hit.collider.isTrigger) continue;
 
-            // Ignora o próprio inimigo e o próprio Player
-            if (hit.collider.gameObject == gameObject || hit.collider.transform.IsChildOf(transform)) continue;
-            if (hit.collider.gameObject == TargetPlayer.gameObject || hit.collider.transform.IsChildOf(TargetPlayer)) continue;
+            // Ignora o próprio inimigo e o Player
+            if (hit.collider.gameObject == gameObject || hit.collider.transform.IsChildOf(transform) || hit.collider.transform.root == transform.root) continue;
+            if (hit.collider.gameObject == TargetPlayer.gameObject || hit.collider.transform.IsChildOf(TargetPlayer) || hit.collider.transform.root == TargetPlayer.root) continue;
+            if (hit.collider.CompareTag("Enemy") || hit.collider.GetComponentInParent<EnemyStats>() != null) continue;
 
-            // Se atingir qualquer outro colisor (parede/obstáculo):
+            // Se atingir um obstáculo sólido que bloqueia a visão
             return false;
         }
 
@@ -416,6 +461,8 @@ public class EnemyAIController : MonoBehaviour
         ResetAttackCooldown();
     }
 
+    private bool hasExploded = false;
+
     public void ResetAttackCooldown()
     {
         attackCooldownTimer = attackCooldown;
@@ -423,8 +470,73 @@ public class EnemyAIController : MonoBehaviour
 
     private void HandleEnemyDied()
     {
+        if (canExplode)
+        {
+            if (CurrentState != ExplodeState && !hasExploded)
+            {
+                ChangeState(ExplodeState);
+            }
+            return;
+        }
+
         ChangeState(DeadState);
     }
+
+    /// <summary>
+    /// Executa a detonação da explosão no local atual (seja por pavio/ataque ou por morte/HP zerado).
+    /// </summary>
+    public void TriggerExplosionImmediate()
+    {
+        if (hasExploded) return;
+        hasExploded = true;
+
+        Vector3 center = transform.position;
+        float radius = explosionRadius;
+        float damage = explosionDamage;
+
+        Debug.Log($"[EnemyAIController] 💥 '{gameObject.name}' EXPLODIU! Raio: {radius}m, Dano: {damage}");
+
+        // 1. Oculta o sprite e elimina o inimigo no exato instante da explosão
+        if (enemyStats != null)
+        {
+            enemyStats.KillImmediate(true);
+        }
+        else
+        {
+            foreach (var r in GetComponentsInChildren<Renderer>(true)) r.enabled = false;
+            foreach (var c in GetComponentsInChildren<Collider2D>(true)) c.enabled = false;
+            Destroy(gameObject);
+        }
+
+        // 2. Dispara a explosão visual & Tremor de Câmera
+        if (CombatVisualEffects.Instance != null)
+        {
+            CombatVisualEffects.Instance.PlayExplosionVFX(center, new Color(1f, 0.3f, 0.05f, 1f), new Color(1f, 0.85f, 0.2f, 1f), radius);
+            CombatVisualEffects.Instance.TriggerCameraShake(0.25f, 0.22f);
+        }
+
+        // 3. Detecção e Dano em Área (AoE)
+        Collider2D[] hits = Physics2D.OverlapCircleAll(center, radius);
+        System.Collections.Generic.HashSet<GameObject> affectedObjects = new System.Collections.Generic.HashSet<GameObject>();
+
+        foreach (var col in hits)
+        {
+            if (col == null) continue;
+
+            GameObject rootTarget = col.transform.root.gameObject;
+            if (affectedObjects.Contains(rootTarget)) continue;
+
+            IDamageable damageable = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+            if (damageable != null && !(damageable is EnemyStats))
+            {
+                affectedObjects.Add(rootTarget);
+                Vector3 knockbackDir = (col.transform.position - center).normalized;
+                damageable.TakeDamage(damage, knockbackDir);
+            }
+        }
+    }
+
+    [SerializeField] private bool spriteFacesRightByDefault = false;
 
     private void UpdateSpriteFacing()
     {
@@ -433,15 +545,14 @@ public class EnemyAIController : MonoBehaviour
         Vector3 moveVelocity = (agent != null && agent.enabled && agent.isOnNavMesh) ? agent.velocity : Vector3.zero;
         if (moveVelocity.sqrMagnitude > 0.05f)
         {
-            // Sprites desenhados voltados para a esquerda viram para a direita (flipX = true)
-            spriteRenderer.flipX = moveVelocity.x > 0f;
+            spriteRenderer.flipX = spriteFacesRightByDefault ? (moveVelocity.x < 0f) : (moveVelocity.x > 0f);
         }
         else if (TargetPlayer != null)
         {
             float dx = TargetPlayer.position.x - transform.position.x;
             if (Mathf.Abs(dx) > 0.1f)
             {
-                spriteRenderer.flipX = dx > 0f;
+                spriteRenderer.flipX = spriteFacesRightByDefault ? (dx < 0f) : (dx > 0f);
             }
         }
     }
@@ -452,6 +563,11 @@ public class EnemyAIController : MonoBehaviour
         {
             canUseMelee = enemyConfig.canUseMelee;
             canUseRanged = enemyConfig.canUseRanged;
+            canExplode = enemyConfig.canExplode;
+            explosionTriggerDistance = enemyConfig.explosionTriggerDistance;
+            explosionRadius = enemyConfig.explosionRadius;
+            explosionDamage = enemyConfig.explosionDamage;
+            explosionFuseTime = enemyConfig.explosionFuseTime;
             detectionRadius = enemyConfig.detectionRadius;
             meleeRange = enemyConfig.meleeRange;
             rangedRange = enemyConfig.rangedRange;
@@ -464,8 +580,8 @@ public class EnemyAIController : MonoBehaviour
         if (agent != null)
         {
             agent.speed = movementSpeed;
-            float stopDist = canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f;
-            agent.stoppingDistance = Mathf.Max(0.8f, stopDist);
+            float stopDist = canExplode ? Mathf.Max(0.5f, explosionTriggerDistance * 0.7f) : (canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f);
+            agent.stoppingDistance = Mathf.Max(0.5f, stopDist);
         }
     }
 
@@ -549,6 +665,25 @@ public class EnemyAIController : MonoBehaviour
                 if (showGizmoLabels)
                 {
                     DrawGizmoLabel(pos + Vector3.left * meleeRange, $"🗡️ Melee ({meleeRange:F1}m)", new Color(1f, 0.4f, 0.4f));
+                }
+            }
+        }
+
+        // 3.5. Raio de Explosão / Creeper (Laranja Flamejante)
+        if (canExplode && explosionRadius > 0f)
+        {
+            Color explodeColor = isSelected ? new Color(1f, 0.4f, 0f, 0.95f) : new Color(1f, 0.4f, 0f, 0.45f);
+            UnityEditor.Handles.color = explodeColor;
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, explosionRadius);
+
+            if (isSelected)
+            {
+                UnityEditor.Handles.color = new Color(1f, 0.3f, 0f, 0.15f);
+                UnityEditor.Handles.DrawSolidDisc(pos, Vector3.forward, explosionRadius);
+
+                if (showGizmoLabels)
+                {
+                    DrawGizmoLabel(pos + Vector3.down * explosionRadius, $"💥 Explosão ({explosionRadius:F1}m)", new Color(1f, 0.5f, 0.1f));
                 }
             }
         }

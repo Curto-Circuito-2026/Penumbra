@@ -32,6 +32,13 @@ public class EnemyChaseState : IEnemyState
             return;
         }
 
+        // Se for um inimigo estilo Creeper/Explosivo e estiver dentro do alcance de detonação
+        if (ai.CanExplode && distance <= ai.ExplosionTriggerDistance)
+        {
+            ai.ChangeState(ai.ExplodeState);
+            return;
+        }
+
         // Se não estiver em cooldown de ataque, verifica se pode atacar
         if (!ai.IsAttackOnCooldown)
         {
@@ -54,7 +61,7 @@ public class EnemyChaseState : IEnemyState
         }
 
         // Se já estiver dentro da distância de parada, para o movimento para não empurrar o player
-        float stopDist = ai.CanUseMelee ? ai.MeleeRange * 0.8f : ai.RangedRange * 0.7f;
+        float stopDist = ai.CanExplode ? ai.ExplosionTriggerDistance * 0.7f : (ai.CanUseMelee ? ai.MeleeRange * 0.8f : ai.RangedRange * 0.7f);
         if (distance <= stopDist)
         {
             ai.StopMovement();

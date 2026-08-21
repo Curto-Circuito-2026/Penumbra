@@ -134,8 +134,8 @@ public class EnemyCombatController : MonoBehaviour
 
         Debug.Log($"[EnemyCombatController] '{gameObject.name}' disparou Tiro Ranged em Linha Reta na direção {dir}.");
 
-        // Offset de spawn de 0.9 unidades para sair limpo da frente do colisor do inimigo
-        Vector3 spawnPos = transform.position + dir * 0.9f;
+        // Offset de spawn na altura do peito/boca e à frente do colisor do inimigo
+        Vector3 spawnPos = transform.position + Vector3.up * 0.35f + dir * 0.95f;
 
         // Muzzle flash de disparo na boca da arma
         if (CombatVisualEffects.Instance != null)

@@ -166,6 +166,8 @@ public class EnemyStats : MonoBehaviour, IDamageable
         }
     }
 
+    [SerializeField] private float deathDespawnDelay = 0.55f; // Tempo para a animação de morte terminar antes de sumir
+
     private void Die()
     {
         if (isDead) return;
@@ -179,18 +181,83 @@ public class EnemyStats : MonoBehaviour, IDamageable
             animator.SetTrigger(DeathHash);
         }
 
-        // Tenta dropar loot (fragmentos de estrela)
-        TryDropLoot();
-
         // Notifica evento de morte para a IA e o gerenciador
         OnEnemyDied?.Invoke();
 
-        // Desativa colisão
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = false;
+        // Se for um inimigo suicida/creeper, deixa o ExplodeState gerenciar a contagem do pavio, animação e destruição
+        EnemyAIController ai = GetComponent<EnemyAIController>();
+        if (ai != null && ai.CanExplode)
+        {
+            return;
+        }
 
-        // Oculta/Destrói o objeto após animação de morte
-        Destroy(gameObject, 2f);
+        // Tenta dropar loot (fragmentos de estrela)
+        TryDropLoot();
+
+        // Desativa colisões
+        Collider2D[] cols = GetComponentsInChildren<Collider2D>();
+        foreach (var c in cols)
+        {
+            if (c != null) c.enabled = false;
+        }
+
+        // Desativa NavMeshAgent imediatamente
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+
+        // Oculta/Destrói o objeto logo após o término da animação de morte
+        StartCoroutine(DeathDespawnRoutine());
+    }
+
+    private IEnumerator DeathDespawnRoutine()
+    {
+        yield return new WaitForSeconds(deathDespawnDelay);
+
+        if (spriteRenderer != null)
+        {
+            float elapsed = 0f;
+            Color startColor = spriteRenderer.color;
+            while (elapsed < 0.12f)
+            {
+                elapsed += Time.deltaTime;
+                float a = Mathf.Lerp(startColor.a, 0f, elapsed / 0.12f);
+                spriteRenderer.color = new Color(startColor.r, startColor.g, startColor.b, a);
+                yield return null;
+            }
+        }
+
+        Destroy(gameObject);
+    }
+
+    private bool lootDropped = false;
+
+    /// <summary>
+    /// Elimina o inimigo imediatamente (ex: explosão suicida / creeper),
+    /// ocultando o sprite e todos os colisores no mesmo frame sem delay.
+    /// </summary>
+    public void KillImmediate(bool dropLoot = true)
+    {
+        if (dropLoot && !lootDropped)
+        {
+            lootDropped = true;
+            TryDropLoot();
+        }
+
+        if (!isDead)
+        {
+            isDead = true;
+            OnEnemyDied?.Invoke();
+        }
+
+        foreach (var r in GetComponentsInChildren<Renderer>(true)) r.enabled = false;
+        foreach (var c in GetComponentsInChildren<Collider2D>(true)) c.enabled = false;
+        if (worldHealthBar != null) worldHealthBar.gameObject.SetActive(false);
+
+        Destroy(gameObject);
     }
 
     private void TryDropLoot()

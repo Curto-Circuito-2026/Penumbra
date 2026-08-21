@@ -8,8 +8,9 @@ using UnityEngine;
 public class EnemyRangedAttackState : IEnemyState
 {
     private readonly EnemyAIController ai;
-    private bool attackExecuted = false;
-    private float holdTimer = 0f;
+    private bool projectileSpawned = false;
+    private float timer = 0f;
+    private Vector3 lockedDirection;
 
     public EnemyRangedAttackState(EnemyAIController aiController)
     {
@@ -19,8 +20,20 @@ public class EnemyRangedAttackState : IEnemyState
     public void Enter()
     {
         ai.StopMovement();
-        attackExecuted = false;
-        holdTimer = 0.25f; // Tempo de retenção da animação de tiro
+        projectileSpawned = false;
+        timer = 0f;
+
+        if (ai.TargetPlayer != null)
+        {
+            lockedDirection = (ai.TargetPlayer.position - ai.transform.position).normalized;
+        }
+        else
+        {
+            lockedDirection = ai.transform.right;
+        }
+
+        // Aciona o gatilho da animação de arremesso
+        ai.TriggerRangedAttack();
     }
 
     public void Update()
@@ -31,24 +44,24 @@ public class EnemyRangedAttackState : IEnemyState
             return;
         }
 
-        Vector3 targetDirection = (ai.TargetPlayer.position - ai.transform.position).normalized;
+        timer += Time.deltaTime;
 
-        if (!attackExecuted)
+        float windup = ai.RangedAttackWindupDelay > 0f ? ai.RangedAttackWindupDelay : 0.28f;
+        float totalDuration = ai.RangedAttackDuration > 0f ? ai.RangedAttackDuration : 0.45f;
+
+        // Instancia o projétil exatamente no frame correto da animação de ataque
+        if (!projectileSpawned && timer >= windup)
         {
-            attackExecuted = true;
+            projectileSpawned = true;
 
-            // Dispara o parâmetro 'AttackRanged' no Animator
-            ai.TriggerRangedAttack();
-
-            // Dispara o Projétil em linha reta constante na direção capturada
             if (ai.CombatController != null)
             {
-                ai.CombatController.PerformRangedAttack(targetDirection, ai.ProjectilePrefab);
+                ai.CombatController.PerformRangedAttack(lockedDirection, ai.ProjectilePrefab);
             }
         }
 
-        holdTimer -= Time.deltaTime;
-        if (holdTimer <= 0f)
+        // Retorna ao estado de perseguição apenas após o término completo da animação
+        if (timer >= totalDuration)
         {
             ai.ChangeState(ai.ChaseState);
         }
