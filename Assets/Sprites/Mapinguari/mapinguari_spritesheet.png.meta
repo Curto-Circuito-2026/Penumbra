@@ -1,0 +1,509 @@
+fileFormatVersion: 2
+guid: 26cdffcfa671c8d4b8575c6d8e22b08a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8644187536793908367
+    second: mapinguari_spritesheet_0
+  - first:
+      213: -5614702432823886196
+    second: mapinguari_spritesheet_1
+  - first:
+      213: -6028823906456102070
+    second: mapinguari_spritesheet_2
+  - first:
+      213: -7509187096012369571
+    second: mapinguari_spritesheet_3
+  - first:
+      213: 4996402550921039361
+    second: mapinguari_spritesheet_4
+  - first:
+      213: 2515088398262106752
+    second: mapinguari_spritesheet_5
+  - first:
+      213: -4157875613736399883
+    second: mapinguari_spritesheet_6
+  - first:
+      213: 3382901098581779688
+    second: mapinguari_spritesheet_7
+  - first:
+      213: 3389324570616997129
+    second: mapinguari_spritesheet_8
+  - first:
+      213: 2270100153550706272
+    second: mapinguari_spritesheet_9
+  - first:
+      213: 314926699461456559
+    second: mapinguari_spritesheet_10
+  - first:
+      213: 504363516840750851
+    second: mapinguari_spritesheet_11
+  - first:
+      213: 3198347994436916136
+    second: mapinguari_spritesheet_12
+  - first:
+      213: 2705294093547404186
+    second: mapinguari_spritesheet_13
+  - first:
+      213: -5522652516245157625
+    second: mapinguari_spritesheet_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 280
+        width: 97
+        height: 114
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f84b57e04c256f770800000000000000
+      internalID: 8644187536793908367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 307
+        y: 369
+        width: 83
+        height: 106
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8eb204a2e19412b0800000000000000
+      internalID: -5614702432823886196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 494
+        width: 46
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4b1d426990555ca0800000000000000
+      internalID: -6028823906456102070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_3
+      rect:
+        serializedVersion: 2
+        x: 612
+        y: 354
+        width: 96
+        height: 160
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d515c3e1f120ac790800000000000000
+      internalID: -7509187096012369571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_4
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 249
+        width: 117
+        height: 114
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10e0182e5a9c65540800000000000000
+      internalID: 4996402550921039361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_5
+      rect:
+        serializedVersion: 2
+        x: 309
+        y: 255
+        width: 78
+        height: 108
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08a7e1d929367e220800000000000000
+      internalID: 2515088398262106752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_6
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 358
+        width: 97
+        height: 111
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fb8bfe98224c46c0800000000000000
+      internalID: -4157875613736399883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_7
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 156
+        width: 109
+        height: 111
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e4ee3330aa72fe20800000000000000
+      internalID: 3382901098581779688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_8
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 124
+        width: 97
+        height: 114
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90521245dbc490f20800000000000000
+      internalID: 3389324570616997129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_9
+      rect:
+        serializedVersion: 2
+        x: 309
+        y: 129
+        width: 76
+        height: 108
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06613f8ef04018f10800000000000000
+      internalID: 2270100153550706272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_10
+      rect:
+        serializedVersion: 2
+        x: 447
+        y: 225
+        width: 117
+        height: 112
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa2bfa32a28de5400800000000000000
+      internalID: 314926699461456559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_11
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 165
+        width: 88
+        height: 133
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30fa5f242fbdff600800000000000000
+      internalID: 504363516840750851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_12
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 12
+        width: 97
+        height: 114
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a3de7c2e80d26c20800000000000000
+      internalID: 3198347994436916136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_13
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 2
+        width: 113
+        height: 114
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9bfad215a22b8520800000000000000
+      internalID: 2705294093547404186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapinguari_spritesheet_14
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 15
+        width: 113
+        height: 108
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7094a47fbc89b53b0800000000000000
+      internalID: -5522652516245157625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 8a6f50960dc0e8d4b9496c499ec74400
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      mapinguari_spritesheet_0: 8644187536793908367
+      mapinguari_spritesheet_1: -5614702432823886196
+      mapinguari_spritesheet_10: 314926699461456559
+      mapinguari_spritesheet_11: 504363516840750851
+      mapinguari_spritesheet_12: 3198347994436916136
+      mapinguari_spritesheet_13: 2705294093547404186
+      mapinguari_spritesheet_14: -5522652516245157625
+      mapinguari_spritesheet_2: -6028823906456102070
+      mapinguari_spritesheet_3: -7509187096012369571
+      mapinguari_spritesheet_4: 4996402550921039361
+      mapinguari_spritesheet_5: 2515088398262106752
+      mapinguari_spritesheet_6: -4157875613736399883
+      mapinguari_spritesheet_7: 3382901098581779688
+      mapinguari_spritesheet_8: 3389324570616997129
+      mapinguari_spritesheet_9: 2270100153550706272
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
