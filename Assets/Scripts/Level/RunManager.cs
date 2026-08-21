@@ -1,5 +1,6 @@
 using PrimeTween;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -63,10 +64,10 @@ public class RunManager : MonoBehaviour
         startRunScreen.SetActive(false);
         string title = "";
         string subTitle = "";
-        if(scene.name == "Hub")
+        if (scene.name == "Hub")
         {
             playerStats.RestartPlayer();
-            title = "A Terra Sem Males"; subTitle = "Yby Marã E'Yma"; 
+            title = "A Terra Sem Males"; subTitle = "Yby Marã E'Yma";
         }
         else
         {
@@ -77,21 +78,31 @@ public class RunManager : MonoBehaviour
 
     }
 
-    public void ShowStartRunScreen(){startRunScreen.SetActive(true);}
-    public void CloseStartRunScreen(){startRunScreen.SetActive(false);}
+    public void ShowStartRunScreen() {
+        startRunScreen.gameObject.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+        startRunScreen.SetActive(true);
+    }
+    public void CloseStartRunScreen() { startRunScreen.SetActive(false); }
 
 
     public void ShowDeathScreen(int starFragments)
     {
         int starAmount = PlayerPrefs.GetInt("PLAYER_STARS_TOTAL");
-        starsText.text = $"Seu{(starFragments == 1 ? "" : "s")} {starFragments} fragmento{(starFragments == 1 ? "" : "s")} de estrela\r\n{(starFragments == 1 ? "Foi" : "Foram")} convertido{(starFragments == 1 ? "" : "s")} em\r\n{starAmount} estrela{(starAmount == 1 ? "" : "s") }";
+        starsText.text = $"Seu{(starFragments == 1 ? "" : "s")} {starFragments} fragmento{(starFragments == 1 ? "" : "s")} de estrela\r\n{(starFragments == 1 ? "Foi" : "Foram")} convertido{(starFragments == 1 ? "" : "s")} em\r\n{starAmount} estrela{(starAmount == 1 ? "" : "s")}";
         deathScreen.SetActive(true);
     }
     public void Restart()
     {
         deathScreen.SetActive(false);
+        StartCoroutine(RestartCoroutine());
+
+    }
+
+    private IEnumerator RestartCoroutine(){
         sceneController.LoadScene("Hub", TransitionType.CrossFade);
+        yield return new WaitForSeconds(0.5f);
         playerStats.transform.position = new Vector3(-0.05f, -0.5f, playerStats.transform.position.z);
+        yield return null;
     }
 
 
@@ -103,7 +114,6 @@ public class RunManager : MonoBehaviour
         runOrder.Append(3);
         Tween.UIAnchoredPositionX(startRunScreen.GetComponent<RectTransform>(), -1920f, 1f, Ease.InOutSine).OnComplete(() =>
         {
-            playerStats.transform.position = new Vector3(regions[runOrder[curRegion]].spawnPoint.x, regions[runOrder[curRegion]].spawnPoint.y, playerStats.transform.position.z);
             PassRegion();
         });
 
@@ -112,6 +122,7 @@ public class RunManager : MonoBehaviour
     void PassRegion(bool first = false)
     {
         SceneAsset curScene = regions[runOrder[curRegion]].scene;
+        playerStats.transform.position = new Vector3(regions[runOrder[curRegion]].spawnPoint.x, regions[runOrder[curRegion]].spawnPoint.y, playerStats.transform.position.z);
         sceneController.LoadScene(curScene.name, !first ? TransitionType.CrossFade: TransitionType.None);
         curRegion += 1;
     }
