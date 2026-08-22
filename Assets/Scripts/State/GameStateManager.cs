@@ -193,19 +193,13 @@ public class GameStateManager : MonoBehaviour
 
     /// <summary>
     /// Efeitos colaterais por estado (ex: congelar/descongelar o tempo).
+    /// O tempo é congelado APENAS em GameState.Paused. No Menu, o tempo permanece normal (1f) para permitir animações e transições.
     /// </summary>
     private void ApplyStateEffects(GameState state)
     {
-        if (pauseTimeScaleOnPause)
+        if (pauseTimeScaleOnPause && state == GameState.Paused)
         {
-            if (state == GameState.Paused || state == GameState.Menu)
-            {
-                Time.timeScale = 0f;
-            }
-            else
-            {
-                Time.timeScale = 1f;
-            }
+            Time.timeScale = 0f;
         }
         else
         {

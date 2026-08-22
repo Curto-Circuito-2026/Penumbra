@@ -79,24 +79,44 @@ public class SceneController : MonoBehaviour
 
     }
 
-    public IEnumerator PlayTransition(TransitionType transition)
+    public IEnumerator PlayTransition(TransitionType transition, Action onBlackScreen = null)
     {
+        if (transition == TransitionType.None || !transitions.ContainsKey(transition) || transitions[transition].gameObject == null)
+        {
+            onBlackScreen?.Invoke();
+            yield break;
+        }
+
         float elapsedTime = 0f;
         float targetTime = 0f;
         transitions[transition].gameObject.SetActive(true);
         activeAnimation = transition;
-        transitions[activeAnimation].animator.ResetTrigger("End");
-        transitions[activeAnimation].animator.SetTrigger("Start");
+        if (transitions[activeAnimation].animator != null)
+        {
+            transitions[activeAnimation].animator.ResetTrigger("End");
+            transitions[activeAnimation].animator.SetTrigger("Start");
+        }
         targetTime = transitions[activeAnimation].time;
         while (elapsedTime < targetTime)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             yield return null;
         }
 
-        transitions[activeAnimation].animator.ResetTrigger("Start");
-        transitions[activeAnimation].animator.SetTrigger("End");
+        // Executa a troca (ex: ocultar menu e instanciar cutscene) com a tela 100% preta
+        onBlackScreen?.Invoke();
 
+        if (transitions[activeAnimation].animator != null)
+        {
+            transitions[activeAnimation].animator.ResetTrigger("Start");
+            transitions[activeAnimation].animator.SetTrigger("End");
+        }
+
+        yield return new WaitForSecondsRealtime(0.35f);
+        if (transitions.ContainsKey(activeAnimation) && transitions[activeAnimation].gameObject != null)
+        {
+            transitions[activeAnimation].gameObject.SetActive(false);
+        }
     }
 
     public void LoadScene(int sceneIndex, TransitionType animationType = TransitionType.None)
