@@ -16,7 +16,7 @@ MonoBehaviour:
   itemDescription: Restaura completamente +120 pontos de vida do guerreiro.
   itemIcon: {fileID: 0}
   price: 45
-  currency: 0
+  currency: 1
   effectType: 0
   effectValue: 120
   maxPurchases: 99

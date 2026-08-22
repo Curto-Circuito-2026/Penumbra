@@ -7,7 +7,9 @@ public enum ShopItemEffectType
     IncreaseMaxMana,      // Aumenta a mana máxima do jogador
     IncreaseManaRegen,    // Aumenta a velocidade de regeneração de mana
     IncreaseDamage,       // Aumenta o dano de combate
-    IncreaseMoveSpeed     // Aumenta a velocidade de caminhada e corrida
+    IncreaseMoveSpeed,    // Aumenta a velocidade de caminhada e corrida
+    IncreaseDefense,      // Aumenta a defesa / redução percentual de dano
+    UnlockAbilitySlot     // Desbloqueia o próximo slot de habilidade ([E] e depois [R])
 }
 
 public enum CurrencyType
@@ -116,6 +118,22 @@ public class ShopItemSO : ScriptableObject
                     character.IncreaseMovementSpeed(effectValue);
                     floatingText = $"+{effectValue:F1} Velocidade!";
                     effectColor = new Color(1f, 0.9f, 0.2f);
+                }
+                break;
+
+            case ShopItemEffectType.UnlockAbilitySlot:
+                if (combat != null)
+                {
+                    if (combat.UnlockNextAbilitySlot(out string slotName))
+                    {
+                        floatingText = $"{slotName} Desbloqueado!";
+                        effectColor = new Color(1f, 0.85f, 0.2f);
+                    }
+                    else
+                    {
+                        floatingText = "Slots no Máximo!";
+                        effectColor = new Color(0.9f, 0.75f, 0.2f);
+                    }
                 }
                 break;
         }

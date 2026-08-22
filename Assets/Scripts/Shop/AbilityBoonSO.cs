@@ -58,9 +58,14 @@ public class AbilityBoonSO : ScriptableObject
     [Tooltip("Preço em Estrelas para comprar/adquirir esta habilidade ou acordo.")]
     [SerializeField] private int starCost = 1;
 
+    [Header("Habilidade Ativa Vinculada (Opcional)")]
+    [Tooltip("Habilidade ativa que será equipada nos slots Q, E ou R.")]
+    [SerializeField] private Ability grantedAbility;
+
     public string BoonName => boonName;
     public BoonRarity Rarity => rarity;
     public int StarCost => starCost;
+    public Ability GrantedAbility => grantedAbility;
     public Sprite Icon => icon;
     public string Description => description;
     public string StatDetail => statDetail;

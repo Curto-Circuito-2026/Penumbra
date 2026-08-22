@@ -118,6 +118,7 @@ public class CombatUIHUD : MonoBehaviour
         playerCombat.OnAbilityCooldownUpdated += HandleAbilityCooldown;
         playerCombat.OnUltimateChargeUpdated += UpdateUltimateCharge;
         playerCombat.OnEquippedAbilitiesChanged += UpdateEquippedAbilities;
+        playerCombat.OnSlotUnlockStateChanged += HandleSlotUnlockStateChanged;
     }
 
     private void UnsubscribeEvents()
@@ -128,14 +129,28 @@ public class CombatUIHUD : MonoBehaviour
         playerCombat.OnAbilityCooldownUpdated -= HandleAbilityCooldown;
         playerCombat.OnUltimateChargeUpdated -= UpdateUltimateCharge;
         playerCombat.OnEquippedAbilitiesChanged -= UpdateEquippedAbilities;
+        playerCombat.OnSlotUnlockStateChanged -= HandleSlotUnlockStateChanged;
+    }
+
+    private void HandleSlotUnlockStateChanged(int slotIndex, bool isUnlocked)
+    {
+        if (playerCombat == null) return;
+        UpdateEquippedAbilities(
+            playerCombat.GetEquippedAbility(0),
+            playerCombat.GetEquippedAbility(1),
+            playerCombat.GetEquippedAbility(2)
+        );
     }
 
     /// <summary>
     /// Atualiza os ícones e a exibição das habilidades equipadas nos slots Q, E e R.
-    /// Suporta habilidades trocadas dinamicamente ou slots vazios (null).
+    /// Suporta habilidades trocadas dinamicamente, slots vazios (null) e slots bloqueados.
     /// </summary>
     public void UpdateEquippedAbilities(Ability abilityQ, Ability abilityE, Ability abilityR)
     {
+        bool isEUnlocked = playerCombat == null || playerCombat.IsSlotUnlocked(1);
+        bool isRUnlocked = playerCombat == null || playerCombat.IsSlotUnlocked(2);
+
         if (slotQIcon != null)
         {
             slotQIcon.sprite = abilityQ != null ? abilityQ.Icon : null;
@@ -149,9 +164,9 @@ public class CombatUIHUD : MonoBehaviour
 
         if (slotEIcon != null)
         {
-            slotEIcon.sprite = abilityE != null ? abilityE.Icon : null;
-            slotEIcon.gameObject.SetActive(abilityE != null && abilityE.Icon != null);
-            if (abilityE == null)
+            slotEIcon.sprite = (isEUnlocked && abilityE != null) ? abilityE.Icon : null;
+            slotEIcon.gameObject.SetActive(isEUnlocked && abilityE != null && abilityE.Icon != null);
+            if (!isEUnlocked || abilityE == null)
             {
                 if (slotECooldownOverlay != null) slotECooldownOverlay.fillAmount = 0f;
                 if (slotECooldownText != null) slotECooldownText.gameObject.SetActive(false);
@@ -160,9 +175,9 @@ public class CombatUIHUD : MonoBehaviour
 
         if (slotRIcon != null)
         {
-            slotRIcon.sprite = abilityR != null ? abilityR.Icon : null;
-            slotRIcon.gameObject.SetActive(abilityR != null && abilityR.Icon != null);
-            if (abilityR == null)
+            slotRIcon.sprite = (isRUnlocked && abilityR != null) ? abilityR.Icon : null;
+            slotRIcon.gameObject.SetActive(isRUnlocked && abilityR != null && abilityR.Icon != null);
+            if (!isRUnlocked || abilityR == null)
             {
                 if (slotRCooldownOverlay != null) slotRCooldownOverlay.fillAmount = 0f;
                 if (slotRCooldownText != null) slotRCooldownText.gameObject.SetActive(false);

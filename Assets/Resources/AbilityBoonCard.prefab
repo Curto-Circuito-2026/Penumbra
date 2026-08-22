@@ -434,7 +434,6 @@ MonoBehaviour:
   statDetailText: {fileID: 449151070519180701}
   costText: {fileID: 6020219662019821196}
   iconImage: {fileID: 5615333332967586410}
-  cardBorderImage: {fileID: 6290976819877717781}
   cardBackgroundImage: {fileID: 4500510246066961302}
   StarFullSprite: {fileID: 0}
   StarEmptySprite: {fileID: 0}

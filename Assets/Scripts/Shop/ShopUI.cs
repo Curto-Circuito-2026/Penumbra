@@ -146,6 +146,13 @@ public class ShopUI : MonoBehaviour
 
         if (closePressed)
         {
+            // Se o modal de seleção de slot estiver aberto, fecha apenas o modal primeiro!
+            if (SkillEquipModalUI.Instance != null && SkillEquipModalUI.Instance.IsOpen)
+            {
+                SkillEquipModalUI.Instance.CloseModal();
+                return;
+            }
+
             CloseShop();
         }
     }

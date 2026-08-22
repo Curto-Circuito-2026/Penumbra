@@ -16,7 +16,7 @@ MonoBehaviour:
   itemDescription: "Restaura +80 pontos de mana e energiza feiti\xE7os ancestrais."
   itemIcon: {fileID: 0}
   price: 35
-  currency: 0
+  currency: 1
   effectType: 2
   effectValue: 30
   maxPurchases: 3

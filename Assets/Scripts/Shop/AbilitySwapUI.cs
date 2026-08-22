@@ -127,6 +127,13 @@ public class AbilitySwapUI : MonoBehaviour
 
         if (closePressed)
         {
+            // Se o modal de seleção de slot estiver aberto, fecha apenas o modal primeiro!
+            if (SkillEquipModalUI.Instance != null && SkillEquipModalUI.Instance.IsOpen)
+            {
+                SkillEquipModalUI.Instance.CloseModal();
+                return;
+            }
+
             CloseSwap();
         }
     }
@@ -268,48 +275,37 @@ public class AbilitySwapUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Chamado quando o jogador clica para escolher e comprar uma bênção ou acordo.
+    /// Chamado quando o jogador clica para escolher uma bênção ou habilidade.
+    /// Abre o modal de escolha de slot (Q, E, R) onde a compra e equipamento são confirmados.
     /// </summary>
     public void SelectBoon(AbilityBoonSO chosenBoon)
     {
         if (chosenBoon == null) return;
 
+        SkillEquipModalUI equipModal = SkillEquipModalUI.Instance ?? Object.FindAnyObjectByType<SkillEquipModalUI>(FindObjectsInactive.Include);
+        if (equipModal != null)
+        {
+            equipModal.OpenModal(chosenBoon, this);
+            return;
+        }
+
+        // Fallback caso o modal não esteja na cena
         PlayerCurrency currency = PlayerCurrency.Instance ?? Object.FindAnyObjectByType<PlayerCurrency>();
-        if (currency == null)
-        {
-            Debug.LogWarning("[AbilitySwapUI] PlayerCurrency não encontrado!");
-            return;
-        }
+        if (currency == null || currency.Stars < chosenBoon.StarCost) return;
 
-        if (currency.Stars < chosenBoon.StarCost)
+        if (currency.SpendStars(chosenBoon.StarCost))
         {
-            Debug.Log($"[AbilitySwapUI] Estrelas insuficientes para adquirir '{chosenBoon.BoonName}'! Custo: {chosenBoon.StarCost}, Saldo Atual: {currency.Stars}");
-            return;
-        }
-
-        // Debita as estrelas da compra da habilidade/acordo
-        if (!currency.SpendStars(chosenBoon.StarCost))
-        {
-            return;
-        }
-
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player == null)
-        {
-            PlayerStats stats = Object.FindAnyObjectByType<PlayerStats>();
-            if (stats != null) player = stats.gameObject;
-        }
-
-        bool applied = chosenBoon.ApplyBoon(player);
-        if (applied)
-        {
-            Debug.Log($"[AbilitySwapUI] Poder '{chosenBoon.BoonName}' comprado por {chosenBoon.StarCost} Estrelas e aplicado ao jogador!");
+            GameObject player = GameObject.FindWithTag("Player");
+            if (chosenBoon.GrantedAbility != null)
+            {
+                PlayerCombatController combat = Object.FindAnyObjectByType<PlayerCombatController>();
+                if (combat != null) combat.EquipAbility(0, chosenBoon.GrantedAbility);
+            }
+            else
+            {
+                chosenBoon.ApplyBoon(player);
+            }
             CloseSwap();
-        }
-        else
-        {
-            // Se falhou ao aplicar por algum motivo, estorna as estrelas
-            currency.AddStars(chosenBoon.StarCost);
         }
     }
 
