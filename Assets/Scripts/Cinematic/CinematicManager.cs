@@ -91,34 +91,66 @@ public class CinematicManager : MonoBehaviour
 
     public void ShowTitle(string title, string subTitle, bool independent = false)
     {
-        if(independent)
+        if (gameStateManager == null) gameStateManager = GameStateManager.Instance;
+
+        if (independent && gameStateManager != null)
         {
             gameStateManager.SetState(GameState.Cutscene);
         }
+
         try
         {
-            titleText.SetText(title);
-            subtitleText.SetText(subTitle);
-            TitleContainer.SetActive(true);
+            if (titleText != null) titleText.SetText(title);
+            if (subtitleText != null) subtitleText.SetText(subTitle);
+            if (TitleContainer != null) TitleContainer.SetActive(true);
+
             ToggleBars(true).OnComplete(() =>
             {
-                Tween.Alpha(titleContainerGroup, 1f, 1f, Ease.InOutSine).OnComplete(() => { StartCoroutine(CloseTitleCoroutine()); });
+                if (titleContainerGroup != null)
+                {
+                    Tween.Alpha(titleContainerGroup, 1f, 1f, Ease.InOutSine).OnComplete(() =>
+                    {
+                        StartCoroutine(CloseTitleCoroutine(independent));
+                    });
+                }
+                else
+                {
+                    StartCoroutine(CloseTitleCoroutine(independent));
+                }
             });
         }
-        catch
+        catch (Exception ex)
         {
-            gameStateManager.SetState(GameState.Playing);
+            Debug.LogWarning($"[CinematicManager] Falha ao exibir título: {ex.Message}");
+            if (independent && gameStateManager != null)
+            {
+                gameStateManager.SetState(GameState.Playing);
+            }
         }
-        
-
-        
     }
 
-    private IEnumerator CloseTitleCoroutine()
+    private IEnumerator CloseTitleCoroutine(bool independent)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         ToggleBars(false);
-        Tween.Alpha(titleContainerGroup, 0f, 1f, Ease.InOutSine).OnComplete(() => {TitleContainer.SetActive(false);});
-        gameStateManager.SetState(GameState.Playing);
+        if (titleContainerGroup != null)
+        {
+            yield return Tween.Alpha(titleContainerGroup, 0f, 1f, Ease.InOutSine).ToYieldInstruction();
+        }
+        else
+        {
+            yield return new WaitForSeconds(1f);
+        }
+
+        if (TitleContainer != null) TitleContainer.SetActive(false);
+
+        if (independent)
+        {
+            if (gameStateManager == null) gameStateManager = GameStateManager.Instance;
+            if (gameStateManager != null)
+            {
+                gameStateManager.SetState(GameState.Playing);
+            }
+        }
     }
 }

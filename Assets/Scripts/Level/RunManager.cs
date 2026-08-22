@@ -158,6 +158,7 @@ public class RunManager : MonoBehaviour
             }
         }
 
+        if (cinematicManager == null) cinematicManager = CinematicManager.Instance ?? UnityEngine.Object.FindAnyObjectByType<CinematicManager>();
         if (cinematicManager != null)
         {
             cinematicManager.ShowTitle(title, subTitle, true);
