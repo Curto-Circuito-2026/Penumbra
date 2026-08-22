@@ -51,6 +51,9 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
     [SerializeField] private Collider2D bodyCollider;
     [SerializeField] private Rigidbody2D rb;
 
+    [Header("Ativação de Combate")]
+    [SerializeField] private bool autoStartCombat = false;
+
     private Transform playerTransform;
     private bool isDead = false;
     private bool isExecutingAttack = false;
@@ -68,6 +71,8 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
+    public bool IsCombatActive => isCombatActive;
+    public bool IsDead => isDead;
 
     private void Awake()
     {
@@ -110,6 +115,17 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
     {
         LocatePlayer();
         IgnorePlayerPhysicsCollision();
+        StopMovement();
+
+        if (autoStartCombat)
+        {
+            StartBossFight();
+        }
+    }
+
+    public void StartCombat()
+    {
+        StartBossFight();
     }
 
     private void LocatePlayer()
@@ -153,13 +169,17 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
 
         float distance = Vector3.Distance(transform.position, playerTransform.position);
 
-        // Ativação da luta ao se aproximar
-        if (!isCombatActive && distance <= detectionRadius)
+        // Ativação automática apenas se autoStartCombat for verdadeiro
+        if (!isCombatActive && autoStartCombat && distance <= detectionRadius)
         {
             StartBossFight();
         }
 
-        if (!isCombatActive || isExecutingAttack) return;
+        if (!isCombatActive || isExecutingAttack)
+        {
+            if (!isCombatActive) StopMovement();
+            return;
+        }
 
         // Orientação do Sprite (Olhar para o player)
         UpdateFacingDirection();
@@ -576,15 +596,12 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
             BossHealthBarUI.Instance.HideBoss(true);
         }
 
-        // Drop de Estrelas / Loot
-        if (starPickupPrefab != null)
+        // Drop de Estrelas / Loot (3 a 5 estrelas)
+        int drops = UnityEngine.Random.Range(3, 6);
+        for (int i = 0; i < drops; i++)
         {
-            int drops = UnityEngine.Random.Range(3, 5);
-            for (int i = 0; i < drops; i++)
-            {
-                Vector3 dropPos = transform.position + (Vector3)(UnityEngine.Random.insideUnitCircle * 1.5f);
-                Instantiate(starPickupPrefab, dropPos, Quaternion.identity);
-            }
+            Vector3 dropPos = transform.position + (Vector3)(UnityEngine.Random.insideUnitCircle * 1.5f);
+            StarPickup.SpawnStar(dropPos, starPickupPrefab);
         }
 
         // Efeito de Morte
@@ -592,6 +609,9 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
         {
             CombatVisualEffects.Instance.PlayImpactBurst(transform.position, new Color(1f, 0.7f, 0.2f), 2.5f);
         }
+
+        // Mãe do Ouro surge onde o boss foi derrotado
+        MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Mapinguari);
 
         Destroy(gameObject, 2.5f);
     }

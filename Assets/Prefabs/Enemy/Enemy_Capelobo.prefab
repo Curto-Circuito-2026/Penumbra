@@ -249,6 +249,7 @@ MonoBehaviour:
   dropChance: 0.8
   minDropCount: 1
   maxDropCount: 2
+  deathDespawnDelay: 0.55
 --- !u!114 &4152517124221226820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,10 +284,17 @@ MonoBehaviour:
   enemyConfig: {fileID: 0}
   canUseMelee: 1
   canUseRanged: 0
+  canExplode: 0
+  explosionTriggerDistance: 1.8
+  explosionRadius: 2.8
+  explosionDamage: 40
+  explosionFuseTime: 0.55
   detectionRadius: 10
   meleeRange: 1.6
   rangedRange: 7.5
   attackCooldown: 1.2
+  rangedAttackWindupDelay: 0.28
+  rangedAttackDuration: 0.45
   movementSpeed: 3.2
   obstacleLayerMask:
     serializedVersion: 2
@@ -300,6 +308,7 @@ MonoBehaviour:
   combatController: {fileID: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  spriteFacesRightByDefault: 0
 --- !u!95 &3854141087242175970
 Animator:
   serializedVersion: 7

@@ -784,34 +784,16 @@ public class BoitataBossController : MonoBehaviour, IDamageable
             SpawnStarDrop(dropPos);
         }
 
+        // Mãe do Ouro surge onde o boss foi derrotado
+        MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Boitata);
+
         yield return new WaitForSeconds(2.0f);
         Destroy(gameObject);
     }
 
     private void SpawnStarDrop(Vector3 position)
     {
-        if (starPickupPrefab != null)
-        {
-            Instantiate(starPickupPrefab, position, Quaternion.identity);
-        }
-        else
-        {
-            // Criação procedural da Estrela Forjada caso prefab não esteja linkado
-            GameObject starObj = new GameObject("Star_Forged_Pickup");
-            starObj.transform.position = position;
-
-            SpriteRenderer sr = starObj.AddComponent<SpriteRenderer>();
-            sr.sprite = CreateStarSprite();
-            sr.color = new Color(1f, 0.9f, 0.2f, 1f);
-            sr.sortingOrder = 5;
-            starObj.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
-
-            CircleCollider2D col = starObj.AddComponent<CircleCollider2D>();
-            col.isTrigger = true;
-            col.radius = 0.6f;
-
-            starObj.AddComponent<StarPickup>();
-        }
+        StarPickup.SpawnStar(position, starPickupPrefab);
     }
 
     private Sprite CreateStarSprite()

@@ -51,6 +51,9 @@ public class MatintaBossController : MonoBehaviour, IDamageable
     [Header("Efeitos Visuais")]
     [SerializeField] private Color damageFlashColor = new Color(0.6f, 0.2f, 0.8f, 1f);
 
+    [Header("Ativação de Combate")]
+    [SerializeField] private bool autoStartCombat = false;
+
     // Componentes
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -77,6 +80,8 @@ public class MatintaBossController : MonoBehaviour, IDamageable
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
+    public bool IsCombatActive => isCombatActive;
+    public bool IsDead => isDead;
 
     private void Awake()
     {
@@ -115,6 +120,16 @@ public class MatintaBossController : MonoBehaviour, IDamageable
         }
 
         LocatePlayer();
+
+        if (autoStartCombat)
+        {
+            StartCombat();
+        }
+    }
+
+    public void StartCombat()
+    {
+        StartBossFight();
     }
 
     public Vector3 ClampToArena(Vector3 position)
@@ -165,8 +180,8 @@ public class MatintaBossController : MonoBehaviour, IDamageable
 
         float distance = Vector3.Distance(transform.position, playerTransform.position);
 
-        // Ativação da luta
-        if (!isCombatActive && distance <= detectionRadius)
+        // Ativação da luta apenas se autoStartCombat for verdadeiro
+        if (!isCombatActive && autoStartCombat && distance <= detectionRadius)
         {
             StartBossFight();
         }
@@ -620,16 +635,16 @@ public class MatintaBossController : MonoBehaviour, IDamageable
         }
         activeMinions.Clear();
 
-        // Drop de Estrelas
-        if (starPickupPrefab != null)
+        // Drop de Estrelas (4 a 6 estrelas)
+        int drops = Random.Range(4, 7);
+        for (int i = 0; i < drops; i++)
         {
-            int drops = Random.Range(4, 6);
-            for (int i = 0; i < drops; i++)
-            {
-                Vector3 dropPos = ClampToArena(transform.position + (Vector3)(Random.insideUnitCircle * 1.5f));
-                Instantiate(starPickupPrefab, dropPos, Quaternion.identity);
-            }
+            Vector3 dropPos = ClampToArena(transform.position + (Vector3)(Random.insideUnitCircle * 1.5f));
+            StarPickup.SpawnStar(dropPos, starPickupPrefab);
         }
+
+        // Mãe do Ouro surge onde o boss foi derrotado
+        MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Matinta);
 
         yield return new WaitForSeconds(0.25f);
 

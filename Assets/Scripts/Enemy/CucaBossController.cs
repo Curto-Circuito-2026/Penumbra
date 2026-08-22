@@ -45,12 +45,16 @@ public class CucaBossController : MonoBehaviour, IDamageable
     [Header("Efeitos Visuais")]
     [SerializeField] private Color damageFlashColor = new Color(0.8f, 0.2f, 0.9f, 1f);
 
+    [Header("Ativação de Combate")]
+    [SerializeField] private bool autoStartCombat = false;
+
     // Componentes
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private NavMeshAgent agent;
     private Collider2D bodyCollider;
     private Transform playerTransform;
+    private Material defaultMaterial;
 
     // Estados
     private bool isCombatActive = false;
@@ -113,7 +117,10 @@ public class CucaBossController : MonoBehaviour, IDamageable
         }
 
         FindPlayer();
-        StartCombat();
+        if (autoStartCombat)
+        {
+            StartCombat();
+        }
     }
 
     private void FindPlayer()
@@ -616,15 +623,15 @@ public class CucaBossController : MonoBehaviour, IDamageable
         if (spriteRenderer != null) spriteRenderer.enabled = false;
 
         // Drop de Estrelas (6 a 8 estrelas)
-        if (starPickupPrefab != null)
+        int drops = Random.Range(6, 9);
+        for (int i = 0; i < drops; i++)
         {
-            int drops = Random.Range(6, 9);
-            for (int i = 0; i < drops; i++)
-            {
-                Vector3 dropPos = ClampToArena(transform.position + (Vector3)(Random.insideUnitCircle * 1.8f));
-                Instantiate(starPickupPrefab, dropPos, Quaternion.identity);
-            }
+            Vector3 dropPos = ClampToArena(transform.position + (Vector3)(Random.insideUnitCircle * 1.8f));
+            StarPickup.SpawnStar(dropPos, starPickupPrefab);
         }
+
+        // Mãe do Ouro surge onde o boss foi derrotado
+        MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Cuca);
 
         yield return new WaitForSeconds(0.4f);
 

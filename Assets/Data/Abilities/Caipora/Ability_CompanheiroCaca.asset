@@ -21,5 +21,5 @@ MonoBehaviour:
   damage: 22
   manaCost: 35
   cost: 0
-  companionPrefab: {fileID: 3515792757640987644, guid: 53a1dc867ebe82046a1911ec0e4d5da0, type: 3}
+  companionPrefab: {fileID: 5563464815460109397, guid: 53a1dc867ebe82046a1911ec0e4d5da0, type: 3}
   duration: 15
