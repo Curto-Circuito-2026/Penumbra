@@ -70,6 +70,7 @@ public class SceneController : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         Debug.Log("Awake");
@@ -87,6 +88,24 @@ public class SceneController : MonoBehaviour
         StartCoroutine(LoadSceneAsync(sceneIndex));
     }
 
+    public void LoadScene(string sceneName, TransitionType animationType = TransitionType.None)
+    {
+        if (animationType != TransitionType.None)
+        {
+            try
+            {
+                transitions[animationType].gameObject.SetActive(true);
+                activeAnimation = animationType;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Animação não carregada");
+            }
+        }
+
+        StartCoroutine(LoadSceneAsync(sceneName));
+    }
+
     private IEnumerator LoadSceneAsync(int sceneIndex)
     {
         float elapsedTime = 0f;
@@ -99,6 +118,41 @@ public class SceneController : MonoBehaviour
         }
 
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex);
+        asyncLoad.allowSceneActivation = false;
+
+        while (elapsedTime < targetTime || asyncLoad.progress < 0.9f)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        asyncLoad.allowSceneActivation = true;
+        if (activeAnimation != TransitionType.None)
+        {
+            transitions[activeAnimation].animator.ResetTrigger("Start");
+            transitions[activeAnimation].animator.SetTrigger("End");
+
+            yield return null;
+
+            while (transitions[activeAnimation].animator.IsInTransition(0) || transitions[activeAnimation].animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            {
+                yield return null;
+            }
+            transitions[activeAnimation].animator.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator LoadSceneAsync(string sceneName)
+    {
+        float elapsedTime = 0f;
+        float targetTime = 0f;
+        if (activeAnimation != TransitionType.None)
+        {
+            transitions[activeAnimation].animator.ResetTrigger("End");
+            transitions[activeAnimation].animator.SetTrigger("Start");
+            targetTime = transitions[activeAnimation].time;
+        }
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         asyncLoad.allowSceneActivation = false;
 
         while (elapsedTime < targetTime || asyncLoad.progress < 0.9f)

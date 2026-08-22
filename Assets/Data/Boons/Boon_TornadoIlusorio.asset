@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_TornadoIlusorio
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: "Tornado Ilus\xF3rio"
+  rarity: 4
+  icon: {fileID: 0}
+  description: "Invoca a tempestade suprema dos ventos, despeda\xE7ando inimigos
+    pr\xF3ximos com for\xE7a colossal."
+  statDetail: "\u25B8 Dano Cr\xEDtico e de \xC1rea: +20"
+  effectType: 4
+  effectValue: 20

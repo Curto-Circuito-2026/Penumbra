@@ -274,7 +274,16 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // 8. Texto de Status
+        // 8. Oculta barra do Boss se o player morreu ou está no menu principal
+        if (state == GameState.Dead || state == GameState.Menu)
+        {
+            if (BossHealthBarUI.Instance != null)
+            {
+                BossHealthBarUI.Instance.HideImmediate();
+            }
+        }
+
+        // 9. Texto de Status
         if (statusText != null)
         {
             switch (state)
@@ -290,6 +299,9 @@ public class UIManager : MonoBehaviour
                     break;
                 case GameState.Dialogue:
                     statusText.text = "<color=#FF6699>Status: EM DIÁLOGO</color>";
+                    break;
+                case GameState.Cutscene:
+                    statusText.text = "<color=#CC88FF>Status: CUTSCENE</color>";
                     break;
                 case GameState.Dead:
                     statusText.text = "<color=#FF0000>Status: MORTO</color>";

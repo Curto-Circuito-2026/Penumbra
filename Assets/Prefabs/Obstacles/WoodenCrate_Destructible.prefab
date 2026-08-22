@@ -180,6 +180,8 @@ MonoBehaviour:
   dropsItem: 1
   itemToDropPrefab: {fileID: 3323540727013714034, guid: 868e9599329aca749935015874b4b4c3, type: 3}
   dropChance: 1
+  minDropCount: 1
+  maxDropCount: 2
   animator: {fileID: 113011908014745300}
   breakParticlePrefab: {fileID: 0}
   damageFlashColor: {r: 1, g: 0.4, b: 0.4, a: 1}

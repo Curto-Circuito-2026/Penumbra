@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "NewDialogueNode", menuName = "Dialogue/Dialogue Node")]
 public class DialogueNode : ScriptableObject
@@ -17,6 +18,12 @@ public class DialogueNode : ScriptableObject
 
     [Tooltip("Referência para a próxima fala da conversa.")]
     [SerializeField] private DialogueNode nextNode;
+
+    [Tooltip("Evento para rodar no começo desse nó")]
+    [SerializeField] public GameEvent onStart;
+
+    [Tooltip("Evento para rodar no final desse nó")]
+    [SerializeField] public GameEvent onEnd;
 
     // Propriedades de acesso público
     public string SpeakerName => speakerName;

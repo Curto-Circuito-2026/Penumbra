@@ -48,7 +48,7 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private int circleSegments = 40;
 
     // Cores dos Indicadores de Alcance por Habilidade/Ataque
-    private readonly Color meleeColor = new Color(1f, 0.3f, 0.3f, 0.75f);
+    private readonly Color meleeColor = new Color(0.9f, 0.96f, 1f, 0.8f);
     private readonly Color rangedColor = new Color(0.2f, 0.8f, 1f, 0.75f);
     private readonly Color qColor = new Color(0.2f, 1f, 0.5f, 0.75f);
     private readonly Color eColor = new Color(1f, 0.5f, 0.2f, 0.75f);
@@ -106,17 +106,14 @@ public class PlayerCombatController : MonoBehaviour
         mainCamera = Camera.main;
         calculatedPath = new NavMeshPath();
 
-        if (enemyLayerMask == 0)
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (enemyLayer != -1)
         {
-            int enemyLayer = LayerMask.NameToLayer("Enemy");
-            if (enemyLayer != -1)
-            {
-                enemyLayerMask = 1 << enemyLayer;
-            }
-            else
-            {
-                enemyLayerMask = ~0; // Fallback
-            }
+            enemyLayerMask = (1 << enemyLayer) | LayerMask.GetMask("Default");
+        }
+        else
+        {
+            enemyLayerMask = ~0; // Fallback
         }
 
         // Setup do LineRenderer para o indicador de alcance
@@ -322,10 +319,19 @@ public class PlayerCombatController : MonoBehaviour
     private void HandleMouseHoverAndVisuals()
     {
         Vector3 mouseWorldPos = GetMouseWorldPosition();
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, enemyLayerMask);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mouseWorldPos, Vector2.zero, 0.1f, enemyLayerMask);
+        GameObject hoveredEnemy = null;
+        foreach (var h in hits)
+        {
+            if (IsValidEnemyTarget(h.collider, out _))
+            {
+                hoveredEnemy = h.collider.gameObject;
+                break;
+            }
+        }
 
         // 1. Destaque Visual do Inimigo focado / atacado
-        GameObject hoveredOrTargeted = hit.collider != null ? hit.collider.gameObject : currentTarget;
+        GameObject hoveredOrTargeted = hoveredEnemy ?? currentTarget;
 
         if (hoveredOrTargeted != null && targetSelectionRing != null)
         {
@@ -366,7 +372,7 @@ public class PlayerCombatController : MonoBehaviour
         }
 
         // 4. Indicadores de Alcance Visual padrão
-        if (hit.collider != null)
+        if (hoveredEnemy != null)
         {
             float displayRange = (pendingAction == PendingActionType.Ranged) ? rangedRange : (pendingAction != PendingActionType.None ? GetRequiredRange(pendingAction) : meleeRange);
             Color rangeCol = GetColorForAction(pendingAction != PendingActionType.None ? pendingAction : PendingActionType.Melee);
@@ -420,14 +426,34 @@ public class PlayerCombatController : MonoBehaviour
 
     private void PerformMeleeAttack(Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (meleeCooldownTimer > 0f) return;
 
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
+        // Dispara a animação de ataque Melee virando para a direção do golpe (4 direções)
+        if (characterController != null)
+        {
+            characterController.TriggerMeleeAnimation(dir);
+        }
+
         // Raycast da posição do jogador em direção ao mouse até o alcance Melee
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, meleeRange, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
+        RaycastHit2D[] meleeHits = Physics2D.RaycastAll(transform.position, dir, meleeRange, enemyLayerMask);
+        GameObject targetEnemy = null;
+        IDamageable targetDmg = null;
+
+        foreach (var h in meleeHits)
+        {
+            if (IsValidEnemyTarget(h.collider, out IDamageable dmg))
+            {
+                targetEnemy = h.collider.gameObject;
+                targetDmg = dmg;
+                break;
+            }
+        }
 
         Debug.Log($"[PlayerCombatController] Ataque Melee Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
 
@@ -437,19 +463,23 @@ public class PlayerCombatController : MonoBehaviour
             CombatVisualEffects.Instance.PlayMeleeSlash(transform.position, dir);
         }
 
-        if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+        if (targetDmg != null)
         {
-            damageable.TakeDamage(meleeDamage, dir);
+            targetDmg.TakeDamage(meleeDamage, dir);
             AddUltimateCharge(chargePerHit);
         }
         else
         {
             // Procura inimigos por OverlapCircle no arco curto em frente
-            Collider2D hitCol = Physics2D.OverlapCircle(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.6f, enemyLayerMask);
-            if (hitCol != null && hitCol.TryGetComponent(out IDamageable hitDmg))
+            Collider2D[] hitCols = Physics2D.OverlapCircleAll(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.7f, enemyLayerMask);
+            foreach (var col in hitCols)
             {
-                hitDmg.TakeDamage(meleeDamage, dir);
-                AddUltimateCharge(chargePerHit);
+                if (IsValidEnemyTarget(col, out IDamageable hitDmg))
+                {
+                    hitDmg.TakeDamage(meleeDamage, dir);
+                    AddUltimateCharge(chargePerHit);
+                    break;
+                }
             }
         }
 
@@ -458,57 +488,162 @@ public class PlayerCombatController : MonoBehaviour
 
     private void PerformRangedAttack(Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (rangedCooldownTimer > 0f) return;
 
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
-        float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
+        // Dispara a animação de ataque à distância virando para a direção do disparo (4 direções)
+        if (characterController != null)
+        {
+            characterController.TriggerRangedAnimation(dir);
+        }
+
+        StartCoroutine(ExecuteDelayedRangedAttack(dir, mouseWorldPos, 0.28f));
+        rangedCooldownTimer = rangedCooldown;
+    }
+
+    private IEnumerator ExecuteDelayedRangedAttack(Vector3 dir, Vector3 mouseWorldPos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        Vector3 spawnPos = GetRangedSpawnPosition(dir);
+        float mouseDist = Vector3.Distance(spawnPos, mouseWorldPos);
         float castDist = Mathf.Min(mouseDist, rangedRange);
         if (castDist < 0.5f) castDist = rangedRange;
 
-        // Raycast da posição do jogador na direção do mouse até o alcance máximo
-        // Encontra o PRIMEIRO inimigo que estiver na frente entre o jogador e a mira!
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rangedRange, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 impactPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+        // Raycast da posição da mão na direção do mouse até o alcance máximo
+        RaycastHit2D[] rangedHits = Physics2D.RaycastAll(spawnPos, dir, rangedRange, enemyLayerMask);
+        GameObject targetEnemy = null;
+        IDamageable targetDmg = null;
+        Vector3 impactPos = spawnPos + dir * castDist;
 
-        Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
+        foreach (var h in rangedHits)
+        {
+            if (IsValidEnemyTarget(h.collider, out IDamageable dmg))
+            {
+                targetEnemy = h.collider.gameObject;
+                targetDmg = dmg;
+                impactPos = h.point;
+                break;
+            }
+        }
+
+        Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional (Lança arremessada). Primeiro inimigo: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
 
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.PlayRangedProjectile(transform.position, impactPos, () =>
+            CombatVisualEffects.Instance.PlayRangedProjectile(spawnPos, impactPos, () =>
             {
-                if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+                if (targetDmg != null)
                 {
-                    damageable.TakeDamage(rangedDamage, dir);
+                    targetDmg.TakeDamage(rangedDamage, dir);
                     AddUltimateCharge(chargePerHit);
                 }
                 else
                 {
-                    Collider2D hitCol = Physics2D.OverlapCircle(impactPos, 0.8f, enemyLayerMask);
-                    if (hitCol != null && hitCol.TryGetComponent(out IDamageable hitDmg))
+                    Collider2D[] hitCols = Physics2D.OverlapCircleAll(impactPos, 1.2f, enemyLayerMask);
+                    foreach (var col in hitCols)
                     {
-                        hitDmg.TakeDamage(rangedDamage, dir);
-                        AddUltimateCharge(chargePerHit);
+                        if (IsValidEnemyTarget(col, out IDamageable hitDmg))
+                        {
+                            hitDmg.TakeDamage(rangedDamage, dir);
+                            AddUltimateCharge(chargePerHit);
+                            break;
+                        }
                     }
                 }
             });
         }
-        else
+        else if (targetDmg != null)
         {
-            if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
-            {
-                damageable.TakeDamage(rangedDamage, dir);
-                AddUltimateCharge(chargePerHit);
-            }
+            targetDmg.TakeDamage(rangedDamage, dir);
+            AddUltimateCharge(chargePerHit);
+        }
+    }
+
+    /// <summary>
+    /// Valida se o colisor atingido pertence a um inimigo ou entidade com IDamageable, ignorando explicitamente zonas, delimitadores e triggers sem vida.
+    /// </summary>
+    private bool IsValidEnemyTarget(Collider2D col, out IDamageable damageable)
+    {
+        damageable = null;
+        if (col == null) return false;
+
+        // Ignora o próprio player e seus filhos/pais
+        if (col.gameObject == gameObject || col.transform.IsChildOf(transform) || col.transform.root == transform.root) return false;
+        if (col.CompareTag("Player") || col.GetComponentInParent<CharacterController2D>() != null || col.GetComponentInParent<PlayerStats>() != null) return false;
+
+        // Ignora explicitamente Fightzone, triggers de arena, boundaries e áreas de transição
+        string colName = col.gameObject.name;
+        if (colName.IndexOf("Fightzone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Fighzone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Trigger", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Zone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Bounds", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            damageable = col.GetComponent<IDamageable>();
+            return damageable != null && !(damageable is CharacterController2D) && !(damageable is PlayerStats);
         }
 
-        rangedCooldownTimer = rangedCooldown;
+        // Tenta obter IDamageable no próprio objeto ou no pai (ex: partes de Boss ou inimigos compostos)
+        damageable = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+
+        // Se for um Trigger e não tiver IDamageable, ignora
+        if (col.isTrigger && damageable == null)
+        {
+            return false;
+        }
+
+        // Se não tiver IDamageable e não estiver na layer Enemy, ignora
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (damageable == null && (enemyLayer == -1 || col.gameObject.layer != enemyLayer))
+        {
+            return false;
+        }
+
+        // Não aplica dano ao Player
+        if (damageable is CharacterController2D || damageable is PlayerStats)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private Vector3 GetRangedSpawnPosition(Vector3 dir)
+    {
+        // Elevação do tronco/ombro da Naia a partir dos pés
+        Vector3 baseOffset = new Vector3(0f, 0.55f, 0f);
+
+        // Deslocamento da mão conforme a direção do arremesso
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            // Lateral (Direita ou Esquerda)
+            baseOffset += new Vector3(Mathf.Sign(dir.x) * 0.35f, 0f, 0f);
+        }
+        else if (dir.y > 0)
+        {
+            // Cima
+            baseOffset += new Vector3(0.12f, 0.15f, 0f);
+        }
+        else
+        {
+            // Baixo
+            baseOffset += new Vector3(-0.1f, -0.1f, 0f);
+        }
+
+        return transform.position + baseOffset;
     }
 
     private void TryTargetOrCastAbility(int slotIndex, Ability ability, ref float cooldownTimer, Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (ability == null) return;
         if (cooldownTimer > 0f)
         {
@@ -528,25 +663,37 @@ public class PlayerCombatController : MonoBehaviour
 
         float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
         float castDist = Mathf.Min(mouseDist, ability.Range);
-        if (castDist < 0.5f) castDist = ability.Range;
 
-        // Raycast da posição do jogador na direção do mouse até o alcance máximo da habilidade
-        // Se houver um inimigo na frente entre o jogador e o ponto mirado, o Raycast acerta o primeiro!
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, ability.Range, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 targetPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+        // A habilidade é lançada exatamente no ponto do mouse (limitado pelo alcance máximo)
+        Vector3 targetPos = transform.position + dir * castDist;
 
-        bool success = ability.Cast(gameObject, targetPos, targetEnemy);
-        if (success)
+        // Dispara a animação de Casting na direção do feitiço (4 direções)
+        if (characterController != null)
         {
-            if (playerStats != null) playerStats.UseMana(ability.ManaCost);
-            cooldownTimer = ability.Cooldown;
-            OnAbilityCooldownUpdated?.Invoke(slotIndex, cooldownTimer, ability.Cooldown);
+            characterController.TriggerCastAnimation(dir);
+        }
+
+        if (playerStats != null) playerStats.UseMana(ability.ManaCost);
+        cooldownTimer = ability.Cooldown;
+        OnAbilityCooldownUpdated?.Invoke(slotIndex, cooldownTimer, ability.Cooldown);
+
+        StartCoroutine(ExecuteDelayedAbilityCast(ability, targetPos, 0.22f));
+    }
+
+    private IEnumerator ExecuteDelayedAbilityCast(Ability ability, Vector3 targetPos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (ability != null)
+        {
+            ability.Cast(gameObject, targetPos, null);
         }
     }
 
     private void TryCastUltimate(Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (slotR == null) return;
         if (cooldownR > 0f)
         {
@@ -571,21 +718,31 @@ public class PlayerCombatController : MonoBehaviour
 
         float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
         float castDist = Mathf.Min(mouseDist, slotR.Range);
-        if (castDist < 0.5f) castDist = slotR.Range;
 
-        // Raycast na direção do mouse até o alcance da Ultimate
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, slotR.Range, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 targetPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+        // A Ultimate cai exatamente onde o mouse está mirando (limitado pelo alcance)!
+        Vector3 targetPos = transform.position + dir * castDist;
 
-        bool success = slotR.Cast(gameObject, targetPos, targetEnemy);
-        if (success)
+        // Dispara a animação de Casting na direção da Ultimate
+        if (characterController != null)
         {
-            if (playerStats != null) playerStats.UseMana(slotR.ManaCost);
-            ultimateCharge = 0f;
-            cooldownR = slotR.Cooldown;
-            OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
-            OnAbilityCooldownUpdated?.Invoke(2, cooldownR, slotR.Cooldown);
+            characterController.TriggerCastAnimation(dir);
+        }
+
+        if (playerStats != null) playerStats.UseMana(slotR.ManaCost);
+        ultimateCharge = 0f;
+        cooldownR = slotR.Cooldown;
+        OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
+        OnAbilityCooldownUpdated?.Invoke(2, cooldownR, slotR.Cooldown);
+
+        StartCoroutine(ExecuteDelayedUltimateCast(targetPos, 0.25f));
+    }
+
+    private IEnumerator ExecuteDelayedUltimateCast(Vector3 targetPos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (slotR != null)
+        {
+            slotR.Cast(gameObject, targetPos, null);
         }
     }
 
@@ -834,6 +991,17 @@ public class PlayerCombatController : MonoBehaviour
         {
             rangeIndicator.enabled = false;
         }
+    }
+
+    /// <summary>
+    /// Aumenta o dano de ataque corpo a corpo e à distância.
+    /// </summary>
+    public void IncreaseDamage(float amount)
+    {
+        if (amount <= 0f) return;
+        meleeDamage += amount;
+        rangedDamage += amount;
+        Debug.Log($"[PlayerCombatController] Dano aumentado em +{amount}! (Melee: {meleeDamage}, Ranged: {rangedDamage})");
     }
     #endregion
 }

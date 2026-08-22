@@ -11,6 +11,7 @@ public enum GameState
     Paused,     // Jogo pausado
     Menu,       // Em algum menu de interface
     Dialogue,   // Em diálogo com NPC/evento
+    Cutscene,   // Em cena de corte / animação cinemática
     Dead        // Personagem morto - Exibe tela de morte
 }
 
@@ -77,6 +78,11 @@ public class GameStateManager : MonoBehaviour
         previousState = currentState;
     }
 
+    /// <summary>
+    /// Frame da última alteração de estado (usado para evitar inputs simultâneos no mesmo frame de troca).
+    /// </summary>
+    public int StateChangeFrame { get; private set; } = -1;
+
     private void Start()
     {
         ApplyStateEffects(currentState);
@@ -84,6 +90,9 @@ public class GameStateManager : MonoBehaviour
 
     private void Update()
     {
+        // Ignora input de pausa no mesmo frame em que o estado mudou (ex: fechar janela/loja com ESC)
+        if (Time.frameCount == StateChangeFrame) return;
+
         // Permite alternar Pausa com a tecla ESC, P ou botão Start do Gamepad
         bool pausePressed = (Keyboard.current != null && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.pKey.wasPressedThisFrame)) ||
                            (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame);
@@ -105,13 +114,14 @@ public class GameStateManager : MonoBehaviour
         previousState = currentState;
         currentState = newState;
 
-        ApplyStateEffects(newState);
-
         if (stateChanged)
         {
+            StateChangeFrame = Time.frameCount;
             Debug.Log($"[GameStateManager] Estado alterado de {previousState} para {currentState}");
             OnStateChanged?.Invoke(previousState, currentState);
         }
+
+        ApplyStateEffects(newState);
 
         if (UIManager.Instance != null)
         {
@@ -121,11 +131,11 @@ public class GameStateManager : MonoBehaviour
 
     /// <summary>
     /// Alterna entre Pausado e o estado anterior (ou Playing).
-    /// Não permite pausar enquanto em Diálogo ou Morto.
+    /// Não permite pausar enquanto em Diálogo, Morto ou em Menus abertos (como Loja/Inventário).
     /// </summary>
     public void TogglePause()
     {
-        if (currentState == GameState.Dialogue || currentState == GameState.Dead) return;
+        if (currentState == GameState.Dialogue || currentState == GameState.Dead || currentState == GameState.Menu || currentState == GameState.Cutscene) return;
 
         if (currentState == GameState.Paused)
         {
@@ -142,6 +152,7 @@ public class GameStateManager : MonoBehaviour
     public void SetPaused() => SetState(GameState.Paused);
     public void SetMenu() => SetState(GameState.Menu);
     public void SetDialogue() => SetState(GameState.Dialogue);
+    public void SetCutscene() => SetState(GameState.Cutscene);
     public void SetDead() => SetState(GameState.Dead);
 
     /// <summary>

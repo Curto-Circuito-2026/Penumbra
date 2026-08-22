@@ -9,8 +9,23 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 453671ad43454ee45bf5d75af632cac5
   - enabled: 1
-    path: Assets/Scenes/Main.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/Hub.unity
+    guid: bafa353516a944247bd59266e89ac717
+  - enabled: 1
+    path: Assets/Scenes/Mata Atlantica.unity
+    guid: d4826160e1df10e47a1ea83a8b6ef174
+  - enabled: 0
+    path: Assets/Scenes/Region_City.unity
+    guid: 6815fd0aedfa8d64c888f3751bb888b7
+  - enabled: 0
+    path: Assets/Scenes/Region_Swamp.unity
+    guid: 6fc845e874f62304585ac7012adb2fad
+  - enabled: 0
+    path: Assets/Scenes/Region_Forest.unity
+    guid: c990e27cae738a34f859af2df15a278f
+  - enabled: 0
+    path: Assets/Scenes/Region_End.unity
+    guid: 10e9cd3ac42d3f34fadb1eddf2a96bcb
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

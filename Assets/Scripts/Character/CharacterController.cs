@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public enum CharacterState
 {
@@ -14,6 +15,8 @@ public enum CharacterState
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterController2D : MonoBehaviour
 {
+    public static CharacterController2D Instance { get; private set; }
+
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float runSpeed = 8.5f;
@@ -59,12 +62,27 @@ public class CharacterController2D : MonoBehaviour
     private static readonly int LastMoveX = Animator.StringToHash("LastMoveX");
     private static readonly int LastMoveY = Animator.StringToHash("LastMoveY");
     private static readonly int DashTrigger = Animator.StringToHash("Dash");
+    private static readonly int MeleeTrigger = Animator.StringToHash("Melee");
+    private static readonly int RangedTrigger = Animator.StringToHash("Ranged");
+    private static readonly int CastTrigger = Animator.StringToHash("Cast");
 
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -101,16 +119,22 @@ public class CharacterController2D : MonoBehaviour
 
     private void OnEnable()
     {
-        moveAction.Enable();
-        runAction.Enable();
-        dashAction.Enable();
+        moveAction?.Enable();
+        runAction?.Enable();
+        dashAction?.Enable();
     }
 
     private void OnDisable()
     {
-        moveAction.Disable();
-        runAction.Disable();
-        dashAction.Disable();
+        moveAction?.Disable();
+        runAction?.Disable();
+        dashAction?.Disable();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        //GameObject spawn = GameObject.Find("SpawnPoint");
+        //if (spawn) {this.transform.position = spawn.transform.position;}
     }
 
     private void Update()
@@ -139,7 +163,7 @@ public class CharacterController2D : MonoBehaviour
 
         HandleInput();
         HandleStamina();
-        UpdateVisuals();
+        //UpdateVisuals();
         UpdateAnimator();
     }
 
@@ -316,5 +340,76 @@ public class CharacterController2D : MonoBehaviour
         animator.SetFloat(MoveX, moveInput.x);
         animator.SetFloat(MoveY, moveInput.y);
         animator.SetBool(IsMoving, moveInput != Vector2.zero);
+    }
+
+    /// <summary>
+    /// Aumenta permanentemente a velocidade de caminhada e corrida.
+    /// </summary>
+    public void IncreaseMovementSpeed(float amount)
+    {
+        if (amount <= 0f) return;
+        walkSpeed += amount;
+        runSpeed += amount;
+    }
+
+    /// <summary>
+    /// Define a direção em que o personagem está olhando e sincroniza os parâmetros do Animator.
+    /// </summary>
+    public void SetFacingDirection(Vector2 direction)
+    {
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            lastMoveDirection = direction.normalized;
+            if (animator != null)
+            {
+                animator.SetFloat(LastMoveX, lastMoveDirection.x);
+                animator.SetFloat(LastMoveY, lastMoveDirection.y);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de ataque Melee virando a personagem para a direção do golpe.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerMeleeAnimation(Vector2 attackDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(attackDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(MeleeTrigger);
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de ataque à distância (Ranged) virando a personagem para a direção do disparo.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerRangedAnimation(Vector2 attackDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(attackDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(RangedTrigger);
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de conjuração de magia (Cast) virando a personagem para a direção visada.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerCastAnimation(Vector2 castDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(castDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(CastTrigger);
+        }
     }
 }

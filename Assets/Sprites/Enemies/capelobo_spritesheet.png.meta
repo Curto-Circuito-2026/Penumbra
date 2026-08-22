@@ -1,0 +1,441 @@
+fileFormatVersion: 2
+guid: a6489de4210f5fd41aab8fab37a9fa53
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6348354895867019006
+    second: capelobo_spritesheet_0
+  - first:
+      213: -3368178799785803205
+    second: capelobo_spritesheet_1
+  - first:
+      213: -1448122527804912801
+    second: capelobo_spritesheet_2
+  - first:
+      213: 4896107571008003014
+    second: capelobo_spritesheet_3
+  - first:
+      213: 6907789186238363048
+    second: capelobo_spritesheet_4
+  - first:
+      213: 8364041623324830250
+    second: capelobo_spritesheet_5
+  - first:
+      213: -1904378707090249670
+    second: capelobo_spritesheet_6
+  - first:
+      213: 7882828928049256480
+    second: capelobo_spritesheet_7
+  - first:
+      213: 3274959322620193388
+    second: capelobo_spritesheet_8
+  - first:
+      213: -1367081803929041686
+    second: capelobo_walk_0
+  - first:
+      213: -6866759481716599960
+    second: capelobo_walk_1
+  - first:
+      213: -8216963722778920381
+    second: capelobo_walk_2
+  - first:
+      213: -8929795258002945729
+    second: capelobo_death_0
+  - first:
+      213: -8238717323997488139
+    second: capelobo_death_1
+  - first:
+      213: -6153218943859207492
+    second: capelobo_idle_0
+  - first:
+      213: 3401393437411564949
+    second: capelobo_idle_1
+  - first:
+      213: -6404866911779840184
+    second: capelobo_idle_2
+  - first:
+      213: 8888533425913441200
+    second: capelobo_attack_0
+  - first:
+      213: -2420184618374416076
+    second: capelobo_attack_1
+  - first:
+      213: -3131367397003593023
+    second: capelobo_attack_2
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: capelobo_walk_0
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 95
+        width: 23
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae4c8e9a756270de0800000000000000
+      internalID: -1367081803929041686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_walk_1
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 95
+        width: 28
+        height: 44
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8639c3e02ae54b0a0800000000000000
+      internalID: -6866759481716599960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_walk_2
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 95
+        width: 23
+        height: 44
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34abd7b870b77fd80800000000000000
+      internalID: -8216963722778920381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_death_0
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 94
+        width: 34
+        height: 38
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3944c1668ef21480800000000000000
+      internalID: -8929795258002945729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_death_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 48
+        width: 66
+        height: 23
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fbd5429e323aad80800000000000000
+      internalID: -8238717323997488139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_idle_0
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 95
+        width: 34
+        height: 44
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb25112c8ff5b9aa0800000000000000
+      internalID: -6153218943859207492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_idle_1
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 47
+        width: 38
+        height: 42
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59dd24a5f4d243f20800000000000000
+      internalID: 3401393437411564949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_idle_2
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 0
+        width: 34
+        height: 41
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84f95b96a775d17a0800000000000000
+      internalID: -6404866911779840184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_attack_0
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 31
+        width: 29
+        height: 44
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bba1c1be0a6a5b70800000000000000
+      internalID: 8888533425913441200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_attack_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 31
+        width: 32
+        height: 44
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 439bdea89e6c96ed0800000000000000
+      internalID: -2420184618374416076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: capelobo_attack_2
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 31
+        width: 30
+        height: 44
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ca7c5071f52b84d0800000000000000
+      internalID: -3131367397003593023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 85c3650fd58616040b26de8a8ee23318
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      capelobo_attack_0: 8888533425913441200
+      capelobo_attack_1: -2420184618374416076
+      capelobo_attack_2: -3131367397003593023
+      capelobo_death_0: -8929795258002945729
+      capelobo_death_1: -8238717323997488139
+      capelobo_idle_0: -6153218943859207492
+      capelobo_idle_1: 3401393437411564949
+      capelobo_idle_2: -6404866911779840184
+      capelobo_spritesheet_0: -6348354895867019006
+      capelobo_spritesheet_1: -3368178799785803205
+      capelobo_spritesheet_10: -359080763
+      capelobo_spritesheet_2: -1448122527804912801
+      capelobo_spritesheet_3: 4896107571008003014
+      capelobo_spritesheet_4: 6907789186238363048
+      capelobo_spritesheet_5: 8364041623324830250
+      capelobo_spritesheet_6: -1904378707090249670
+      capelobo_spritesheet_7: 7882828928049256480
+      capelobo_spritesheet_8: 3274959322620193388
+      capelobo_spritesheet_9: -883139411
+      capelobo_walk_0: -1367081803929041686
+      capelobo_walk_1: -6866759481716599960
+      capelobo_walk_2: -8216963722778920381
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

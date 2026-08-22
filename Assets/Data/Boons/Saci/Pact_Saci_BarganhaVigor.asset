@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Pact_Saci_BarganhaVigor
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: Barganha do Vigor
+  rarity: 2
+  icon: {fileID: 0}
+  description: "Um corpo ultra resistente \xE0s custas da desacelera\xE7\xE3o da
+    energia de feiti\xE7o."
+  statDetail: "+ Vida M\xE1xima: +70"
+  effectType: 1
+  effectValue: 70
+  debuffEffectType: 3
+  debuffValue: 2
+  debuffDetail: '- Regen Mana: -2.0/s'
+  starCost: 3

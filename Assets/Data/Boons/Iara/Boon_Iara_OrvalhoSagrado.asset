@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Iara_OrvalhoSagrado
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: Orvalho Sagrado
+  rarity: 1
+  icon: {fileID: 0}
+  description: "Gotas de \xE1gua encantada aumentam permanentemente a sua capacidade
+    total de feiti\xE7os."
+  statDetail: "+ Mana M\xE1xima: +60"
+  effectType: 2
+  effectValue: 60
+  debuffEffectType: 0
+  debuffValue: 0
+  debuffDetail: 
+  starCost: 2

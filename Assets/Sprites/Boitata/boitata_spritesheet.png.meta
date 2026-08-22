@@ -1,0 +1,520 @@
+fileFormatVersion: 2
+guid: 9c625c200f592514fa3db119473a3244
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2165364767268748995
+    second: boitata_spritesheet_0
+  - first:
+      213: -4191843130979711565
+    second: boitata_spritesheet_1
+  - first:
+      213: 6580820031457049471
+    second: boitata_spritesheet_2
+  - first:
+      213: 5394958641013609321
+    second: boitata_spritesheet_3
+  - first:
+      213: 6250352799268130293
+    second: boitata_spritesheet_4
+  - first:
+      213: 6055408839133621865
+    second: boitata_spritesheet_5
+  - first:
+      213: 1123681748677039880
+    second: boitata_spritesheet_6
+  - first:
+      213: 8594481961902271352
+    second: boitata_spritesheet_7
+  - first:
+      213: -371357812794890584
+    second: boitata_spritesheet_8
+  - first:
+      213: -6733584777219303081
+    second: boitata_spritesheet_9
+  - first:
+      213: 6967361120611979358
+    second: boitata_spritesheet_10
+  - first:
+      213: -8780409326739699442
+    second: boitata_spritesheet_11
+  - first:
+      213: -4394823565360632295
+    second: boitata_spritesheet_12
+  - first:
+      213: 1026241555915590958
+    second: boitata_breath_prep
+  - first:
+      213: 8519324941413588954
+    second: boitata_breath_fire
+  - first:
+      213: 522568252680912099
+    second: boitata_idle_1
+  - first:
+      213: -9049839713285751375
+    second: boitata_idle_2
+  - first:
+      213: 189377949045873944
+    second: boitata_idle_3
+  - first:
+      213: -5659381855714013306
+    second: boitata_coiled
+  - first:
+      213: 4728982400139069087
+    second: boitata_mod_tail_up
+  - first:
+      213: 2752462645209107430
+    second: boitata_mod_tail_mid
+  - first:
+      213: 7843752521256250835
+    second: boitata_mod_tail_down
+  - first:
+      213: -4981215303723626129
+    second: boitata_mod_body_curve
+  - first:
+      213: 329153791082111494
+    second: boitata_mod_body_straight
+  - first:
+      213: -8676012195537793309
+    second: boitata_mod_head_1
+  - first:
+      213: -71731819568467841
+    second: boitata_mod_head_2
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 8
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: boitata_breath_prep
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 412
+        width: 206
+        height: 149
+      alignment: 9
+      pivot: {x: 0.28, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2dc7120241fd3e00800000000000000
+      internalID: 1026241555915590958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_breath_fire
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 244
+        width: 204
+        height: 149
+      alignment: 9
+      pivot: {x: 0.28, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adf151b95e8ba3670800000000000000
+      internalID: 8519324941413588954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_idle_1
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 412
+        width: 201
+        height: 145
+      alignment: 9
+      pivot: {x: 0.28, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ec31ff9e09804700800000000000000
+      internalID: 522568252680912099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_idle_2
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 237
+        width: 228
+        height: 139
+      alignment: 9
+      pivot: {x: 0.247, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bd31679ab2886280800000000000000
+      internalID: -9049839713285751375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_idle_3
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 43
+        width: 201
+        height: 145
+      alignment: 9
+      pivot: {x: 0.28, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81ddb25cd3ec0a200800000000000000
+      internalID: 189377949045873944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_coiled
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 246
+        width: 99
+        height: 108
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68f00e9df26d571b0800000000000000
+      internalID: -5659381855714013306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_mod_tail_up
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 521
+        width: 132
+        height: 42
+      alignment: 9
+      pivot: {x: 0.9371269, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f960d5d0078b0a140800000000000000
+      internalID: 4728982400139069087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_mod_tail_mid
+      rect:
+        serializedVersion: 2
+        x: 525
+        y: 475
+        width: 131
+        height: 41
+      alignment: 9
+      pivot: {x: 0.9382753, y: 0.4909415}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6eb88315136b23620800000000000000
+      internalID: 2752462645209107430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_mod_tail_down
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 424
+        width: 132
+        height: 41
+      alignment: 9
+      pivot: {x: 0.9436849, y: 0.49259838}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ddad8f2c5b9adc60800000000000000
+      internalID: 7843752521256250835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_mod_body_curve
+      rect:
+        serializedVersion: 2
+        x: 675
+        y: 514
+        width: 45
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6150d7a21b2fdab0800000000000000
+      internalID: -4981215303723626129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_mod_body_straight
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 463
+        width: 40
+        height: 49
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6022ce901a3619400800000000000000
+      internalID: 329153791082111494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_mod_head_1
+      rect:
+        serializedVersion: 2
+        x: 676
+        y: 389
+        width: 53
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ee430a20ec989780800000000000000
+      internalID: -8676012195537793309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boitata_mod_head_2
+      rect:
+        serializedVersion: 2
+        x: 674
+        y: 315
+        width: 53
+        height: 69
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7077874a48210ff0800000000000000
+      internalID: -71731819568467841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: c202b2e9ca07fd346a87ccd5c70dbc03
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      boitata_breath_fire: 8519324941413588954
+      boitata_breath_prep: 1026241555915590958
+      boitata_coiled: -5659381855714013306
+      boitata_idle_1: 522568252680912099
+      boitata_idle_2: -9049839713285751375
+      boitata_idle_3: 189377949045873944
+      boitata_mod_body_curve: -4981215303723626129
+      boitata_mod_body_straight: 329153791082111494
+      boitata_mod_head_1: -8676012195537793309
+      boitata_mod_head_2: -71731819568467841
+      boitata_mod_tail_down: 7843752521256250835
+      boitata_mod_tail_mid: 2752462645209107430
+      boitata_mod_tail_up: 4728982400139069087
+      boitata_spritesheet_0: 2165364767268748995
+      boitata_spritesheet_1: -4191843130979711565
+      boitata_spritesheet_10: 6967361120611979358
+      boitata_spritesheet_11: -8780409326739699442
+      boitata_spritesheet_12: -4394823565360632295
+      boitata_spritesheet_2: 6580820031457049471
+      boitata_spritesheet_3: 5394958641013609321
+      boitata_spritesheet_4: 6250352799268130293
+      boitata_spritesheet_5: 6055408839133621865
+      boitata_spritesheet_6: 1123681748677039880
+      boitata_spritesheet_7: 8594481961902271352
+      boitata_spritesheet_8: -371357812794890584
+      boitata_spritesheet_9: -6733584777219303081
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
