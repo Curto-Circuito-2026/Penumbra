@@ -71,8 +71,12 @@ public class CinematicManager : MonoBehaviour
         StartCoroutine(c.Play());
     }
 
-    public void ShowTitle(string title, string subTitle)
+    public void ShowTitle(string title, string subTitle, bool independent = false)
     {
+        if(independent)
+        {
+            gameStateManager.SetState(GameState.Cutscene);
+        }
         titleText.SetText(title);
         subtitleText.SetText(subTitle);
         TitleContainer.SetActive(true);
@@ -88,5 +92,6 @@ public class CinematicManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         ToggleBars(false);
         Tween.Alpha(titleContainerGroup, 0f, 1f, Ease.InOutSine).OnComplete(() => {TitleContainer.SetActive(false);});
+        gameStateManager.SetState(GameState.Playing);
     }
 }

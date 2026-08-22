@@ -93,7 +93,7 @@ public class RunManager : MonoBehaviour
             subTitle = regions[runOrder[curRegion]].subtitle;
         }
 
-        cinematicManager.ShowTitle(title, subTitle);
+        cinematicManager.ShowTitle(title, subTitle, true);
     }
 
     public void ShowStartRunScreen() {
