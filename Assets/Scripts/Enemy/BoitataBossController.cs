@@ -247,10 +247,24 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     #region Loop de IA e Habilidades do Chefe
     private IEnumerator BossLoopRoutine()
     {
-        yield return new WaitForSeconds(1.5f); // Pausa inicial de entrada épica
+        // 1. Aguarda a Cutscene terminar completamente (GameState voltar para Playing)
+        while (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing)
+        {
+            yield return null;
+        }
+
+        // 2. Delay adicional de "acordar" após a apresentação (2.0s) para o player se posicionar
+        yield return new WaitForSeconds(2.0f);
 
         while (!isDead && isCombatActive)
         {
+            // Se o jogo pausar ou entrar em cutscene posterior, suspende os ataques
+            if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing)
+            {
+                yield return null;
+                continue;
+            }
+
             if (!isExecutingAttack)
             {
                 attackCooldownTimer -= Time.deltaTime;

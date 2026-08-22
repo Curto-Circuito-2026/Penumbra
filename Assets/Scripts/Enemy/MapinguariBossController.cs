@@ -53,6 +53,7 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
 
     [Header("Ativação de Combate")]
     [SerializeField] private bool autoStartCombat = false;
+    [SerializeField] private BossTrigger bossIntro;
 
     private Transform playerTransform;
     private bool isDead = false;
@@ -119,12 +120,20 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
 
         if (autoStartCombat)
         {
-            StartBossFight();
+            StartCombat();
         }
     }
 
     public void StartCombat()
     {
+        CinematicManager cinematicManager = GameObject.Find("CinematicManager") != null ? GameObject.Find("CinematicManager").GetComponent<CinematicManager>() : (CinematicManager.Instance ?? UnityEngine.Object.FindAnyObjectByType<CinematicManager>());
+
+        if (cinematicManager != null && bossIntro != null)
+        {
+            bossIntro.Boss = this.gameObject;
+            cinematicManager.PlayClip(bossIntro.gameObject);
+        }
+
         StartBossFight();
     }
 
@@ -172,12 +181,13 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
         // Ativação automática apenas se autoStartCombat for verdadeiro
         if (!isCombatActive && autoStartCombat && distance <= detectionRadius)
         {
-            StartBossFight();
+            StartCombat();
         }
 
-        if (!isCombatActive || isExecutingAttack)
+        bool isCutscene = GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing;
+        if (!isCombatActive || isExecutingAttack || isCutscene)
         {
-            if (!isCombatActive) StopMovement();
+            StopMovement();
             return;
         }
 
@@ -252,8 +262,9 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
 
     public void StartBossFight()
     {
+        if (isCombatActive || isDead) return;
         isCombatActive = true;
-        attackTimer = 0.6f;
+        attackTimer = 2.2f; // Delay de "acordar" após a cutscene
         plannedNextAttack = 2; // Primeiro ataque: Pedra Giratória
 
         if (BossHealthBarUI.Instance != null)
@@ -261,7 +272,7 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
             BossHealthBarUI.Instance.ShowBoss(bossName, currentHealth, maxHealth);
         }
 
-        Debug.Log($"[MapinguariBoss] Combate com {bossName} iniciado! Primeiro ataque planejado: Arremesso de Pedra.");
+        Debug.Log($"[MapinguariBoss] Combate com {bossName} iniciado! Primeiro ataque planejado em {attackTimer}s.");
     }
 
     private void MoveTowardsPlayer()

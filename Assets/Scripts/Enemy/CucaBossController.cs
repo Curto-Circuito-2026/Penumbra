@@ -136,19 +136,24 @@ public class CucaBossController : MonoBehaviour, IDamageable
         isTransitioning = false;
         currentPhase = 1;
         currentHealth = phase1MaxHealth;
-        attackTimer = 1.0f;
+        attackTimer = 2.2f; // Delay de "acordar" após a cutscene
 
         if (BossHealthBarUI.Instance != null)
         {
             BossHealthBarUI.Instance.ShowBoss($"{bossName} (Fase 1)", currentHealth, phase1MaxHealth);
         }
 
-        Debug.Log($"[CucaBoss] Combate iniciado contra a {bossName} (Fase 1)!");
+        Debug.Log($"[CucaBoss] Combate iniciado contra a {bossName} (Fase 1)! Primeiro ataque em {attackTimer}s.");
     }
 
     private void Update()
     {
-        if (isDead || isTransitioning || !isCombatActive) return;
+        bool isCutscene = GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing;
+        if (isDead || isTransitioning || !isCombatActive || isCutscene)
+        {
+            StopMovement();
+            return;
+        }
 
         if (playerTransform == null)
         {

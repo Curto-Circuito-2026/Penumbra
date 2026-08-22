@@ -53,6 +53,7 @@ public class MatintaBossController : MonoBehaviour, IDamageable
 
     [Header("Ativação de Combate")]
     [SerializeField] private bool autoStartCombat = false;
+    [SerializeField] private BossTrigger bossIntro;
 
     // Componentes
     private SpriteRenderer spriteRenderer;
@@ -129,6 +130,14 @@ public class MatintaBossController : MonoBehaviour, IDamageable
 
     public void StartCombat()
     {
+        CinematicManager cinematicManager = GameObject.Find("CinematicManager") != null ? GameObject.Find("CinematicManager").GetComponent<CinematicManager>() : (CinematicManager.Instance ?? UnityEngine.Object.FindAnyObjectByType<CinematicManager>());
+
+        if (cinematicManager != null && bossIntro != null)
+        {
+            bossIntro.Boss = this.gameObject;
+            cinematicManager.PlayClip(bossIntro.gameObject);
+        }
+
         StartBossFight();
     }
 
@@ -161,9 +170,9 @@ public class MatintaBossController : MonoBehaviour, IDamageable
         foreach (var m in myCols)
         {
             if (m == null) continue;
-            foreach (var pl in playerCols)
+            foreach (var p in playerCols)
             {
-                if (pl != null) Physics2D.IgnoreCollision(m, pl, true);
+                if (p != null) Physics2D.IgnoreCollision(m, p, true);
             }
         }
     }
@@ -183,10 +192,20 @@ public class MatintaBossController : MonoBehaviour, IDamageable
         // Ativação da luta apenas se autoStartCombat for verdadeiro
         if (!isCombatActive && autoStartCombat && distance <= detectionRadius)
         {
-            StartBossFight();
+            StartCombat();
         }
 
-        if (!isCombatActive || isExecutingAction) return;
+        bool isCutscene = GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing;
+        if (!isCombatActive || isExecutingAction || isCutscene)
+        {
+            if (agent != null && agent.enabled && agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;
+            }
+            if (animator != null) animator.SetFloat(SpeedHash, 0f);
+            return;
+        }
 
         UpdateFacingDirection();
 
@@ -216,16 +235,22 @@ public class MatintaBossController : MonoBehaviour, IDamageable
 
     public void StartBossFight()
     {
+        if (isCombatActive || isDead) return;
         isCombatActive = true;
-        attackTimer = 1.2f;
-        illusionTimer = 4f;
+        attackTimer = 2.2f; // Delay de "acordar" após a cutscene
+        illusionTimer = 4.5f;
 
         if (BossHealthBarUI.Instance != null)
         {
             BossHealthBarUI.Instance.ShowBoss(bossName, currentHealth, maxHealth);
         }
 
-        Debug.Log($"[MatintaBoss] Combate com {bossName} iniciado na Arena ({arenaCenter}, Raio: {arenaRadius})!");
+        if (CombatVisualEffects.Instance != null)
+        {
+            CombatVisualEffects.Instance.TriggerCameraShake(0.4f, 0.25f);
+        }
+
+        Debug.Log($"[MatintaBoss] Combate com {bossName} iniciado na Arena ({arenaCenter}, Raio: {arenaRadius})! Primeiro ataque em {attackTimer}s.");
     }
 
     private void UpdateFacingDirection()
