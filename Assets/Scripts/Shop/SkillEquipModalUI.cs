@@ -270,7 +270,7 @@ public class SkillEquipModalUI : MonoBehaviour
             return;
         }
 
-        // 2. Equipa a habilidade no slot selecionado
+        // 2. Equipa a habilidade no slot selecionado e registra no combat
         PlayerCombatController combat = Object.FindAnyObjectByType<PlayerCombatController>();
         if (combat != null)
         {
@@ -283,15 +283,22 @@ public class SkillEquipModalUI : MonoBehaviour
                 // Se for um buff passivo geral, aplica normalmente
                 pendingBoon.ApplyBoon(combat.gameObject);
             }
+
+            // Registra a bênção como temporária da fase atual
+            combat.RecordStageBoonAcquisition(pendingBoon, selectedSlotIndex);
         }
 
         Debug.Log($"[SkillEquipModalUI] '{pendingBoon.BoonName}' comprada e equipada no Slot {selectedSlotIndex}!");
 
-        // 3. Fecha o modal e a interface da loja
+        AbilityBoonSO justBought = pendingBoon;
+
+        // 3. Fecha apenas o modal de seleção de slot, mantendo a loja aberta para o jogador
         CloseModal();
+
+        // 4. Notifica a loja para fazer reroll do slot comprado
         if (parentSwapUI != null)
         {
-            parentSwapUI.CloseSwap();
+            parentSwapUI.OnBoonPurchased(justBought);
         }
     }
 

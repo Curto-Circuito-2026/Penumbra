@@ -195,7 +195,27 @@ public class AbilitySwapUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Sorteia 'count' bênçãos distintas do pool e instancia os cards na tela.
+    /// Retorna todas as bênçãos do pool atual que o jogador AINDA NÃO possui nem tem equipadas.
+    /// </summary>
+    private List<AbilityBoonSO> GetUnownedBoons()
+    {
+        PlayerCombatController combat = UnityEngine.Object.FindAnyObjectByType<PlayerCombatController>();
+        List<AbilityBoonSO> unowned = new List<AbilityBoonSO>();
+
+        if (currentPool == null) return unowned;
+
+        foreach (var boon in currentPool)
+        {
+            if (boon == null) continue;
+            if (combat != null && combat.HasBoonActive(boon)) continue;
+            unowned.Add(boon);
+        }
+
+        return unowned;
+    }
+
+    /// <summary>
+    /// Sorteia 'count' bênçãos distintas do pool (filtrando as que o jogador já possui) e instancia os cards na tela.
     /// </summary>
     private void DrawAndDisplayBoons(int count = 3)
     {
@@ -214,16 +234,15 @@ public class AbilitySwapUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (currentPool == null || currentPool.Count == 0)
+        List<AbilityBoonSO> available = GetUnownedBoons();
+        if (available == null || available.Count == 0)
         {
-            Debug.LogWarning("[AbilitySwapUI] O pool de bênçãos está vazio!");
+            Debug.LogWarning("[AbilitySwapUI] Todas as habilidades deste mestre já foram adquiridas ou o pool está vazio!");
             return;
         }
 
         // Sorteia até 3 bênçãos sem repetição
-        List<AbilityBoonSO> available = new List<AbilityBoonSO>(currentPool);
         List<AbilityBoonSO> drawn = new List<AbilityBoonSO>();
-
         int drawAmount = Mathf.Min(count, available.Count);
         for (int i = 0; i < drawAmount; i++)
         {
@@ -244,11 +263,74 @@ public class AbilitySwapUI : MonoBehaviour
             }
         }
 
-        Debug.Log($"[AbilitySwapUI] {activeCards.Count} bênçãos sorteadas e exibidas nos cards.");
+        Debug.Log($"[AbilitySwapUI] {activeCards.Count} bênçãos não-possuídas sorteadas e exibidas nos cards.");
     }
 
     /// <summary>
-    /// Executa o Re-roll gastando estrelas do jogador e sorteando novas opções.
+    /// Chamado após uma compra com sucesso: faz reroll especificamente do card comprado,
+    /// sorteando outra bênção não-possuída que ainda não esteja sendo exibida na tela.
+    /// </summary>
+    public void OnBoonPurchased(AbilityBoonSO purchasedBoon)
+    {
+        if (purchasedBoon == null) return;
+
+        // Localiza o card que continha a bênção recém-comprada
+        AbilityBoonCardUI targetCard = null;
+        foreach (var card in activeCards)
+        {
+            if (card != null && card.CurrentBoon == purchasedBoon)
+            {
+                targetCard = card;
+                break;
+            }
+        }
+
+        // Obtém a lista de bênçãos não-possuídas que NÃO estão atualmente nos outros cards da tela
+        List<AbilityBoonSO> unowned = GetUnownedBoons();
+        List<AbilityBoonSO> candidatePool = new List<AbilityBoonSO>();
+
+        foreach (var candidate in unowned)
+        {
+            bool isAlreadyDisplayed = false;
+            foreach (var card in activeCards)
+            {
+                if (card != null && card != targetCard && card.CurrentBoon == candidate)
+                {
+                    isAlreadyDisplayed = true;
+                    break;
+                }
+            }
+
+            if (!isAlreadyDisplayed && candidate != purchasedBoon)
+            {
+                candidatePool.Add(candidate);
+            }
+        }
+
+        if (targetCard != null)
+        {
+            if (candidatePool.Count > 0)
+            {
+                // Sorteia um novo substituto para o card comprado
+                int randomIndex = Random.Range(0, candidatePool.Count);
+                AbilityBoonSO newBoon = candidatePool[randomIndex];
+                targetCard.Setup(newBoon, this);
+                Debug.Log($"[AbilitySwapUI] Slot da compra re-rollado com sucesso! Nova opção: '{newBoon.BoonName}'");
+            }
+            else
+            {
+                // Pool esgotado para este slot
+                activeCards.Remove(targetCard);
+                Destroy(targetCard.gameObject);
+                Debug.Log("[AbilitySwapUI] Não há mais opções disponíveis para substituir o card comprado.");
+            }
+        }
+
+        RefreshBalances();
+    }
+
+    /// <summary>
+    /// Executa o Re-roll gastando estrelas do jogador e sorteando novas opções não-possuídas.
     /// </summary>
     public void RerollOptions()
     {
@@ -296,16 +378,22 @@ public class AbilitySwapUI : MonoBehaviour
         if (currency.SpendStars(chosenBoon.StarCost))
         {
             GameObject player = GameObject.FindWithTag("Player");
+            PlayerCombatController combat = Object.FindAnyObjectByType<PlayerCombatController>();
             if (chosenBoon.GrantedAbility != null)
             {
-                PlayerCombatController combat = Object.FindAnyObjectByType<PlayerCombatController>();
                 if (combat != null) combat.EquipAbility(0, chosenBoon.GrantedAbility);
             }
             else
             {
                 chosenBoon.ApplyBoon(player);
             }
-            CloseSwap();
+
+            if (combat != null)
+            {
+                combat.RecordStageBoonAcquisition(chosenBoon, 0);
+            }
+
+            OnBoonPurchased(chosenBoon);
         }
     }
 

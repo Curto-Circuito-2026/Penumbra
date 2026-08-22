@@ -10,7 +10,41 @@ using UnityEngine;
 /// </summary>
 public class PlayerCurrency : MonoBehaviour
 {
-    public static PlayerCurrency Instance { get; private set; }
+    private static PlayerCurrency _instance;
+    public static PlayerCurrency Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = UnityEngine.Object.FindAnyObjectByType<PlayerCurrency>(FindObjectsInactive.Include);
+                if (_instance == null)
+                {
+                    GameObject player = GameObject.FindGameObjectWithTag("Player");
+                    if (player == null)
+                    {
+                        PlayerStats ps = UnityEngine.Object.FindAnyObjectByType<PlayerStats>(FindObjectsInactive.Include);
+                        if (ps != null) player = ps.gameObject;
+                    }
+
+                    if (player != null)
+                    {
+                        _instance = player.GetComponent<PlayerCurrency>();
+                        if (_instance == null)
+                        {
+                            _instance = player.AddComponent<PlayerCurrency>();
+                            Debug.Log("[PlayerCurrency] Componente PlayerCurrency anexado dinamicamente ao jogador.");
+                        }
+                    }
+                }
+            }
+            return _instance;
+        }
+        private set
+        {
+            _instance = value;
+        }
+    }
 
     // Memória estática para persistência imediata entre fases/cenas durante a mesma partida (One-Shot Run)
     private static int staticRunFragments = 0;
@@ -23,6 +57,7 @@ public class PlayerCurrency : MonoBehaviour
         staticRunFragments = 0;
         staticTotalStars = 0;
         isInitialized = false;
+        _instance = null;
     }
 
     [Header("Moedas")]
@@ -57,7 +92,7 @@ public class PlayerCurrency : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        _instance = this;
         playerStats = GetComponent<PlayerStats>();
 
         // Na primeira inicialização da sessão

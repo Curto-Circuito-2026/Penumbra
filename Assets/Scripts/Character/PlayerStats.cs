@@ -370,6 +370,13 @@ public class PlayerStats : MonoBehaviour, IDamageable
         IsDead = true;
         Debug.Log("[PlayerStats] O jogador morreu!");
 
+        // Reverte as habilidades e bênçãos temporárias adquiridas na fase onde morreu
+        PlayerCombatController combat = GetComponent<PlayerCombatController>() ?? UnityEngine.Object.FindAnyObjectByType<PlayerCombatController>();
+        if (combat != null)
+        {
+            combat.RevertStageSessionPurchases();
+        }
+
         // Notifica eventos de Morte
         OnPlayerDied?.Invoke();
         OnAnyPlayerDied?.Invoke();

@@ -59,6 +59,11 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private bool isSlotEUnlocked = false;
     [SerializeField] private bool isSlotRUnlocked = false;
 
+    // Checkpoint de Habilidades e Bênçãos por Fase
+    private Ability[] checkpointEquippedAbilities = new Ability[3];
+    private readonly List<AbilityBoonSO> confirmedBoons = new List<AbilityBoonSO>();
+    private readonly List<AbilityBoonSO> stageSessionBoons = new List<AbilityBoonSO>();
+
     // Timers de Cooldown
     private float meleeCooldownTimer;
     private float rangedCooldownTimer;
@@ -110,6 +115,7 @@ public class PlayerCombatController : MonoBehaviour
         characterController = GetComponent<CharacterController2D>();
         mainCamera = Camera.main;
         calculatedPath = new NavMeshPath();
+        checkpointEquippedAbilities = new Ability[] { slotQ, slotE, slotR };
 
         int enemyLayer = LayerMask.NameToLayer("Enemy");
         if (enemyLayer != -1)
@@ -849,6 +855,97 @@ public class PlayerCombatController : MonoBehaviour
             case 2: return slotR;
             default: return null;
         }
+    }
+    #endregion
+
+    #region Checkpoint e Rastreamento de Habilidades / Bênçãos de Fase
+    /// <summary>
+    /// Verifica se a habilidade já está equipada em qualquer um dos slots Q, E ou R.
+    /// </summary>
+    public bool HasAbilityEquipped(Ability ability)
+    {
+        if (ability == null) return false;
+        return (slotQ == ability || slotE == ability || slotR == ability);
+    }
+
+    /// <summary>
+    /// Verifica se a bênção (ou habilidade vinculada) já foi adquirida/está ativa.
+    /// </summary>
+    public bool HasBoonActive(AbilityBoonSO boon)
+    {
+        if (boon == null) return false;
+        if (boon.GrantedAbility != null && HasAbilityEquipped(boon.GrantedAbility)) return true;
+        return confirmedBoons.Contains(boon) || stageSessionBoons.Contains(boon);
+    }
+
+    /// <summary>
+    /// Registra uma bênção/habilidade comprada na fase atual.
+    /// Se o jogador morrer nesta mesma fase, ela será revertida.
+    /// </summary>
+    public void RecordStageBoonAcquisition(AbilityBoonSO boon, int slotIndex = -1)
+    {
+        if (boon == null) return;
+
+        if (!stageSessionBoons.Contains(boon))
+        {
+            stageSessionBoons.Add(boon);
+        }
+
+        Debug.Log($"[PlayerCombatController] Bênção de Fase '{boon.BoonName}' registrada na sessão temporária da fase.");
+    }
+
+    /// <summary>
+    /// Salva o Checkpoint da Fase (chamado ao passar de fase ou ao iniciar a run).
+    /// Torna permanentes para a run todas as habilidades e bênçãos compradas até agora.
+    /// </summary>
+    public void SaveStageCheckpoint()
+    {
+        foreach (var b in stageSessionBoons)
+        {
+            if (b != null && !confirmedBoons.Contains(b))
+            {
+                confirmedBoons.Add(b);
+            }
+        }
+        stageSessionBoons.Clear();
+
+        checkpointEquippedAbilities[0] = slotQ;
+        checkpointEquippedAbilities[1] = slotE;
+        checkpointEquippedAbilities[2] = slotR;
+
+        Debug.Log($"[PlayerCombatController] Checkpoint de Fase Salvo com Sucesso! Q: {(slotQ != null ? slotQ.AbilityName : "null")}, E: {(slotE != null ? slotE.AbilityName : "null")}, R: {(slotR != null ? slotR.AbilityName : "null")}, Bênçãos Confirmadas: {confirmedBoons.Count}");
+    }
+
+    /// <summary>
+    /// Reverte todas as habilidades e bênçãos compradas na fase atual (chamado ao morrer na fase).
+    /// As estrelas e moedas gastas NÃO são recuperadas.
+    /// </summary>
+    public void RevertStageSessionPurchases()
+    {
+        if (stageSessionBoons.Count > 0)
+        {
+            Debug.Log($"[PlayerCombatController] Revertendo {stageSessionBoons.Count} bênçãos adquiridas nesta fase após a morte...");
+            foreach (var boon in stageSessionBoons)
+            {
+                if (boon != null)
+                {
+                    boon.RemoveBoon(gameObject);
+                }
+            }
+            stageSessionBoons.Clear();
+        }
+
+        // Restaura as habilidades equipadas para o estado do início da fase
+        slotQ = checkpointEquippedAbilities[0];
+        slotE = checkpointEquippedAbilities[1];
+        slotR = checkpointEquippedAbilities[2];
+
+        cooldownQ = 0f;
+        cooldownE = 0f;
+        cooldownR = 0f;
+
+        OnEquippedAbilitiesChanged?.Invoke(slotQ, slotE, slotR);
+        Debug.Log("[PlayerCombatController] Habilidades e buffs da fase revertidos. Habilidades salvas no checkpoint mantidas.");
     }
     #endregion
 

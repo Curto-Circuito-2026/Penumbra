@@ -261,4 +261,70 @@ public class AbilityBoonSO : ScriptableObject
         Debug.Log($"[AbilityBoonSO] Bênção/Acordo '{boonName}' aplicado com sucesso! Benefício: ({effectType}: {effectValue})" + (HasDebuff ? $" | Penalidade: ({debuffEffectType}: -{debuffValue})" : ""));
         return true;
     }
+
+    /// <summary>
+    /// Reverte o benefício e a penalidade no jogador (usado ao morrer na fase para cancelar compras não salvas).
+    /// </summary>
+    public bool RemoveBoon(GameObject player)
+    {
+        if (player == null) return false;
+
+        PlayerStats stats = player.GetComponent<PlayerStats>();
+        CharacterController2D character = player.GetComponent<CharacterController2D>();
+        PlayerCombatController combat = player.GetComponent<PlayerCombatController>();
+
+        // 1. Reverte o Benefício
+        switch (effectType)
+        {
+            case ShopItemEffectType.IncreaseMaxHealth:
+                if (stats != null) stats.IncreaseMaxHealth(-effectValue);
+                break;
+
+            case ShopItemEffectType.IncreaseMaxMana:
+                if (stats != null) stats.IncreaseMaxMana(-effectValue);
+                break;
+
+            case ShopItemEffectType.IncreaseManaRegen:
+                if (stats != null) stats.IncreaseManaRegen(-effectValue);
+                break;
+
+            case ShopItemEffectType.IncreaseMoveSpeed:
+                if (character != null) character.IncreaseMovementSpeed(-effectValue);
+                break;
+
+            case ShopItemEffectType.IncreaseDamage:
+                if (combat != null) combat.IncreaseDamage(-effectValue);
+                break;
+        }
+
+        // 2. Reverte a Penalidade (se for um Acordo do Saci)
+        if (HasDebuff)
+        {
+            switch (debuffEffectType)
+            {
+                case ShopItemEffectType.IncreaseMaxHealth:
+                    if (stats != null) stats.IncreaseMaxHealth(debuffValue);
+                    break;
+
+                case ShopItemEffectType.IncreaseMaxMana:
+                    if (stats != null) stats.IncreaseMaxMana(debuffValue);
+                    break;
+
+                case ShopItemEffectType.IncreaseManaRegen:
+                    if (stats != null) stats.IncreaseManaRegen(debuffValue);
+                    break;
+
+                case ShopItemEffectType.IncreaseMoveSpeed:
+                    if (character != null) character.IncreaseMovementSpeed(debuffValue);
+                    break;
+
+                case ShopItemEffectType.IncreaseDamage:
+                    if (combat != null) combat.IncreaseDamage(debuffValue);
+                    break;
+            }
+        }
+
+        Debug.Log($"[AbilityBoonSO] Bênção/Acordo '{boonName}' revertido com sucesso do jogador.");
+        return true;
+    }
 }

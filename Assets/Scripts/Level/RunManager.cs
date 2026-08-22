@@ -261,6 +261,12 @@ public class RunManager : MonoBehaviour
     {
         EnsurePendingRegionsQueue();
 
+        PlayerCombatController combat = UnityEngine.Object.FindAnyObjectByType<PlayerCombatController>();
+        if (combat != null)
+        {
+            combat.SaveStageCheckpoint();
+        }
+
         if (startRunScreen != null)
         {
             Tween.UIAnchoredPositionX(startRunScreen.GetComponent<RectTransform>(), -1920f, 1f, Ease.InOutSine).OnComplete(() =>
@@ -322,6 +328,13 @@ public class RunManager : MonoBehaviour
     /// </summary>
     public void AdvanceToNextRegionOrFinish()
     {
+        // Salva as habilidades e bênçãos adquiridas na fase que acabou de ser concluída com sucesso
+        PlayerCombatController combat = UnityEngine.Object.FindAnyObjectByType<PlayerCombatController>();
+        if (combat != null)
+        {
+            combat.SaveStageCheckpoint();
+        }
+
         if (pendingRegions != null && pendingRegions.Count > 0)
         {
             int completedRegion = pendingRegions[0];
