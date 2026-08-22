@@ -1,27 +1,36 @@
 using UnityEngine;
 
+[ExecuteAlways]
 public class MaterialProperties : MonoBehaviour
 {
-
-    SpriteRenderer sprite;
+    private SpriteRenderer sprite;
     private MaterialPropertyBlock _propBlock;
-
     private int _spriteSizeID;
-    void Start()
-    {
-        
-    }
 
     private void Awake()
     {
-        sprite = GetComponent<SpriteRenderer>();
-        _propBlock = new MaterialPropertyBlock();
-        _spriteSizeID = Shader.PropertyToID("_SpriteSize");
+        Initialize();
     }
 
-    void LateUpdate()
+    private void OnEnable()
     {
-        if (sprite.sprite == null) return;
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        if (sprite == null) sprite = GetComponent<SpriteRenderer>();
+        if (_propBlock == null) _propBlock = new MaterialPropertyBlock();
+        if (_spriteSizeID == 0) _spriteSizeID = Shader.PropertyToID("_SpriteSize");
+    }
+
+    private void LateUpdate()
+    {
+        if (sprite == null) sprite = GetComponent<SpriteRenderer>();
+        if (sprite == null || sprite.sprite == null) return;
+        if (_propBlock == null) _propBlock = new MaterialPropertyBlock();
+        if (_spriteSizeID == 0) _spriteSizeID = Shader.PropertyToID("_SpriteSize");
+
         sprite.GetPropertyBlock(_propBlock);
         _propBlock.SetVector(_spriteSizeID, new Vector2(sprite.sprite.rect.width, sprite.sprite.rect.height));
         sprite.SetPropertyBlock(_propBlock);
