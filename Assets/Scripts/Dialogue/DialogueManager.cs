@@ -84,14 +84,51 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        // Entrada do Jogador: Avança o diálogo ao pressionar Espaço, Enter, E ou Botão A do controle
+        // Entrada do Jogador: Pular diálogo inteiro com ESC ou F
+        bool skipAllPressed = (Keyboard.current != null && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.fKey.wasPressedThisFrame)) ||
+                              (Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame);
+
+        if (skipAllPressed)
+        {
+            SkipEntireDialogue();
+            return;
+        }
+
+        // Entrada do Jogador: Avança o diálogo ao pressionar Espaço, Enter, E, Clique do Mouse ou Botão A do controle
         bool confirmPressed = (Keyboard.current != null && (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame)) ||
-                             (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
+                              (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) ||
+                              (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
 
         if (confirmPressed)
         {
             DisplayNextNode();
         }
+    }
+
+    /// <summary>
+    /// Pula a sequência inteira de diálogo e finaliza imediatamente.
+    /// </summary>
+    public void SkipEntireDialogue()
+    {
+        if (!isDialogueActive) return;
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+
+        DialogueNode nodeEnding = currentNode;
+        var callback = currentOnCompleteCallback;
+        currentOnCompleteCallback = null;
+
+        EndDialogue();
+
+        if (nodeEnding != null && nodeEnding.onEnd != null)
+        {
+            nodeEnding.onEnd.Raise();
+        }
+
+        callback?.Invoke();
     }
 
     /// <summary>
