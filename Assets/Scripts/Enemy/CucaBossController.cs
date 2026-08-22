@@ -83,6 +83,17 @@ public class CucaBossController : MonoBehaviour, IDamageable
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        if (animator == null)
+        {
+            animator = gameObject.AddComponent<Animator>();
+        }
+        if (animator.runtimeAnimatorController == null)
+        {
+#if UNITY_EDITOR
+            animator.runtimeAnimatorController = UnityEditor.AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Animations/Enemies/Cuca/Cuca.controller");
+#endif
+        }
+
         agent = GetComponent<NavMeshAgent>();
         bodyCollider = GetComponent<Collider2D>();
 
@@ -464,14 +475,14 @@ public class CucaBossController : MonoBehaviour, IDamageable
         {
             agent.isStopped = false;
             agent.SetDestination(destination);
-            if (animator != null) animator.SetFloat(SpeedHash, agent.velocity.magnitude);
+            if (animator != null && animator.runtimeAnimatorController != null) animator.SetFloat(SpeedHash, agent.velocity.magnitude);
         }
         else
         {
             Vector3 dir = (destination - transform.position).normalized;
             transform.position += dir * (phase2MoveSpeed * Time.deltaTime);
             transform.position = ClampToArena(transform.position);
-            if (animator != null) animator.SetFloat(SpeedHash, phase2MoveSpeed);
+            if (animator != null && animator.runtimeAnimatorController != null) animator.SetFloat(SpeedHash, phase2MoveSpeed);
         }
     }
 
@@ -482,7 +493,7 @@ public class CucaBossController : MonoBehaviour, IDamageable
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
         }
-        if (animator != null) animator.SetFloat(SpeedHash, 0f);
+        if (animator != null && animator.runtimeAnimatorController != null) animator.SetFloat(SpeedHash, 0f);
     }
 
     private void FlipTowards(Vector3 targetPos)

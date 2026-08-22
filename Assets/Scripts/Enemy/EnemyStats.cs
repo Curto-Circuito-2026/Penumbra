@@ -141,6 +141,13 @@ public class EnemyStats : MonoBehaviour, IDamageable
     {
         if (isDead) return;
 
+        if (TryGetComponent(out StatusEffectReceiver receiver) && receiver.IsHunterMarked)
+        {
+            float mult = receiver.HunterMarkMultiplier;
+            amount *= mult;
+            Debug.Log($"[EnemyStats] Marca do Caçador amplificou o dano para {amount:F1} (x{mult:F1})!");
+        }
+
         currentHealth -= amount;
         if (currentHealth < 0f) currentHealth = 0f;
 

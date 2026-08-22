@@ -78,6 +78,7 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
     private Animator animator;
     private static readonly int RoarTrigger = Animator.StringToHash("Roar");
+    private static readonly int DeathTrigger = Animator.StringToHash("Death");
 
     [Header("Eventos de Morte")]
     [Tooltip("Evento Unity chamado no Inspector ao derrotar o Boss (ex: abrir portas, tocar cutscene, liberar passagem).")]
@@ -740,8 +741,13 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     {
         if (isDead) return;
         isDead = true;
+        isCombatActive = false;
         StopAllCoroutines();
+        StartCoroutine(DieRoutine());
+    }
 
+    private IEnumerator DieRoutine()
+    {
         Debug.Log("[Boitatá] O Chefe foi Derrotado! Concedendo estrelas forjadas ao jogador...");
 
         // Dispara eventos para sistemas externos (cutscenes, portas, diálogos)
@@ -755,6 +761,12 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         if (BossHealthBarUI.Instance != null)
         {
             BossHealthBarUI.Instance.HideBoss(true);
+        }
+
+        // Toca animação de morte
+        if (animator != null)
+        {
+            animator.SetTrigger(DeathTrigger);
         }
 
         // Explosão de Morte e Tremedeira de Câmera
@@ -772,7 +784,8 @@ public class BoitataBossController : MonoBehaviour, IDamageable
             SpawnStarDrop(dropPos);
         }
 
-        Destroy(gameObject, 0.4f);
+        yield return new WaitForSeconds(2.0f);
+        Destroy(gameObject);
     }
 
     private void SpawnStarDrop(Vector3 position)
