@@ -75,8 +75,8 @@ public class CutsceneClip : ICinematicClip
                               (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) ||
                               (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
 
-        bool skipAllPressed = (Keyboard.current != null && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.fKey.wasPressedThisFrame)) ||
-                              (Gamepad.current != null && (Gamepad.current.startButton.wasPressedThisFrame || Gamepad.current.buttonEast.wasPressedThisFrame));
+        // Pular a cutscene inteira: apenas no ESC
+        bool skipAllPressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
 
         if (skipAllPressed)
         {

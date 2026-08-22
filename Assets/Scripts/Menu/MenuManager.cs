@@ -14,6 +14,14 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] GameObject endMenu;
 
+    private void Start()
+    {
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.SetState(GameState.Menu);
+        }
+    }
+
     public void PlayGame(){
         StartCoroutine(playGameCoroutine());
     }

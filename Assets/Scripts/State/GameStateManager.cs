@@ -75,7 +75,43 @@ public class GameStateManager : MonoBehaviour
             return;
         }
 
-        previousState = currentState;
+        string activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (activeScene.Equals("Menu", System.StringComparison.OrdinalIgnoreCase) ||
+            activeScene.Equals("MainMenu", System.StringComparison.OrdinalIgnoreCase))
+        {
+            currentState = GameState.Menu;
+            previousState = GameState.Menu;
+        }
+        else
+        {
+            previousState = currentState;
+        }
+    }
+
+    private void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= HandleSceneLoaded;
+    }
+
+    private void HandleSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        if (scene.name.Equals("Menu", System.StringComparison.OrdinalIgnoreCase) ||
+            scene.name.Equals("MainMenu", System.StringComparison.OrdinalIgnoreCase))
+        {
+            SetState(GameState.Menu);
+        }
+        else
+        {
+            if (currentState == GameState.Menu)
+            {
+                SetState(GameState.Playing);
+            }
+        }
     }
 
     /// <summary>
