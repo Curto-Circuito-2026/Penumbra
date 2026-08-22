@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// Controla as barras de recursos do jogador na UI (Vida, Mana e Stamina).
+/// Controla as barras de recursos do jogador na UI (Vida, Mana e Escudo).
 /// Inscreve-se nos eventos do PlayerStats para atualização dinâmica em tempo real.
 /// </summary>
 public class ResourceUIHUD : MonoBehaviour
@@ -19,9 +19,9 @@ public class ResourceUIHUD : MonoBehaviour
     [SerializeField] private Image manaBarFill;
     [SerializeField] private TextMeshProUGUI manaText;
 
-    [Header("Barra de Stamina (Verde/Amarela)")]
-    [SerializeField] private Image staminaBarFill;
-    [SerializeField] private TextMeshProUGUI staminaText;
+    [Header("Barra de Escudo / Vigor (Opcional)")]
+    [SerializeField] private Image shieldBarFill;
+    [SerializeField] private TextMeshProUGUI shieldText;
 
     private void OnEnable()
     {
@@ -42,6 +42,19 @@ public class ResourceUIHUD : MonoBehaviour
         InitializeUI();
     }
 
+    private void Update()
+    {
+        if (playerStats == null)
+        {
+            FindPlayerStats();
+            if (playerStats != null)
+            {
+                SubscribeEvents();
+                InitializeUI();
+            }
+        }
+    }
+
     private void FindPlayerStats()
     {
         if (playerStats == null)
@@ -57,7 +70,8 @@ public class ResourceUIHUD : MonoBehaviour
         UnsubscribeEvents();
         playerStats.OnHealthChanged += UpdateHealthBar;
         playerStats.OnManaChanged += UpdateManaBar;
-        playerStats.OnStaminaChanged += UpdateStaminaBar;
+        playerStats.OnShieldChanged += UpdateShieldBar;
+        playerStats.OnPlayerRespawned += InitializeUI;
     }
 
     private void UnsubscribeEvents()
@@ -66,15 +80,17 @@ public class ResourceUIHUD : MonoBehaviour
 
         playerStats.OnHealthChanged -= UpdateHealthBar;
         playerStats.OnManaChanged -= UpdateManaBar;
-        playerStats.OnStaminaChanged -= UpdateStaminaBar;
+        playerStats.OnShieldChanged -= UpdateShieldBar;
+        playerStats.OnPlayerRespawned -= InitializeUI;
     }
 
-    private void InitializeUI()
+    public void InitializeUI()
     {
         if (playerStats != null)
         {
             UpdateHealthBar(playerStats.CurrentHealth, playerStats.MaxHealth);
             UpdateManaBar(playerStats.CurrentMana, playerStats.MaxMana);
+            UpdateShieldBar(playerStats.CurrentShield);
         }
     }
 
@@ -82,7 +98,17 @@ public class ResourceUIHUD : MonoBehaviour
     {
         float ratio = max > 0f ? Mathf.Clamp01(current / max) : 0f;
         if (healthBarFill != null) healthBarFill.fillAmount = ratio;
-        if (healthText != null) healthText.text = $"{current:F0} / {max:F0}";
+        if (healthText != null)
+        {
+            if (playerStats != null && playerStats.HasShield)
+            {
+                healthText.text = $"{current:F0} <color=#64B5F6>(+{playerStats.CurrentShield:F0})</color> / {max:F0}";
+            }
+            else
+            {
+                healthText.text = $"{current:F0} / {max:F0}";
+            }
+        }
     }
 
     public void UpdateManaBar(float current, float max)
@@ -92,11 +118,27 @@ public class ResourceUIHUD : MonoBehaviour
         if (manaText != null) manaText.text = $"{current:F0} / {max:F0}";
     }
 
-    public void UpdateStaminaBar(float current, float max)
+    public void UpdateShieldBar(float currentShield)
     {
-        float ratio = max > 0f ? Mathf.Clamp01(current / max) : 0f;
-        if (staminaBarFill != null) staminaBarFill.fillAmount = ratio;
-        if (staminaText != null) staminaText.text = $"{current:F0} / {max:F0}";
+        if (shieldBarFill != null)
+        {
+            shieldBarFill.gameObject.SetActive(currentShield > 0f);
+            if (playerStats != null && playerStats.MaxHealth > 0f)
+            {
+                shieldBarFill.fillAmount = Mathf.Clamp01(currentShield / playerStats.MaxHealth);
+            }
+        }
+
+        if (shieldText != null)
+        {
+            shieldText.gameObject.SetActive(currentShield > 0f);
+            shieldText.text = $"{currentShield:F0}";
+        }
+
+        if (playerStats != null)
+        {
+            UpdateHealthBar(playerStats.CurrentHealth, playerStats.MaxHealth);
+        }
     }
 
     #region Setter API Dinâmica
@@ -112,10 +154,10 @@ public class ResourceUIHUD : MonoBehaviour
         manaText = text;
     }
 
-    public void SetStaminaReferences(Image fill, TextMeshProUGUI text)
+    public void SetShieldReferences(Image fill, TextMeshProUGUI text)
     {
-        staminaBarFill = fill;
-        staminaText = text;
+        shieldBarFill = fill;
+        shieldText = text;
     }
     #endregion
 }

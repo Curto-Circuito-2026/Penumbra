@@ -64,6 +64,19 @@ public class CurrencyUIHUD : MonoBehaviour
         CheckStateVisibility();
     }
 
+    private void Update()
+    {
+        if (playerCurrency == null)
+        {
+            FindPlayerCurrency();
+            if (playerCurrency != null)
+            {
+                SubscribeEvents();
+                UpdateAllDisplays();
+            }
+        }
+    }
+
     private void FindPlayerCurrency()
     {
         if (playerCurrency == null)
