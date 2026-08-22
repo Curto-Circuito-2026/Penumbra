@@ -86,7 +86,8 @@ public class DialogueTrigger : MonoBehaviour
                 highlightOutline = hlObj.GetComponent<SpriteRenderer>();
                 highlightOutline.sprite = mainSpriteRenderer.sprite;
                 highlightOutline.color = Color.white;
-                highlightOutline.sortingOrder = Mathf.Max(0, mainSpriteRenderer.sortingOrder - 1);
+                highlightOutline.sortingLayerID = mainSpriteRenderer.sortingLayerID;
+                highlightOutline.sortingOrder = Mathf.Max(1, mainSpriteRenderer.sortingOrder - 1);
             }
         }
 
@@ -177,6 +178,8 @@ public class DialogueTrigger : MonoBehaviour
                     highlightOutline.sprite = mainSpriteRenderer.sprite;
                     highlightOutline.flipX = mainSpriteRenderer.flipX;
                     highlightOutline.flipY = mainSpriteRenderer.flipY;
+                    highlightOutline.sortingLayerID = mainSpriteRenderer.sortingLayerID;
+                    highlightOutline.sortingOrder = Mathf.Max(1, mainSpriteRenderer.sortingOrder - 1);
                 }
 
                 // Brilho pulsante suave na borda branca
@@ -214,10 +217,25 @@ public class DialogueTrigger : MonoBehaviour
         TriggerDialogue();
     }
 
+    [Header("Eventos ao Finalizar Diálogo")]
+    [Tooltip("Ação disparada ao concluir a sequência de diálogo.")]
+    [SerializeField] private UnityEngine.Events.UnityEvent onDialogueFinished;
+
+    public void SetDialogueSequence(DialogueSequence seq)
+    {
+        dialogueToTrigger = seq;
+    }
+
+    public void SetOnDialogueFinished(UnityEngine.Events.UnityAction action)
+    {
+        if (onDialogueFinished == null) onDialogueFinished = new UnityEngine.Events.UnityEvent();
+        onDialogueFinished.AddListener(action);
+    }
+
     /// <summary>
     /// Inicia o diálogo chamando o DialogueManager, passando o nome e o retrato do NPC.
     /// </summary>
-    public void TriggerDialogue()
+    public void TriggerDialogue(System.Action customCallback = null)
     {
         if (dialogueToTrigger == null)
         {
@@ -245,11 +263,18 @@ public class DialogueTrigger : MonoBehaviour
             var swapNPC = GetComponent<AbilitySwapNPC>();
             var shopNPC = GetComponent<ShopkeeperNPC>();
 
-            System.Action onComplete = null;
-            if (swapNPC != null) onComplete = swapNPC.OpenThisSwap;
-            else if (shopNPC != null) onComplete = shopNPC.OpenThisShop;
+            System.Action onComplete = customCallback;
+            if (onComplete == null)
+            {
+                if (swapNPC != null) onComplete = swapNPC.OpenThisSwap;
+                else if (shopNPC != null) onComplete = shopNPC.OpenThisShop;
+            }
 
-            DialogueManager.Instance.StartDialogue(dialogueToTrigger, npcName, npcPortrait, onComplete);
+            DialogueManager.Instance.StartDialogue(dialogueToTrigger, npcName, npcPortrait, () =>
+            {
+                onComplete?.Invoke();
+                onDialogueFinished?.Invoke();
+            });
         }
         else
         {

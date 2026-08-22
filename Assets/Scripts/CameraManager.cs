@@ -31,6 +31,24 @@ public class CameraManager : MonoBehaviour
         cam = GetComponent<Camera>();
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        target = null;
+        isFollowing = true;
+        velocity = Vector3.zero;
+        FindPlayerTarget();
+    }
+
     private void Start()
     {
         FindPlayerTarget();
@@ -40,17 +58,39 @@ public class CameraManager : MonoBehaviour
     {
         if (target != null) return;
 
+        // 1. Procura por Tag "Player" (Gameplay)
         GameObject playerObj = GameObject.FindWithTag("Player");
-        if (playerObj != null)
+        if (playerObj != null && playerObj.GetComponent<AllyCompanionAI>() == null)
         {
             target = playerObj.transform;
             return;
         }
 
+        // 2. Procura por CharacterController2D
         CharacterController2D playerCC = Object.FindAnyObjectByType<CharacterController2D>();
         if (playerCC != null)
         {
             target = playerCC.transform;
+            return;
+        }
+
+        // 3. Procura por objeto chamado "Player" ou "Naia"
+        GameObject direct = GameObject.Find("Player") ?? GameObject.Find("Naia");
+        if (direct != null)
+        {
+            target = direct.transform;
+            return;
+        }
+
+        // 4. Procura por Actor protagonista (Cenas Cinemáticas)
+        Actor[] actors = Object.FindObjectsByType<Actor>(FindObjectsSortMode.None);
+        foreach (var a in actors)
+        {
+            if (a.actorName == "Naia" || a.name == "Naia" || a.name.Contains("Player"))
+            {
+                target = a.transform;
+                return;
+            }
         }
     }
 
@@ -72,10 +112,17 @@ public class CameraManager : MonoBehaviour
     {
         velocity = new Vector3(speed, speed, 0f);
     }
-    public void SetTarget(Transform newTarget)
+    public void SetTarget(Transform newTarget, Vector3? customOffset = null)
     {
-        Debug.Log(newTarget);
         target = newTarget;
+        if (customOffset.HasValue)
+        {
+            offset = customOffset.Value;
+        }
+        else
+        {
+            offset = new Vector3(0f, 0f, -10f);
+        }
         isFollowing = true;
     }
 

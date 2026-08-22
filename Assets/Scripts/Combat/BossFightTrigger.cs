@@ -14,6 +14,15 @@ public class BossFightTrigger : MonoBehaviour
     [Tooltip("Referência ao BoitataBossController na cena (opcional - se nulo, busca automaticamente).")]
     [SerializeField] private BoitataBossController bossController;
 
+    [Tooltip("Referência ao MapinguariBossController na cena (opcional - se nulo, busca automaticamente).")]
+    [SerializeField] private MapinguariBossController mapinguariController;
+
+    [Tooltip("Referência ao CucaBossController na cena (opcional - se nulo, busca automaticamente).")]
+    [SerializeField] private CucaBossController cucaController;
+
+    [Tooltip("Referência ao MatintaBossController na cena (opcional - se nulo, busca automaticamente).")]
+    [SerializeField] private MatintaBossController matintaController;
+
     [Tooltip("Referência ao EnemyStats do Boss (opcional - se for outro tipo de boss).")]
     [SerializeField] private EnemyStats bossStats;
 
@@ -47,7 +56,13 @@ public class BossFightTrigger : MonoBehaviour
     private void HandlePlayerRespawned()
     {
         FindBossReference();
-        if (bossController == null || !bossController.IsDead)
+        bool isDead = (bossController != null && bossController.IsDead) ||
+                      (mapinguariController != null && mapinguariController.IsDead) ||
+                      (cucaController != null && cucaController.IsDead) ||
+                      (matintaController != null && matintaController.IsDead) ||
+                      (bossStats != null && bossStats.CurrentHealth <= 0);
+
+        if (!isDead)
         {
             hasTriggered = false;
         }
@@ -55,22 +70,69 @@ public class BossFightTrigger : MonoBehaviour
 
     private void FindBossReference()
     {
+        if (bossController == null && transform.parent != null)
+        {
+            bossController = transform.parent.GetComponentInChildren<BoitataBossController>();
+        }
         if (bossController == null)
         {
-            if (transform.parent != null)
-            {
-                bossController = transform.parent.GetComponentInChildren<BoitataBossController>();
-            }
-
-            if (bossController == null)
-            {
-                bossController = Object.FindAnyObjectByType<BoitataBossController>();
-            }
+            bossController = Object.FindAnyObjectByType<BoitataBossController>();
         }
 
-        if (bossStats == null && bossController != null)
+        if (mapinguariController == null && transform.parent != null)
         {
-            bossStats = bossController.GetComponent<EnemyStats>();
+            mapinguariController = transform.parent.GetComponentInChildren<MapinguariBossController>();
+        }
+        if (mapinguariController == null)
+        {
+            mapinguariController = Object.FindAnyObjectByType<MapinguariBossController>();
+        }
+
+        if (cucaController == null && transform.parent != null)
+        {
+            cucaController = transform.parent.GetComponentInChildren<CucaBossController>();
+        }
+        if (cucaController == null)
+        {
+            cucaController = Object.FindAnyObjectByType<CucaBossController>();
+        }
+
+        if (matintaController == null && transform.parent != null)
+        {
+            matintaController = transform.parent.GetComponentInChildren<MatintaBossController>();
+        }
+        if (matintaController == null)
+        {
+            matintaController = Object.FindAnyObjectByType<MatintaBossController>();
+        }
+
+        if (bossStats == null)
+        {
+            if (bossController != null)
+            {
+                bossStats = bossController.GetComponent<EnemyStats>();
+            }
+            else if (mapinguariController != null)
+            {
+                bossStats = mapinguariController.GetComponent<EnemyStats>();
+            }
+            else if (cucaController != null)
+            {
+                bossStats = cucaController.GetComponent<EnemyStats>();
+            }
+            else if (matintaController != null)
+            {
+                bossStats = matintaController.GetComponent<EnemyStats>();
+            }
+
+            if (bossStats == null && transform.parent != null)
+            {
+                bossStats = transform.parent.GetComponentInChildren<EnemyStats>();
+            }
+            if (bossStats == null)
+            {
+                bossStats = Object.FindAnyObjectByType<EnemyStats>();
+            }
         }
     }
 
@@ -94,6 +156,18 @@ public class BossFightTrigger : MonoBehaviour
         if (bossController != null)
         {
             bossController.StartCombat();
+        }
+        else if (mapinguariController != null)
+        {
+            mapinguariController.StartCombat();
+        }
+        else if (cucaController != null)
+        {
+            cucaController.StartCombat();
+        }
+        else if (matintaController != null)
+        {
+            matintaController.StartCombat();
         }
         else if (bossStats != null)
         {

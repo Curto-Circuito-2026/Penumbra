@@ -77,14 +77,23 @@ public class CinematicManager : MonoBehaviour
         {
             gameStateManager.SetState(GameState.Cutscene);
         }
-        titleText.SetText(title);
-        subtitleText.SetText(subTitle);
-        TitleContainer.SetActive(true);
-        ToggleBars(true).OnComplete(() =>
+        try
         {
-            Tween.Alpha(titleContainerGroup, 1f, 1f, Ease.InOutSine).OnComplete(() => { StartCoroutine(CloseTitleCoroutine()); });
-        });
+            titleText.SetText(title);
+            subtitleText.SetText(subTitle);
+            TitleContainer.SetActive(true);
+            ToggleBars(true).OnComplete(() =>
+            {
+                Tween.Alpha(titleContainerGroup, 1f, 1f, Ease.InOutSine).OnComplete(() => { StartCoroutine(CloseTitleCoroutine()); });
+            });
+        }
+        catch
+        {
+            gameStateManager.SetState(GameState.Playing);
+        }
+        
 
+        
     }
 
     private IEnumerator CloseTitleCoroutine()
