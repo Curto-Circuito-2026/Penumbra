@@ -12,6 +12,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Hub.unity
     guid: bafa353516a944247bd59266e89ac717
   - enabled: 1
+    path: Assets/Scenes/Pantano.unity
+    guid: 183bdc03af477b7409699e65fecd5a66
+  - enabled: 1
+    path: Assets/Scenes/Cidade Destruida.unity
+    guid: bbb75bfc21194aa4f8f74b2684e5f627
+  - enabled: 1
     path: Assets/Scenes/Mata Atlantica.unity
     guid: d4826160e1df10e47a1ea83a8b6ef174
   - enabled: 0

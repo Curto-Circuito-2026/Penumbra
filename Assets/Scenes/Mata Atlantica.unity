@@ -17182,11 +17182,6 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
---- !u!4 &142467019 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3625304510662448344, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
-  m_PrefabInstance: {fileID: 1272519830}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &143873325
 GameObject:
   m_ObjectHideFlags: 0
@@ -82830,6 +82825,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossFightTrigger
   bossDisplayName: "BOITAT\xC1 - Serpente de Fogo"
   bossController: {fileID: 0}
+  mapinguariController: {fileID: 0}
+  cucaController: {fileID: 0}
+  matintaController: {fileID: 0}
   bossStats: {fileID: 0}
   triggerOnce: 1
   shakeCameraOnStart: 1
@@ -84570,7 +84568,7 @@ Transform:
   m_GameObject: {fileID: 596073405}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 444.6, y: 253.43, z: 0}
+  m_LocalPosition: {x: 594.8, y: 263.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -173857,6 +173855,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!1 &938509614
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 938509616}
+  - component: {fileID: 938509615}
+  m_Layer: 0
+  m_Name: GameStateManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &938509615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938509614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd17c94e0008dec40b8a2e03bfcb55bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameStateManager
+  currentState: 0
+  pauseTimeScaleOnPause: 1
+--- !u!4 &938509616
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938509614}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &938692430
 GameObject:
   m_ObjectHideFlags: 0
@@ -299416,6 +299460,7 @@ MonoBehaviour:
   BossSubtitle: Serpente Sinistra
   battleCameraZoom: 8
   bossZoom: 16
+  cameraOffset: {x: 0, y: 1.5}
 --- !u!4 &1127129479
 Transform:
   m_ObjectHideFlags: 0
@@ -323333,6 +323378,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2069316176}
     m_Modifications:
+    - target: {fileID: 1465004515668658970, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.6011
+      objectReference: {fileID: 0}
+    - target: {fileID: 1465004515668658970, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.6011
+      objectReference: {fileID: 0}
+    - target: {fileID: 1465004515668658970, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.6011
+      objectReference: {fileID: 0}
+    - target: {fileID: 1465004515668658970, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 1465004515668658970, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.3
+      objectReference: {fileID: 0}
     - target: {fileID: 2565672329124103964, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
       propertyPath: m_Size.x
       value: 10.966736
@@ -323398,6 +323463,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
+--- !u!4 &1272519831 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1465004515668658970, guid: d5a5a8f3bcb2a2d468bf069879b5b0b3, type: 3}
+  m_PrefabInstance: {fileID: 1272519830}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1274768606
 GameObject:
   m_ObjectHideFlags: 0
@@ -350986,7 +351056,7 @@ Transform:
   m_GameObject: {fileID: 1562551179}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 431.2, y: 241.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -407523,7 +407593,7 @@ Transform:
   - {fileID: 939593720}
   - {fileID: 563989979}
   - {fileID: 2043655163}
-  - {fileID: 142467019}
+  - {fileID: 1272519831}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2069392110
@@ -417006,10 +417076,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 885713279199004565, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.099975586
-      objectReference: {fileID: 0}
     - target: {fileID: 1007059420229947190, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
       propertyPath: m_Name
       value: GameCanvas
@@ -417142,30 +417208,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4931183034484937182, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4931183034484937182, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4931183034484937182, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4931183034484937182, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4931183034484937182, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4931183034484937182, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4979136376537583950, guid: a7fb3127592148c4da79a1b4719f2aa4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -417223,3 +417265,4 @@ SceneRoots:
   - {fileID: 1127129479}
   - {fileID: 588042018}
   - {fileID: 1412088485}
+  - {fileID: 938509616}
