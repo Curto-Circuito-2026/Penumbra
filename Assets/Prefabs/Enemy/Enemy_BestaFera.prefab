@@ -249,6 +249,7 @@ MonoBehaviour:
   dropChance: 0.85
   minDropCount: 1
   maxDropCount: 3
+  deathDespawnDelay: 0.55
 --- !u!114 &1265909759464193585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,6 +308,7 @@ MonoBehaviour:
   combatController: {fileID: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  spriteFacesRightByDefault: 0
 --- !u!95 &790080711369177313
 Animator:
   serializedVersion: 7
