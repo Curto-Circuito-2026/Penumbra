@@ -19,27 +19,16 @@ public class CharacterController2D : MonoBehaviour
 
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float runSpeed = 8.5f;
 
     [Header("Dash Settings")]
     [SerializeField] private float dashDistance = 3f;
     [SerializeField] private float dashSpeed = 18f;
 
-    [Header("Stamina Settings")]
-    [SerializeField] private float maxStamina = 100f;
-    [SerializeField] private float currentStamina = 100f;
-    [SerializeField] private float runStaminaCostPerSecond = 20f;
-    [SerializeField] private float dashStaminaCost = 25f;
-    [SerializeField] private float staminaRegenRate = 15f;
-    [SerializeField] private float staminaRegenDelay = 1f;
-
     [Header("Visual Colors (Testing)")]
     [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color runColor = Color.yellow;
     [SerializeField] private Color dashColor = Color.cyan;
 
     private InputAction moveAction;
-    private InputAction runAction;
     private InputAction dashAction;
 
     private Rigidbody2D rb;
@@ -50,8 +39,6 @@ public class CharacterController2D : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 lastMoveDirection = Vector2.down;
     private bool isDashing;
-    private bool isRunning;
-    private float staminaRegenTimer;
     private float speedBuffMultiplier = 1f;
     private Coroutine speedBuffCoroutine;
 
@@ -69,8 +56,8 @@ public class CharacterController2D : MonoBehaviour
     private static readonly int RangedTrigger = Animator.StringToHash("Ranged");
     private static readonly int CastTrigger = Animator.StringToHash("Cast");
 
-    public float CurrentStamina => currentStamina;
-    public float MaxStamina => maxStamina;
+    public float CurrentStamina => 100f;
+    public float MaxStamina => 100f;
 
     private void Awake()
     {
@@ -113,9 +100,7 @@ public class CharacterController2D : MonoBehaviour
             .With("Up", "<Gamepad>/leftStick/up").With("Down", "<Gamepad>/leftStick/down")
             .With("Left", "<Gamepad>/leftStick/left").With("Right", "<Gamepad>/leftStick/right");
 
-        runAction = new InputAction("Run", binding: "<Keyboard>/leftShift");
-        runAction.AddBinding("<Gamepad>/buttonEast");
-
+        //dash
         dashAction = new InputAction("Dash", binding: "<Keyboard>/space");
         dashAction.AddBinding("<Gamepad>/buttonSouth");
     }
@@ -123,21 +108,17 @@ public class CharacterController2D : MonoBehaviour
     private void OnEnable()
     {
         moveAction?.Enable();
-        runAction?.Enable();
         dashAction?.Enable();
     }
 
     private void OnDisable()
     {
         moveAction?.Disable();
-        runAction?.Disable();
         dashAction?.Disable();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        //GameObject spawn = GameObject.Find("SpawnPoint");
-        //if (spawn) {this.transform.position = spawn.transform.position;}
     }
 
     private void Update()
@@ -146,10 +127,8 @@ public class CharacterController2D : MonoBehaviour
 
         if (isDashing) return;
 
-        // Verifica se o jogador pode se movimentar de acordo com o estado do jogo (GameStateManager)
+        // Se o jogador não puder se mover (diálogo, pausa ou morte), cancela o movimento
         bool canMove = GameStateManager.Instance == null || GameStateManager.Instance.CanPlayerMove;
-
-        // Caso alternativo se o DialogueManager estiver ativo diretamente
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
         {
             canMove = false;
@@ -158,15 +137,12 @@ public class CharacterController2D : MonoBehaviour
         if (!canMove)
         {
             moveInput = Vector2.zero;
-            isRunning = false;
             if (rb != null) rb.linearVelocity = Vector2.zero;
             UpdateAnimator();
             return;
         }
 
         HandleInput();
-        HandleStamina();
-        //UpdateVisuals();
         UpdateAnimator();
     }
 
@@ -181,10 +157,6 @@ public class CharacterController2D : MonoBehaviour
         else if (isDashing)
         {
             CurrentState = CharacterState.Dashing;
-        }
-        else if (isRunning)
-        {
-            CurrentState = CharacterState.Running;
         }
         else if (moveInput != Vector2.zero)
         {
@@ -212,15 +184,14 @@ public class CharacterController2D : MonoBehaviour
             return;
         }
 
-        // Se houver input manual WASD, aplica o movimento WASD
+        // Aplica o movimento com a velocidade de caminhada
         if (moveInput != Vector2.zero)
         {
-            float speed = (isRunning ? runSpeed : walkSpeed) * speedBuffMultiplier;
+            float speed = walkSpeed * speedBuffMultiplier;
             rb.linearVelocity = moveInput * speed;
         }
         else
         {
-            // Se NÃO houver input WASD, só zera a velocidade se não houver perseguição/pathfinding de combate ativo
             PlayerCombatController combat = GetComponent<PlayerCombatController>();
             if (combat == null || !combat.IsPursuingTarget)
             {
@@ -229,9 +200,6 @@ public class CharacterController2D : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Aplica buff de velocidade temporário (Pé de Vento).
-    /// </summary>
     public void ApplySpeedBuff(float multiplier, float duration)
     {
         if (speedBuffCoroutine != null) StopCoroutine(speedBuffCoroutine);
@@ -241,18 +209,9 @@ public class CharacterController2D : MonoBehaviour
     private IEnumerator SpeedBuffRoutine(float multiplier, float duration)
     {
         speedBuffMultiplier = Mathf.Max(1f, multiplier);
-        Debug.Log($"[CharacterController2D] Pé de Vento ativado! Velocidade x{speedBuffMultiplier:F1} por {duration:F1}s.");
-
-        if (CombatVisualEffects.Instance != null)
-        {
-            CombatVisualEffects.Instance.PlayImpactBurst(transform.position, new Color(0.4f, 0.9f, 0.9f), 1.8f);
-        }
-
         yield return new WaitForSeconds(duration);
-
         speedBuffMultiplier = 1f;
         speedBuffCoroutine = null;
-        Debug.Log("[CharacterController2D] Pé de Vento expirou.");
     }
 
     private void HandleInput()
@@ -271,10 +230,7 @@ public class CharacterController2D : MonoBehaviour
             }
         }
 
-        bool runPressed = runAction.IsPressed();
-        isRunning = runPressed && moveInput != Vector2.zero && currentStamina > 0f;
-
-        if (dashAction.WasPressedThisFrame() && currentStamina >= dashStaminaCost)
+        if (dashAction.WasPressedThisFrame() && !isDashing)
         {
             StartCoroutine(PerformDash(moveInput));
         }
@@ -282,42 +238,17 @@ public class CharacterController2D : MonoBehaviour
 
     private void HandleStamina()
     {
-        if (isRunning && moveInput != Vector2.zero)
-        {
-            currentStamina -= runStaminaCostPerSecond * Time.deltaTime;
-            staminaRegenTimer = staminaRegenDelay;
-
-            if (currentStamina <= 0f)
-            {
-                currentStamina = 0f;
-                isRunning = false;
-            }
-        }
-        else if (!isDashing)
-        {
-            if (staminaRegenTimer > 0f)
-            {
-                staminaRegenTimer -= Time.deltaTime;
-            }
-            else if (currentStamina < maxStamina)
-            {
-                currentStamina += staminaRegenRate * Time.deltaTime;
-                if (currentStamina > maxStamina) currentStamina = maxStamina;
-            }
-        }
+        // Stamina removida do jogo
     }
 
     private IEnumerator PerformDash(Vector2 inputDirection)
     {
         isDashing = true;
         CurrentState = CharacterState.Dashing;
-        currentStamina -= dashStaminaCost;
-        staminaRegenTimer = staminaRegenDelay;
 
         Vector2 dashDir = (inputDirection != Vector2.zero ? inputDirection : lastMoveDirection).normalized;
         if (dashDir == Vector2.zero) dashDir = Vector2.down;
 
-        // Dispara o Trigger e atualiza a direção do dash no Animator
         if (animator != null)
         {
             animator.SetFloat(LastMoveX, dashDir.x);
@@ -384,10 +315,6 @@ public class CharacterController2D : MonoBehaviour
         {
             spriteRenderer.color = dashColor;
         }
-        else if (isRunning)
-        {
-            spriteRenderer.color = runColor;
-        }
         else
         {
             spriteRenderer.color = normalColor;
@@ -404,13 +331,12 @@ public class CharacterController2D : MonoBehaviour
     }
 
     /// <summary>
-    /// Aumenta permanentemente a velocidade de caminhada e corrida.
+    /// Aumenta permanentemente a velocidade de movimento.
     /// </summary>
     public void IncreaseMovementSpeed(float amount)
     {
         if (amount <= 0f) return;
         walkSpeed += amount;
-        runSpeed += amount;
     }
 
     /// <summary>

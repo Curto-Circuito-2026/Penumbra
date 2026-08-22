@@ -109,7 +109,7 @@ public class SkillTooltipUI : MonoBehaviour
 
         if (manaCostText != null)
         {
-            manaCostText.text = manaCost > 0f ? $"<color=#FFCC00>Mana:</color> {manaCost:F0}" : "<color=#FFCC00>Mana:</color> 0";
+            manaCostText.gameObject.SetActive(false);
         }
 
         if (skillIcon != null)

@@ -86,10 +86,22 @@ public class ResourceUIHUD : MonoBehaviour
 
     public void InitializeUI()
     {
+        if (manaBarFill != null)
+        {
+            if (manaBarFill.transform.parent != null && manaBarFill.transform.parent != transform)
+            {
+                manaBarFill.transform.parent.gameObject.SetActive(false);
+            }
+            else
+            {
+                manaBarFill.gameObject.SetActive(false);
+            }
+        }
+        if (manaText != null) manaText.gameObject.SetActive(false);
+
         if (playerStats != null)
         {
             UpdateHealthBar(playerStats.CurrentHealth, playerStats.MaxHealth);
-            UpdateManaBar(playerStats.CurrentMana, playerStats.MaxMana);
             UpdateShieldBar(playerStats.CurrentShield);
         }
     }
@@ -113,9 +125,9 @@ public class ResourceUIHUD : MonoBehaviour
 
     public void UpdateManaBar(float current, float max)
     {
-        float ratio = max > 0f ? Mathf.Clamp01(current / max) : 0f;
-        if (manaBarFill != null) manaBarFill.fillAmount = ratio;
-        if (manaText != null) manaText.text = $"{current:F0} / {max:F0}";
+        // Mana removida da interface
+        if (manaBarFill != null) manaBarFill.gameObject.SetActive(false);
+        if (manaText != null) manaText.gameObject.SetActive(false);
     }
 
     public void UpdateShieldBar(float currentShield)

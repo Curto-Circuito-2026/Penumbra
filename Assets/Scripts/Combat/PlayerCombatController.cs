@@ -85,7 +85,6 @@ public class PlayerCombatController : MonoBehaviour
     private InputAction keyQAction;
     private InputAction keyEAction;
     private InputAction keyRAction;
-    private InputAction showAllRangesAction;
 
     // Eventos para atualização dinâmica da HUD
     public event Action<float, float, float, float> OnBasicCooldownsUpdated; // (meleeRem, meleeMax, rangedRem, rangedMax)
@@ -166,11 +165,6 @@ public class PlayerCombatController : MonoBehaviour
         keyQAction = new InputAction("KeyQ", binding: "<Keyboard>/q");
         keyEAction = new InputAction("KeyE", binding: "<Keyboard>/e");
         keyRAction = new InputAction("KeyR", binding: "<Keyboard>/r");
-
-        // Tecla Shift / Tab / C para exibir todos os alcances
-        showAllRangesAction = new InputAction("ShowAllRanges", binding: "<Keyboard>/leftShift");
-        showAllRangesAction.AddBinding("<Keyboard>/tab");
-        showAllRangesAction.AddBinding("<Keyboard>/c");
     }
 
     private void OnEnable()
@@ -181,7 +175,6 @@ public class PlayerCombatController : MonoBehaviour
         keyQAction.Enable();
         keyEAction.Enable();
         keyRAction.Enable();
-        showAllRangesAction.Enable();
     }
 
     private void OnDisable()
@@ -192,7 +185,6 @@ public class PlayerCombatController : MonoBehaviour
         keyQAction.Disable();
         keyEAction.Disable();
         keyRAction.Disable();
-        showAllRangesAction.Disable();
     }
 
     private void Start()
@@ -363,19 +355,7 @@ public class PlayerCombatController : MonoBehaviour
             targetSelectionRing.Hide();
         }
 
-        // 2. Se a tecla Shift / Tab / C estiver pressionada, exibe TODOS os alcances simultaneamente
-        if (showAllRangesAction != null && showAllRangesAction.IsPressed())
-        {
-            ShowAllRanges();
-            HideRangeIndicator();
-            return;
-        }
-        else if (multiRangeIndicator != null)
-        {
-            multiRangeIndicator.HideAll();
-        }
-
-        // 3. Se houver hover na HUD sobre um slot de habilidade específico
+        // 2. Se houver hover na HUD sobre um slot de habilidade específico
         if (hudHoverAction != PendingActionType.None)
         {
             float range = GetRequiredRange(hudHoverAction);
@@ -670,14 +650,6 @@ public class PlayerCombatController : MonoBehaviour
             Debug.Log($"[PlayerCombatController] Habilidade {ability.AbilityName} em recarga ({cooldownTimer:F1}s restante)!");
             return;
         }
-
-        if (playerStats == null) playerStats = GetComponent<PlayerStats>();
-        if (playerStats != null && !playerStats.HasEnoughMana(ability.ManaCost))
-        {
-            Debug.Log($"[PlayerCombatController] Mana insuficiente para usar {ability.AbilityName}! Custo: {ability.ManaCost}, Atual: {playerStats.CurrentMana:F0}");
-            return;
-        }
-
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
@@ -693,7 +665,6 @@ public class PlayerCombatController : MonoBehaviour
             characterController.TriggerCastAnimation(dir);
         }
 
-        if (playerStats != null) playerStats.UseMana(ability.ManaCost);
         cooldownTimer = ability.Cooldown;
         OnAbilityCooldownUpdated?.Invoke(slotIndex, cooldownTimer, ability.Cooldown);
 
@@ -726,13 +697,6 @@ public class PlayerCombatController : MonoBehaviour
             return;
         }
 
-        if (playerStats == null) playerStats = GetComponent<PlayerStats>();
-        if (playerStats != null && !playerStats.HasEnoughMana(slotR.ManaCost))
-        {
-            Debug.Log($"[PlayerCombatController] Mana insuficiente para usar Ultimate {slotR.AbilityName}! Custo: {slotR.ManaCost}, Atual: {playerStats.CurrentMana:F0}");
-            return;
-        }
-
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
@@ -748,7 +712,6 @@ public class PlayerCombatController : MonoBehaviour
             characterController.TriggerCastAnimation(dir);
         }
 
-        if (playerStats != null) playerStats.UseMana(slotR.ManaCost);
         ultimateCharge = 0f;
         cooldownR = slotR.Cooldown;
         OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);

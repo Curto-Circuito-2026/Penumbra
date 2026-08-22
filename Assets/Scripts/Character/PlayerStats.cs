@@ -72,20 +72,6 @@ public class PlayerStats : MonoBehaviour, IDamageable
     private void Update()
     {
         if (IsDead) return;
-
-        // Regeneração contínua de Mana
-        if (currentMana < maxMana)
-        {
-            currentMana += manaRegenRate * Time.deltaTime;
-            if (currentMana > maxMana) currentMana = maxMana;
-            OnManaChanged?.Invoke(currentMana, maxMana);
-        }
-
-        // Transmite atualização de Stamina para a UI
-        if (characterController != null)
-        {
-            OnStaminaChanged?.Invoke(characterController.CurrentStamina, characterController.MaxStamina);
-        }
     }
 
     /// <summary>
@@ -362,28 +348,19 @@ public class PlayerStats : MonoBehaviour, IDamageable
     }
 
     /// <summary>
-    /// Verifica se o jogador possui Mana suficiente para conjurar uma habilidade.
+    /// Verifica se o jogador possui Mana suficiente para conjurar uma habilidade (sempre true pois mana foi removida).
     /// </summary>
     public bool HasEnoughMana(float amount)
     {
-        return currentMana >= amount;
+        return true;
     }
 
     /// <summary>
-    /// Consome Mana do jogador se houver quantidade suficiente.
+    /// Consome Mana do jogador (sempre true pois habilidades agora usam apenas cooldown).
     /// </summary>
     public bool UseMana(float amount)
     {
-        if (amount <= 0f) return true;
-
-        if (currentMana >= amount)
-        {
-            currentMana -= amount;
-            OnManaChanged?.Invoke(currentMana, maxMana);
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     private void Die()
