@@ -54,6 +54,11 @@ public class PlayerCombatController : MonoBehaviour
     private readonly Color eColor = new Color(1f, 0.5f, 0.2f, 0.75f);
     private readonly Color rColor = new Color(1f, 0.85f, 0.2f, 0.9f);
 
+    [Header("Desbloqueio Progressivo de Slots de Habilidade")]
+    [Tooltip("Slot Q sempre começa desbloqueado.")]
+    [SerializeField] private bool isSlotEUnlocked = false;
+    [SerializeField] private bool isSlotRUnlocked = false;
+
     // Timers de Cooldown
     private float meleeCooldownTimer;
     private float rangedCooldownTimer;
@@ -87,6 +92,7 @@ public class PlayerCombatController : MonoBehaviour
     public event Action<int, float, float> OnAbilityCooldownUpdated;          // (slotIndex, remaining, max)
     public event Action<float, float> OnUltimateChargeUpdated;               // (current, max)
     public event Action<Ability, Ability, Ability> OnEquippedAbilitiesChanged; // (Q, E, R)
+    public event Action<int, bool> OnSlotUnlockStateChanged;                 // (slotIndex, isUnlocked)
 
     public float UltimateCharge => ultimateCharge;
     public float MaxUltimateCharge => maxUltimateCharge;
@@ -294,22 +300,36 @@ public class PlayerCombatController : MonoBehaviour
             PerformRangedAttack(mouseWorldPos);
         }
 
-        // Tecla Q - Habilidade 1 Direcional
+        // Tecla Q - Habilidade 1 Direcional (Sempre Desbloqueado)
         if (keyQAction.WasPressedThisFrame())
         {
             TryTargetOrCastAbility(0, slotQ, ref cooldownQ, mouseWorldPos);
         }
 
-        // Tecla E - Habilidade 2 Direcional
+        // Tecla E - Habilidade 2 Direcional (Requer Slot E Desbloqueado)
         if (keyEAction.WasPressedThisFrame())
         {
-            TryTargetOrCastAbility(1, slotE, ref cooldownE, mouseWorldPos);
+            if (IsSlotUnlocked(1))
+            {
+                TryTargetOrCastAbility(1, slotE, ref cooldownE, mouseWorldPos);
+            }
+            else
+            {
+                Debug.Log("[PlayerCombatController] Slot [E] bloqueado! Desbloqueie com o Curupira.");
+            }
         }
 
-        // Tecla R - Ultimate Direcional
+        // Tecla R - Ultimate Direcional (Requer Slot R Desbloqueado)
         if (keyRAction.WasPressedThisFrame())
         {
-            TryCastUltimate(mouseWorldPos);
+            if (IsSlotUnlocked(2))
+            {
+                TryCastUltimate(mouseWorldPos);
+            }
+            else
+            {
+                Debug.Log("[PlayerCombatController] Slot [R] bloqueado! Desbloqueie com o Curupira.");
+            }
         }
     }
 
@@ -754,11 +774,75 @@ public class PlayerCombatController : MonoBehaviour
 
     #region Dynamic Ability Loadout API
     /// <summary>
+    /// Retorna se o slot de habilidade especificado está desbloqueado (0 = Q [sempre true], 1 = E, 2 = R).
+    /// </summary>
+    public bool IsSlotUnlocked(int slotIndex)
+    {
+        switch (slotIndex)
+        {
+            case 0: return true; // Slot Q sempre começa desbloqueado
+            case 1: return isSlotEUnlocked;
+            case 2: return isSlotRUnlocked;
+            default: return false;
+        }
+    }
+
+    /// <summary>
+    /// Desbloqueia o próximo slot de habilidade disponível na ordem: Slot [E] (1ª compra) e depois Slot [R] (2ª compra).
+    /// Retorna true se um slot foi desbloqueado com sucesso; false se todos os slots já foram liberados.
+    /// </summary>
+    public bool UnlockNextAbilitySlot(out string unlockedSlotName)
+    {
+        if (!isSlotEUnlocked)
+        {
+            isSlotEUnlocked = true;
+            unlockedSlotName = "Slot [E]";
+            OnSlotUnlockStateChanged?.Invoke(1, true);
+            Debug.Log("[PlayerCombatController] Slot [E] de habilidade foi DESBLOQUEADO com sucesso!");
+            return true;
+        }
+        else if (!isSlotRUnlocked)
+        {
+            isSlotRUnlocked = true;
+            unlockedSlotName = "Slot [R]";
+            OnSlotUnlockStateChanged?.Invoke(2, true);
+            Debug.Log("[PlayerCombatController] Slot [R] de habilidade foi DESBLOQUEADO com sucesso!");
+            return true;
+        }
+
+        unlockedSlotName = "";
+        return false;
+    }
+
+    /// <summary>
+    /// Desbloqueia diretamente um slot específico (1 = E, 2 = R).
+    /// </summary>
+    public void UnlockAbilitySlot(int slotIndex)
+    {
+        if (slotIndex == 1 && !isSlotEUnlocked)
+        {
+            isSlotEUnlocked = true;
+            OnSlotUnlockStateChanged?.Invoke(1, true);
+        }
+        else if (slotIndex == 2 && !isSlotRUnlocked)
+        {
+            isSlotRUnlocked = true;
+            OnSlotUnlockStateChanged?.Invoke(2, true);
+        }
+    }
+
+    /// <summary>
     /// Equipa uma nova habilidade no slot especificado (0 = Q, 1 = E, 2 = R/Ultimate).
     /// Dispara atualização automática da HUD de combate.
     /// </summary>
     public void EquipAbility(int slotIndex, Ability newAbility)
     {
+        if (!IsSlotUnlocked(slotIndex))
+        {
+            Debug.LogWarning($"[PlayerCombatController] Não é possível equipar no Slot {slotIndex} porque ele está bloqueado!");
+            return;
+        }
+
         switch (slotIndex)
         {
             case 0:

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e13ee888148e924998934c9e942007d, type: 3}
+  m_Name: Ability_EscudoBolha
+  m_EditorClassIdentifier: Assembly-CSharp::BubbleShieldAbility
+  abilityName: Escudo Bolha
+  description: "Cria uma bolha protetora ao redor da Naia que absorve at\xE9 80 de
+    dano por 8 segundos. Repele inimigos ao estourar."
+  icon: {fileID: 0}
+  cooldown: 14
+  range: 5
+  damage: 0
+  manaCost: 25
+  cost: 0
+  shieldAmount: 80
+  shieldDuration: 8
+  bubbleVisualPrefab: {fileID: 0}

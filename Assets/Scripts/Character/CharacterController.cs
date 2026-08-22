@@ -52,9 +52,12 @@ public class CharacterController2D : MonoBehaviour
     private bool isDashing;
     private bool isRunning;
     private float staminaRegenTimer;
+    private float speedBuffMultiplier = 1f;
+    private Coroutine speedBuffCoroutine;
 
     public CharacterState CurrentState { get; private set; } = CharacterState.Idle;
     public bool IsDashing => isDashing || CurrentState == CharacterState.Dashing;
+    public float SpeedBuffMultiplier => speedBuffMultiplier;
 
     private static readonly int MoveX = Animator.StringToHash("MoveX");
     private static readonly int MoveY = Animator.StringToHash("MoveY");
@@ -212,7 +215,7 @@ public class CharacterController2D : MonoBehaviour
         // Se houver input manual WASD, aplica o movimento WASD
         if (moveInput != Vector2.zero)
         {
-            float speed = isRunning ? runSpeed : walkSpeed;
+            float speed = (isRunning ? runSpeed : walkSpeed) * speedBuffMultiplier;
             rb.linearVelocity = moveInput * speed;
         }
         else
@@ -224,6 +227,32 @@ public class CharacterController2D : MonoBehaviour
                 rb.linearVelocity = Vector2.zero;
             }
         }
+    }
+
+    /// <summary>
+    /// Aplica buff de velocidade temporário (Pé de Vento).
+    /// </summary>
+    public void ApplySpeedBuff(float multiplier, float duration)
+    {
+        if (speedBuffCoroutine != null) StopCoroutine(speedBuffCoroutine);
+        speedBuffCoroutine = StartCoroutine(SpeedBuffRoutine(multiplier, duration));
+    }
+
+    private IEnumerator SpeedBuffRoutine(float multiplier, float duration)
+    {
+        speedBuffMultiplier = Mathf.Max(1f, multiplier);
+        Debug.Log($"[CharacterController2D] Pé de Vento ativado! Velocidade x{speedBuffMultiplier:F1} por {duration:F1}s.");
+
+        if (CombatVisualEffects.Instance != null)
+        {
+            CombatVisualEffects.Instance.PlayImpactBurst(transform.position, new Color(0.4f, 0.9f, 0.9f), 1.8f);
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        speedBuffMultiplier = 1f;
+        speedBuffCoroutine = null;
+        Debug.Log("[CharacterController2D] Pé de Vento expirou.");
     }
 
     private void HandleInput()
@@ -285,7 +314,8 @@ public class CharacterController2D : MonoBehaviour
         currentStamina -= dashStaminaCost;
         staminaRegenTimer = staminaRegenDelay;
 
-        Vector2 dashDir = inputDirection != Vector2.zero ? inputDirection : lastMoveDirection;
+        Vector2 dashDir = (inputDirection != Vector2.zero ? inputDirection : lastMoveDirection).normalized;
+        if (dashDir == Vector2.zero) dashDir = Vector2.down;
 
         // Dispara o Trigger e atualiza a direção do dash no Animator
         if (animator != null)
@@ -296,18 +326,49 @@ public class CharacterController2D : MonoBehaviour
         }
 
         Vector2 startPos = rb.position;
-        Vector2 targetPos = startPos + dashDir * dashDistance;
-        float travelDuration = dashDistance / dashSpeed;
+        float actualDashDistance = dashDistance;
+
+        // Validação física de obstáculos: detecta paredes, bordas do mapa e colliders sólidos
+        Collider2D playerCol = GetComponent<Collider2D>();
+        float skinWidth = 0.08f;
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = false; // Ignora triggers
+        filter.useLayerMask = true;
+        int playerLayer = gameObject.layer;
+        filter.layerMask = ~(1 << playerLayer); // Todas as camadas sólidas exceto o próprio player
+
+        RaycastHit2D[] hits = new RaycastHit2D[10];
+        int hitCount = playerCol != null ? playerCol.Cast(dashDir, filter, hits, dashDistance) : rb.Cast(dashDir, filter, hits, dashDistance);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit2D hit = hits[i];
+            if (hit.collider != null && !hit.collider.isTrigger && hit.collider.gameObject != gameObject)
+            {
+                // Se for um obstáculo sólido, limita a distância do dash antes do impacto
+                float safeDist = Mathf.Max(0f, hit.distance - skinWidth);
+                if (safeDist < actualDashDistance)
+                {
+                    actualDashDistance = safeDist;
+                }
+            }
+        }
+
+        Vector2 targetPos = startPos + dashDir * actualDashDistance;
+        float travelDuration = actualDashDistance > 0.01f ? (actualDashDistance / dashSpeed) : 0f;
         float elapsedTime = 0f;
 
         rb.linearVelocity = Vector2.zero;
 
-        while (elapsedTime < travelDuration)
+        if (travelDuration > 0f)
         {
-            elapsedTime += Time.fixedDeltaTime;
-            float t = Mathf.Clamp01(elapsedTime / travelDuration);
-            rb.MovePosition(Vector2.Lerp(startPos, targetPos, t));
-            yield return new WaitForFixedUpdate();
+            while (elapsedTime < travelDuration)
+            {
+                elapsedTime += Time.fixedDeltaTime;
+                float t = Mathf.Clamp01(elapsedTime / travelDuration);
+                rb.MovePosition(Vector2.Lerp(startPos, targetPos, t));
+                yield return new WaitForFixedUpdate();
+            }
         }
 
         rb.MovePosition(targetPos);

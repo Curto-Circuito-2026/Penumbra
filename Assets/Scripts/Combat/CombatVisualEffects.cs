@@ -304,6 +304,58 @@ public class CombatVisualEffects : MonoBehaviour
     }
     #endregion
 
+    #region Efeito Aquático (Water Burst)
+    /// <summary>
+    /// Gera uma onda/explosão de água azul e espirros translúcidos.
+    /// </summary>
+    public void PlayWaterBurst(Vector3 position, float radius = 2.0f)
+    {
+        StartCoroutine(AnimateWaterBurst(position, radius));
+    }
+
+    private IEnumerator AnimateWaterBurst(Vector3 position, float maxRadius)
+    {
+        GameObject waterObj = new GameObject("VFX_WaterBurst");
+        waterObj.transform.position = position;
+
+        LineRenderer line = waterObj.AddComponent<LineRenderer>();
+        line.useWorldSpace = true;
+        line.positionCount = 36;
+        line.startWidth = 0.22f;
+        line.endWidth = 0.05f;
+        line.material = new Material(Shader.Find("Sprites/Default"));
+
+        Color startColor = new Color(0.2f, 0.7f, 1f, 0.95f);
+        line.startColor = startColor;
+        line.endColor = new Color(0.1f, 0.4f, 0.9f, 0.2f);
+
+        float duration = 0.35f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            float currentRadius = Mathf.Lerp(0.1f, maxRadius, Mathf.Sin(t * Mathf.PI * 0.5f));
+
+            for (int i = 0; i <= 35; i++)
+            {
+                float angle = (i / 35f) * Mathf.PI * 2f;
+                Vector3 p = position + new Vector3(Mathf.Cos(angle) * currentRadius, Mathf.Sin(angle) * currentRadius, 0f);
+                line.SetPosition(i, p);
+            }
+
+            Color alphaCol = Color.Lerp(startColor, new Color(0.1f, 0.5f, 1f, 0f), t * t);
+            line.startColor = alphaCol;
+            line.endColor = alphaCol;
+
+            yield return null;
+        }
+
+        Destroy(waterObj);
+    }
+    #endregion
+
     #region 5. R - Habilidade R (Ultimate / Meteoro Devastador)
     /// <summary>
     /// Gera a animação da Ultimate: Retículo de mira -> Queda do Meteoro -> Explosão Massiva + Shake.

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Caipora_PeleCarvalho
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: Pele de Carvalho
+  rarity: 1
+  icon: {fileID: 0}
+  description: Reduz o dano sofrido em 50% por 6 segundos com uma aura de casca protetora.
+  statDetail: "\u25B8 Redu\xE7\xE3o de Dano: -50% (6s)"
+  effectType: 6
+  effectValue: 50
+  debuffEffectType: 1
+  debuffValue: 0
+  debuffDetail: 
+  starCost: 1
+  grantedAbility: {fileID: 11400000, guid: be0aeebee81cbf44b92a941df0d7cfa9, type: 2}
