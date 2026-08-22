@@ -28,6 +28,8 @@ public class RunManager : MonoBehaviour
 
     [SerializeField] SceneController sceneController;
 
+    [SerializeField] GameStateManager gameStateManager;
+
     [SerializeField] GameObject startRunScreen;
     [SerializeField] GameObject deathScreen;
 
@@ -52,6 +54,9 @@ public class RunManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        cinematicManager = GameObject.Find("CinematicManager").GetComponent<CinematicManager>();
+        gameStateManager = GameObject.Find("GameStateManager").GetComponent<GameStateManager>();
     }
 
     private void Start()
@@ -62,20 +67,33 @@ public class RunManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         startRunScreen.SetActive(false);
+        StartCoroutine(SceneLoadCoroutine(scene.name));
+
+    }
+
+    private IEnumerator SceneLoadCoroutine(string sceneName)
+    {
         string title = "";
         string subTitle = "";
-        if (scene.name == "Hub")
+
+        if (sceneName == "Hub")
         {
+            while (gameStateManager.CurrentState != GameState.Playing)
+            {
+                yield return null;
+            }
+
             playerStats.RestartPlayer();
-            title = "A Terra Sem Males"; subTitle = "Yby Marã E'Yma";
+            title = "A Terra Sem Males";
+            subTitle = "Yby Marã E'Yma";
         }
         else
         {
             title = regions[runOrder[curRegion]].title;
             subTitle = regions[runOrder[curRegion]].subtitle;
         }
-        cinematicManager.ShowTitle(title, subTitle);
 
+        cinematicManager.ShowTitle(title, subTitle);
     }
 
     public void ShowStartRunScreen() {

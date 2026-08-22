@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class MenuManager : MonoBehaviour
@@ -8,8 +9,25 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] GameObject[] panels;
 
+    [SerializeField] GameObject mainCutscene;
+    [SerializeField] CinematicManager cinematicManager;
+
+    [SerializeField] GameObject endMenu;
+
     public void PlayGame(){
-        sceneLoader.LoadScene(1, TransitionType.CrossFade);
+        StartCoroutine(playGameCoroutine());
+    }
+
+    IEnumerator playGameCoroutine()
+    {
+        yield return StartCoroutine(sceneLoader.PlayTransition(TransitionType.CrossFade));
+        cinematicManager.PlayClip(mainCutscene);
+        cinematicManager.onEnd = () => {
+            endMenu.SetActive(true);
+            sceneLoader.LoadScene(1, TransitionType.CrossFade);
+            cinematicManager.onEnd = null;
+        };
+        
     }
 
     public void QuitGame(){Application.Quit();}

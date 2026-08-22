@@ -1,9 +1,9 @@
 using PrimeTween;
+using System;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-
+[DefaultExecutionOrder(-100)]
 public class CinematicManager : MonoBehaviour
 {
     public static CinematicManager Instance { get; private set; }
@@ -19,9 +19,11 @@ public class CinematicManager : MonoBehaviour
     private RectTransform bottomBarRect;
 
     [SerializeField] public GameObject TitleContainer;
-    private CanvasGroup titleContainerGroup;
-    private TMP_Text titleText;
-    private TMP_Text subtitleText;
+    [SerializeField] private CanvasGroup titleContainerGroup;
+    [SerializeField] private TMP_Text titleText;
+    [SerializeField] private TMP_Text subtitleText;
+
+    public Action onEnd;
 
     [SerializeField] public GameStateManager gameStateManager;
 
@@ -36,12 +38,6 @@ public class CinematicManager : MonoBehaviour
             topBarRect = TopBar.GetComponent<RectTransform>();
             bottomBarRect = BottomBar.GetComponent<RectTransform>();
 
-            titleContainerGroup = TitleContainer.GetComponent<CanvasGroup>();
-            Debug.Log(titleContainerGroup);
-            titleText = TitleContainer.transform.Find("Title").GetComponent<TMP_Text>();
-            subtitleText = TitleContainer.transform.Find("Subtitle").GetComponent<TMP_Text>();
-            Debug.Log(titleText);
-            Debug.Log(subtitleText);
             camManager = cam.GetComponent<CameraManager>();
         }
         else

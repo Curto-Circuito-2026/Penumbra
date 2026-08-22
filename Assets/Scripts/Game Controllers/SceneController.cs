@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -75,6 +76,26 @@ public class SceneController : MonoBehaviour
 
         Debug.Log("Awake");
         if (activeAnimation != TransitionType.None) { transitions[activeAnimation].gameObject.SetActive(false);}
+
+    }
+
+    public IEnumerator PlayTransition(TransitionType transition)
+    {
+        float elapsedTime = 0f;
+        float targetTime = 0f;
+        transitions[transition].gameObject.SetActive(true);
+        activeAnimation = transition;
+        transitions[activeAnimation].animator.ResetTrigger("End");
+        transitions[activeAnimation].animator.SetTrigger("Start");
+        targetTime = transitions[activeAnimation].time;
+        while (elapsedTime < targetTime)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transitions[activeAnimation].animator.ResetTrigger("Start");
+        transitions[activeAnimation].animator.SetTrigger("End");
 
     }
 
