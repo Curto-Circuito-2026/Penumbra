@@ -37,8 +37,8 @@ public class PlayerCurrency : MonoBehaviour
     [SerializeField] private int fragmentsPerStar = 10;
 
     [Header("Persistência em Disco")]
-    [Tooltip("Se verdadeiro, salva o saldo total de estrelas no PlayerPrefs (desativado por padrão para Demo One-Shot).")]
-    [SerializeField] private bool persistStars = false;
+    [Tooltip("Se verdadeiro, salva o saldo total de estrelas no PlayerPrefs.")]
+    [SerializeField] private bool persistStars = true;
     private const string STARS_PREFS_KEY = "PLAYER_STARS_TOTAL";
 
     private PlayerStats playerStats;
@@ -235,14 +235,20 @@ public class PlayerCurrency : MonoBehaviour
     /// </summary>
     private void HandlePlayerDied()
     {
-        CameraManager camManager = Camera.main.GetComponent<CameraManager>();
-        if (camManager) { camManager.SetTarget(this.transform); Camera.main.orthographicSize = 5f; }
+        CameraManager camManager = Camera.main != null ? Camera.main.GetComponent<CameraManager>() : null;
+        if (camManager != null) { camManager.SetTarget(this.transform); Camera.main.orthographicSize = 5f; }
         Debug.Log("[PlayerCurrency] Jogador morreu! Processando conversão de fragmentos de estrela para estrelas...");
+        
         int frags = staticRunFragments;
+        int prevStars = stars;
         ConvertFragmentsToStars();
+        int starsGained = stars - prevStars;
 
-        runManager.ShowDeathScreen(frags);
-
+        if (runManager == null) runManager = RunManager.Instance ?? FindAnyObjectByType<RunManager>();
+        if (runManager != null)
+        {
+            runManager.ShowDeathScreen(frags, starsGained, stars);
+        }
     }
 
     private void SaveStars()
