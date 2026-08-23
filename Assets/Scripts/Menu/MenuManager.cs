@@ -14,17 +14,42 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] GameObject endMenu;
 
+    [Header("Audio & BGM")]
+    [Tooltip("Música de fundo a ser tocada no Menu Principal.")]
+    [SerializeField] public AudioClip menuBgmClip;
+    [Tooltip("Tempo de fade out da música ao clicar em Jogar.")]
+    [SerializeField] public float bgmFadeOutDuration = 1.2f;
+
     private void Start()
     {
         if (GameStateManager.Instance != null)
         {
             GameStateManager.Instance.SetState(GameState.Menu);
         }
+
+        if (menuBgmClip == null)
+        {
+#if UNITY_EDITOR
+            menuBgmClip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Menu.mp3");
+#endif
+        }
+
+        if (menuBgmClip != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.PlayBGM(menuBgmClip, fadeDuration: 1f, loop: true);
+        }
     }
 
     public void PlayGame()
     {
         Debug.Log("[MenuManager] Botão 'Jogar' clicado!");
+
+        // Inicia o fade out suave da música do menu
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopBGM(fadeDuration: bgmFadeOutDuration);
+        }
+
         StartCoroutine(playGameCoroutine());
     }
 
