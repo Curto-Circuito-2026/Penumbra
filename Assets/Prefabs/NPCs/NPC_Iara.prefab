@@ -177,7 +177,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -6148953092080364865, guid: 3e0e71ba742e43e40acf61490ca7df22, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -188,7 +188,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
   m_BlendShapeWeights: []
 --- !u!61 &6486310040308111431
 BoxCollider2D:
@@ -227,7 +227,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.35322666, y: 0.16146019}
     oldSize: {x: 1.5625, y: 1.75}
     newSize: {x: 1.5625, y: 1.75}
     adaptiveTilingThreshold: 0.5
@@ -258,6 +258,9 @@ MonoBehaviour:
   interactionPrompt: {fileID: 1133776729360755750}
   highlightOutline: {fileID: 173218193986894313}
   animatePrompt: 1
+  onDialogueFinished:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8584108228379070775
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -89,7 +89,7 @@ public class AbilityBoonCardUI : MonoBehaviour
         if (currentBoon == null) return;
 
         PlayerCurrency currency = PlayerCurrency.Instance ?? Object.FindAnyObjectByType<PlayerCurrency>();
-        int playerStars = currency != null ? currency.Stars : 0;
+        int playerStars = currency != null ? currency.StarFragments : 0;
         bool canAfford = playerStars >= currentBoon.StarCost;
 
         if (StarElement != null)
