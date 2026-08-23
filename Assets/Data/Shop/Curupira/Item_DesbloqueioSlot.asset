@@ -16,8 +16,8 @@ MonoBehaviour:
   itemDescription: "Expande seu arsenal desbloqueando o pr\xF3ximo slot de habilidade
     (Slot [E] na 1\xAA compra e Slot [R] na 2\xAA compra)."
   itemIcon: {fileID: 0}
-  price: 5
-  currency: 0
+  price: 50
+  currency: 1
   effectType: 7
   effectValue: 1
   maxPurchases: 2

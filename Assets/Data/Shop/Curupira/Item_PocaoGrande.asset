@@ -15,8 +15,8 @@ MonoBehaviour:
   itemName: Elixir da Floresta Profunda
   itemDescription: Restaura completamente +120 pontos de vida do guerreiro.
   itemIcon: {fileID: 0}
-  price: 4
-  currency: 0
+  price: 45
+  currency: 1
   effectType: 0
   effectValue: 120
   maxPurchases: 99
