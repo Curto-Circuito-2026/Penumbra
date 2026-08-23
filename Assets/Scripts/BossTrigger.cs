@@ -14,6 +14,12 @@ public class BossTrigger : ICinematicClip
     [Tooltip("Offset vertical/horizontal para centralizar a câmera perfeitamente no Boss durante a apresentação.")]
     public Vector2 cameraOffset = new Vector2(0f, 1.5f);
 
+    [Header("Música de Batalha")]
+    [Tooltip("Música de batalha exclusiva para este Boss (opcional - auto-detectado se nulo).")]
+    [SerializeField] public AudioClip bossMusicClip;
+    [Tooltip("Tempo em segundos da transição suave da música de fase para a do Boss.")]
+    [SerializeField] public float bossMusicFadeDuration = 2.2f;
+
     public override void BindActors()
     {
         GameObject playerObj = GameObject.FindWithTag("Player") ?? GameObject.Find("Player");
@@ -66,6 +72,9 @@ public class BossTrigger : ICinematicClip
             Destroy(gameObject);
             yield break;
         }
+
+        // Inicia a transição imediata para a música épica do Boss antes/durante a apresentação
+        PlayBossBGM();
 
         // Garante que o CameraManager está pronto
         if (parent != null && parent.camManager == null)
@@ -126,5 +135,47 @@ public class BossTrigger : ICinematicClip
         }
 
         Destroy(gameObject);
+    }
+
+    private void PlayBossBGM()
+    {
+        if (AudioController.Instance == null) return;
+
+        AudioClip clip = bossMusicClip;
+
+#if UNITY_EDITOR
+        if (clip == null)
+        {
+            string bName = enemy != null && !string.IsNullOrEmpty(enemy.actorName) 
+                ? enemy.actorName.ToLower() 
+                : (Boss != null ? Boss.name.ToLower() : "");
+
+            // 1 = Pântano / Matinta Perera
+            if (bName.Contains("matinta"))
+            {
+                clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 1.mp3");
+            }
+            // 2 = Mata Atlântica / Boitatá
+            else if (bName.Contains("boitata"))
+            {
+                clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 2.mp3");
+            }
+            // 3 = Cidade Destruída / Mapinguari
+            else if (bName.Contains("mapinguari"))
+            {
+                clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 3.mp3");
+            }
+            // 4 = Boss Final / Cuca
+            else if (bName.Contains("cuca"))
+            {
+                clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 4.mp3");
+            }
+        }
+#endif
+
+        if (clip != null)
+        {
+            AudioController.Instance.PlayBGM(clip, fadeDuration: bossMusicFadeDuration, loop: true);
+        }
     }
 }

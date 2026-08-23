@@ -19,6 +19,10 @@ public struct Region
 #endif
     public string sceneName;
     public Vector2 spawnPoint;
+    [Tooltip("Música de fundo da fase/bioma.")]
+    public AudioClip stageBgm;
+    [Tooltip("Música de batalha do Boss desta fase.")]
+    public AudioClip bossBgm;
 }
 
 public class RunManager : MonoBehaviour
@@ -32,6 +36,10 @@ public class RunManager : MonoBehaviour
     [SerializeField] GameObject deathScreen;
     [SerializeField] TMP_Text starsText;
     [SerializeField] PlayerStats playerStats;
+
+    [Header("Áudio Geral da Run")]
+    [Tooltip("Música de fundo a ser tocada no Hub (A Terra Sem Males).")]
+    [SerializeField] private AudioClip hubBgm;
 
     [Header("Modo de Teste / Mock da Run")]
     [Tooltip("Se marcado, usa a ordem de teste fixada abaixo em vez de sortear aleatoriamente.")]
@@ -163,6 +171,105 @@ public class RunManager : MonoBehaviour
         {
             cinematicManager.ShowTitle(title, subTitle, true);
         }
+
+        // Toca a música correspondente à cena carregada (Hub ou Fase)
+        PlaySceneBGM(sceneName);
+    }
+
+    /// <summary>
+    /// Toca a música da cena atual (Hub ou Fase/Bioma) com crossfade suave.
+    /// </summary>
+    public void PlaySceneBGM(string sceneName)
+    {
+        if (AudioController.Instance == null) return;
+
+        if (sceneName == "Hub" || sceneName.Contains("Hub"))
+        {
+            AudioClip clip = hubBgm;
+#if UNITY_EDITOR
+            if (clip == null) clip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Menu.mp3");
+#endif
+            if (clip != null) AudioController.Instance.PlayBGM(clip, fadeDuration: 1.2f, loop: true);
+            return;
+        }
+
+        // Procura na lista de regiões do Inspector
+        for (int i = 0; i < (regions != null ? regions.Count : 0); i++)
+        {
+            if (GetSceneName(i) == sceneName)
+            {
+                if (regions[i].stageBgm != null)
+                {
+                    AudioController.Instance.PlayBGM(regions[i].stageBgm, fadeDuration: 1.2f, loop: true);
+                    return;
+                }
+                break;
+            }
+        }
+
+        // Fallbacks automáticos conforme o bioma corrigido:
+        // 1 = Pântano (Stage 1.mp3)
+        // 2 = Mata Atlântica (Stage 2.mp3)
+        // 3 = Cidade Destruída (Stage 3.mp3)
+        AudioClip fallbackClip = null;
+#if UNITY_EDITOR
+        if (sceneName.Contains("Pantano"))
+        {
+            fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 1.mp3");
+        }
+        else if (sceneName.Contains("Mata"))
+        {
+            fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 2.mp3");
+        }
+        else if (sceneName.Contains("Cidade") || sceneName.Contains("Destruida"))
+        {
+            fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 3.mp3");
+        }
+#endif
+        if (fallbackClip != null)
+        {
+            AudioController.Instance.PlayBGM(fallbackClip, fadeDuration: 1.2f, loop: true);
+        }
+    }
+
+    /// <summary>
+    /// Toca a música da loja correspondente ao bioma/cena atual.
+    /// 1 = Pântano (Lojinha 1.mp3)
+    /// 2 = Mata Atlântica (Lojinha 2.mp3)
+    /// 3 = Cidade Destruída (Lojinha 3.mp3)
+    /// 4 = Hub (Lojinha 4.mp3)
+    /// </summary>
+    public void PlayShopBGM(string sceneName = null)
+    {
+        if (AudioController.Instance == null) return;
+        if (string.IsNullOrEmpty(sceneName))
+        {
+            sceneName = SceneManager.GetActiveScene().name;
+        }
+
+        AudioClip shopClip = null;
+#if UNITY_EDITOR
+        if (sceneName == "Hub" || sceneName.Contains("Hub"))
+        {
+            shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 4.mp3");
+        }
+        else if (sceneName.Contains("Pantano"))
+        {
+            shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 1.mp3");
+        }
+        else if (sceneName.Contains("Mata"))
+        {
+            shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 2.mp3");
+        }
+        else if (sceneName.Contains("Cidade") || sceneName.Contains("Destruida"))
+        {
+            shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 3.mp3");
+        }
+#endif
+        if (shopClip != null)
+        {
+            AudioController.Instance.PlayBGM(shopClip, fadeDuration: 1.2f, loop: true);
+        }
     }
 
     public void ShowStartRunScreen()
@@ -218,6 +325,12 @@ public class RunManager : MonoBehaviour
 
     private IEnumerator RestartCoroutine()
     {
+        // Fade out suave da música atual antes de voltar ao Hub
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopBGM(fadeDuration: 0.8f);
+        }
+
         if (sceneController == null) sceneController = FindAnyObjectByType<SceneController>();
         if (sceneController != null)
         {

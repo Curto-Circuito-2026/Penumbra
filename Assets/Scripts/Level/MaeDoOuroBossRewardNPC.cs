@@ -90,6 +90,13 @@ public class MaeDoOuroBossRewardNPC : MonoBehaviour
     public void InitAndAppear(BossDefeatedType defeatedBoss)
     {
         bossType = defeatedBoss;
+
+        // Fade out suave da música de batalha do Boss para o silêncio
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopBGM(fadeDuration: 2.0f);
+        }
+
         StartCoroutine(AppearSequenceRoutine());
     }
 
