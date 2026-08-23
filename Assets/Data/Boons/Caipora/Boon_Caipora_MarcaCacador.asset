@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "Marca do Ca\xE7ador"
   rarity: 2
-  icon: {fileID: 0}
+  icon: {fileID: -231332020, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: Marca um inimigo na mira por 8s, aumentando todo o dano recebido por
     ele em +50%.
   statDetail: "\u25B8 Dano no Alvo Marcado: +50% (8s)"

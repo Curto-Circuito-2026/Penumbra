@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 6377b82d19f547040b78833029481a9e
+guid: ad5c8e6e32983134cbd174990c304d94
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3570343872407685700
-    second: maedouro_idle_0
+      213: 7042847911465117151
+    second: menu_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 10
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,67 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: maedouro_idle_0
+      name: menu_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
-        width: 46
-        height: 32
-      alignment: 9
-      pivot: {x: 0.44434777, y: 0.14799976}
+        y: 0
+        width: 320
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 44a4ad0e5d86c8130800000000000000
-      internalID: 3570343872407685700
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: maedouro_idle_1
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 32
-        width: 46
-        height: 32
-      alignment: 9
-      pivot: {x: 0.44063762, y: 0.14266646}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 47aa1e07a1d070f4dadf32eb53ec9626
-      internalID: -1040478598
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: maedouro_idle_2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 46
-        height: 32
-      alignment: 9
-      pivot: {x: 0.45176804, y: 0.19599997}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b540d3c649b576d4facdf3408271bce7
-      internalID: -658066040
+      spriteID: fd5eaf16cd83db160800000000000000
+      internalID: 7042847911465117151
       vertices: []
       indices: 
       edges: []
@@ -182,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 6c6f2cb3028ccb24a80669d8fc5ddee0
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -190,13 +146,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":46.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      maedouro_idle_0: 3570343872407685700
-      maedouro_idle_1: -1040478598
-      maedouro_idle_2: -658066040
+      menu_0: 7042847911465117151
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

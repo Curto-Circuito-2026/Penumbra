@@ -1661,7 +1661,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 28.03}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3724623794928470957
@@ -2470,8 +2470,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2614,6 +2614,7 @@ MonoBehaviour:
   dialogBox: {fileID: 3701079996917628514}
   dialogText: {fileID: 6973079354323140241}
   typeSpeed: 0.06
+  sceneVoices: []
   Cuca: {fileID: 5222286729615533422}
   Matinta: {fileID: 8163848049802891075}
   Boitata: {fileID: 8989224231818447625}
@@ -2621,6 +2622,7 @@ MonoBehaviour:
   Enemy_Left: {fileID: 526422407921865710}
   Enemy_Center: {fileID: 6527841289552595738}
   Enemy_Right: {fileID: 3580772060555330387}
+  skipPromptText: {fileID: 0}
 --- !u!223 &-450496365111341618
 Canvas:
   m_ObjectHideFlags: 0
@@ -2640,7 +2642,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

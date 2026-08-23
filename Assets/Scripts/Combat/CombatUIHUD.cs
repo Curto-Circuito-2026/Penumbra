@@ -38,19 +38,16 @@ public class CombatUIHUD : MonoBehaviour
     [Tooltip("Texto numérico da contagem regressiva do Slot E.")]
     [SerializeField] private TextMeshProUGUI slotECooldownText;
 
-    [Header("Slot do Canto Inferior Esquerdo (Ultimate R)")]
-    [Tooltip("Ícone do Slot R (Ultimate).")]
+    [Header("Slot do Canto Inferior Esquerdo (R)")]
+    [Tooltip("Ícone do Slot R.")]
     [SerializeField] private Image slotRIcon;
     [Tooltip("Overlay de Cooldown do Slot R.")]
     [SerializeField] private Image slotRCooldownOverlay;
     [Tooltip("Texto numérico da contagem regressiva do Slot R.")]
+
     [SerializeField] private TextMeshProUGUI slotRCooldownText;
-    [Tooltip("Barra/Preenchimento de Carga da Ultimate (0 a 100%).")]
-    [SerializeField] private Image ultimateChargeBarFill;
-    [Tooltip("Efeito/Brilho visual exibido quando a Ultimate está 100% pronta.")]
-    [SerializeField] private GameObject ultimateReadyGlow;
-    [Tooltip("Texto com porcentagem de carga da Ultimate.")]
-    [SerializeField] private TextMeshProUGUI ultimateChargeText;
+
+    [SerializeField] Sprite emptySkillIcon;
 
     private void OnEnable()
     {
@@ -83,8 +80,6 @@ public class CombatUIHUD : MonoBehaviour
         if (playerCombat != null)
         {
             SubscribeEvents();
-            // Atualização inicial de carga da Ultimate
-            UpdateUltimateCharge(playerCombat.UltimateCharge, playerCombat.MaxUltimateCharge);
         }
 
         SetupHoverHandlers();
@@ -116,7 +111,6 @@ public class CombatUIHUD : MonoBehaviour
 
         playerCombat.OnBasicCooldownsUpdated += HandleBasicCooldowns;
         playerCombat.OnAbilityCooldownUpdated += HandleAbilityCooldown;
-        playerCombat.OnUltimateChargeUpdated += UpdateUltimateCharge;
         playerCombat.OnEquippedAbilitiesChanged += UpdateEquippedAbilities;
         playerCombat.OnSlotUnlockStateChanged += HandleSlotUnlockStateChanged;
     }
@@ -127,7 +121,6 @@ public class CombatUIHUD : MonoBehaviour
 
         playerCombat.OnBasicCooldownsUpdated -= HandleBasicCooldowns;
         playerCombat.OnAbilityCooldownUpdated -= HandleAbilityCooldown;
-        playerCombat.OnUltimateChargeUpdated -= UpdateUltimateCharge;
         playerCombat.OnEquippedAbilitiesChanged -= UpdateEquippedAbilities;
         playerCombat.OnSlotUnlockStateChanged -= HandleSlotUnlockStateChanged;
     }
@@ -240,28 +233,5 @@ public class CombatUIHUD : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Atualiza a barra de carga da Ultimate, o efeito de brilho e a porcentagem.
-    /// </summary>
-    private void UpdateUltimateCharge(float current, float max)
-    {
-        float chargeRatio = max > 0f ? Mathf.Clamp01(current / max) : 0f;
-
-        if (ultimateChargeBarFill != null)
-        {
-            ultimateChargeBarFill.fillAmount = chargeRatio;
-        }
-
-        bool isReady = chargeRatio >= 0.999f;
-
-        if (ultimateReadyGlow != null)
-        {
-            ultimateReadyGlow.SetActive(isReady);
-        }
-
-        if (ultimateChargeText != null)
-        {
-            ultimateChargeText.text = isReady ? "<color=#FFD700>PRONTO!</color>" : $"{chargeRatio * 100f:F0}%";
-        }
-    }
+   
 }

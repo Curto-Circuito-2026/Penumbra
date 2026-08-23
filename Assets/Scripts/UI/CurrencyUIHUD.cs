@@ -15,7 +15,7 @@ public class CurrencyUIHUD : MonoBehaviour
     [SerializeField] private PlayerCurrency playerCurrency;
 
     [Header("Elementos de Texto")]
-    [Tooltip("Texto para exibir os fragmentos atuais (ex: 7/10).")]
+    [Tooltip("Texto para exibir os fragmentos atuais (ex: 7).")]
     [SerializeField] private TextMeshProUGUI fragmentsText;
 
     [Tooltip("Texto para exibir as estrelas totais (ex: 3).")]
@@ -152,8 +152,7 @@ public class CurrencyUIHUD : MonoBehaviour
     {
         if (fragmentsText != null)
         {
-            int maxReq = playerCurrency != null ? playerCurrency.FragmentsPerStar : 10;
-            fragmentsText.text = string.Format(fragmentsFormat, fragments, maxReq);
+            fragmentsText.text = string.Format(fragmentsFormat, fragments);
         }
     }
 

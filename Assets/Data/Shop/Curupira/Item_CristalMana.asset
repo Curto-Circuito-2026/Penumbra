@@ -15,8 +15,8 @@ MonoBehaviour:
   itemName: Cristal de Mana Selvagem
   itemDescription: "Restaura +80 pontos de mana e energiza feiti\xE7os ancestrais."
   itemIcon: {fileID: 0}
-  price: 35
-  currency: 1
+  price: 3
+  currency: 0
   effectType: 2
   effectValue: 30
   maxPurchases: 3

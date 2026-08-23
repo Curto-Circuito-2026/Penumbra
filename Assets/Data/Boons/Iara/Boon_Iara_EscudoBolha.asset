@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: Escudo Bolha
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: -20548571, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Envolve a Naia com uma bolha d'\xE1gua que absorve at\xE9 80 de dano
     por 8 segundos."
   statDetail: "\u25B8 Absor\xE7\xE3o de Dano: 80 HP (8s)"

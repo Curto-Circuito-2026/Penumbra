@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "Companheiro de Ca\xE7a"
   rarity: 3
-  icon: {fileID: 0}
+  icon: {fileID: -6207298038394112916, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: Invoca um lobo Besta-Fera espectral que luta ao seu lado atacando
     os inimigos.
   statDetail: "\u25B8 Invoca\xE7\xE3o: Besta-Fera Aliado (15s)"
