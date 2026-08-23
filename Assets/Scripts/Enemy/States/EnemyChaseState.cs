@@ -61,11 +61,14 @@ public class EnemyChaseState : IEnemyState
         }
 
         // Se já estiver dentro da distância de parada, para o movimento para não empurrar o player
-        float stopDist = ai.CanExplode ? ai.ExplosionTriggerDistance * 0.7f : (ai.CanUseMelee ? ai.MeleeRange * 0.8f : ai.RangedRange * 0.7f);
-        if (distance <= stopDist)
+        if (!ai.CanExplode)
         {
-            ai.StopMovement();
-            return;
+            float stopDist = ai.CanUseMelee ? ai.MeleeRange * 0.8f : ai.RangedRange * 0.7f;
+            if (distance <= stopDist)
+            {
+                ai.StopMovement();
+                return;
+            }
         }
 
         // Continua perseguindo o player pelo NavMesh

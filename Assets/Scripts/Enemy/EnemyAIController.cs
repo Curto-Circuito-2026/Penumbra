@@ -154,8 +154,8 @@ public class EnemyAIController : MonoBehaviour
             agent.speed = movementSpeed;
 
             // Configura o stoppingDistance para o agente parar ANTES de colidir/empurrar o player
-            float stopDist = canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f;
-            agent.stoppingDistance = Mathf.Max(0.8f, stopDist);
+            float stopDist = canExplode ? Mathf.Max(0.2f, explosionTriggerDistance * 0.4f) : (canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f);
+            agent.stoppingDistance = Mathf.Max(0.2f, stopDist);
         }
 
         if (obstacleLayerMask == 0)
@@ -180,7 +180,12 @@ public class EnemyAIController : MonoBehaviour
             movementSpeed = enemyConfig.moveSpeed;
             if (enemyConfig.projectilePrefab != null) projectilePrefab = enemyConfig.projectilePrefab;
 
-            if (agent != null) agent.speed = movementSpeed;
+            if (agent != null)
+            {
+                agent.speed = movementSpeed;
+                float stopDist = canExplode ? Mathf.Max(0.2f, explosionTriggerDistance * 0.4f) : (canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f);
+                agent.stoppingDistance = Mathf.Max(0.2f, stopDist);
+            }
             if (combatController != null) combatController.Configure(enemyConfig);
         }
 
@@ -392,10 +397,10 @@ public class EnemyAIController : MonoBehaviour
     public void MoveToTarget(Vector3 targetPosition)
     {
         float dist = Vector3.Distance(transform.position, targetPosition);
-        float stopDist = agent != null ? agent.stoppingDistance : 1.2f;
+        float stopDist = canExplode ? Mathf.Max(0.2f, explosionTriggerDistance * 0.4f) : (agent != null ? agent.stoppingDistance : 1.2f);
 
-        // Se já estiver dentro da distância de parada, para o movimento para não empurrar o player
-        if (dist <= stopDist)
+        // Se já estiver dentro da distância de parada (para inimigos que não explodem), para o movimento
+        if (!canExplode && dist <= stopDist)
         {
             StopMovement();
             return;

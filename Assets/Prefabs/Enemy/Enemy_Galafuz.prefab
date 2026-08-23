@@ -289,9 +289,9 @@ MonoBehaviour:
   explosionRadius: 2.8
   explosionDamage: 40
   explosionFuseTime: 0.55
-  detectionRadius: 9.5
+  detectionRadius: 12
   meleeRange: 1.8
-  rangedRange: 7.5
+  rangedRange: 10
   attackCooldown: 1.5
   rangedAttackWindupDelay: 0.28
   rangedAttackDuration: 0.45
