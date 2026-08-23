@@ -33,7 +33,7 @@ TextureImporter:
     heightScale: 0.25
     normalMapFilter: 0
     flipGreenChannel: 0
-  isReadable: 0
+  isReadable: 1
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
@@ -105,19 +105,6 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -125,12 +112,12 @@ TextureImporter:
       name: cuca_death_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 116
-        width: 32
-        height: 43
+        x: 1
+        y: 117
+        width: 31
+        height: 41
       alignment: 9
-      pivot: {x: 0.4430605, y: 0.12771748}
+      pivot: {x: 0.5, y: 0.05}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -147,12 +134,12 @@ TextureImporter:
       name: cuca_death_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 70
-        width: 32
-        height: 41
+        x: 1
+        y: 71
+        width: 31
+        height: 39
       alignment: 9
-      pivot: {x: 0.44740325, y: 0.13054024}
+      pivot: {x: 0.5, y: 0.05}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -169,12 +156,12 @@ TextureImporter:
       name: cuca_death_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 30
-        width: 32
-        height: 35
+        x: 1
+        y: 31
+        width: 31
+        height: 33
       alignment: 9
-      pivot: {x: 0.4519221, y: 0.12636577}
+      pivot: {x: 0.5, y: 0.05}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -193,10 +180,10 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 27
-        height: 14
+        width: 26
+        height: 13
       alignment: 9
-      pivot: {x: 0.5136084, y: 0.23755178}
+      pivot: {x: 0.5, y: 0.05}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -213,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d3d5b3ce84edeea498f2a8e4c6b16ed3
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 

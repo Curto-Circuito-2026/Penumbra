@@ -429,17 +429,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonCardUI
   boonNameText: {fileID: 8267809514774695213}
-  rarityText: {fileID: 1003798010001705281}
   descriptionText: {fileID: 6880420875771821158}
   statDetailText: {fileID: 449151070519180701}
   costText: {fileID: 6020219662019821196}
   iconImage: {fileID: 5615333332967586410}
-  cardBackgroundImage: {fileID: 4500510246066961302}
   StarFullSprite: {fileID: 0}
   StarEmptySprite: {fileID: 0}
   StarElement: {fileID: 0}
-  selectButton: {fileID: 2961179940984731054}
-  buyButtonText: {fileID: 0}
 --- !u!1 &4094081972481441541
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,6 +27,7 @@ public class CucaBossController : MonoBehaviour, IDamageable
     [SerializeField] private float phase1AttackCooldown = 2.2f;
     [SerializeField] private int phase1OrbCount = 14;
     [SerializeField] private float phase1OrbDamage = 16f;
+    [SerializeField] private float orbSpawnCenterOffsetY = 1.15f;
 
     [Header("Fase 2: Configurações")]
     [SerializeField] private float phase2MoveSpeed = 3.2f;
@@ -43,15 +44,17 @@ public class CucaBossController : MonoBehaviour, IDamageable
     [SerializeField] private LayerMask playerLayerMask;
 
     [Header("Efeitos Visuais")]
-    [SerializeField] private Color damageFlashColor = new Color(0.8f, 0.2f, 0.9f, 1f);
+    [SerializeField] private Color damageFlashColor = new Color(1f, 0.4f, 0.4f, 1f);
 
     [Header("Ativação de Combate")]
     [SerializeField] private bool autoStartCombat = false;
+    [SerializeField] private float playerDetectionRadius = 9.0f;
 
     // Componentes
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private NavMeshAgent agent;
+    private Rigidbody2D rb;
     private Collider2D bodyCollider;
     private Transform playerTransform;
     private Material defaultMaterial;
@@ -98,6 +101,14 @@ public class CucaBossController : MonoBehaviour, IDamageable
 #endif
         }
 
+        rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.freezeRotation = true;
+            rb.linearVelocity = Vector2.zero;
+        }
+
         agent = GetComponent<NavMeshAgent>();
         bodyCollider = GetComponent<Collider2D>();
 
@@ -106,6 +117,7 @@ public class CucaBossController : MonoBehaviour, IDamageable
             agent.updateRotation = false;
             agent.updateUpAxis = false;
             agent.speed = phase2MoveSpeed;
+            agent.enabled = false; // Desabilitado na Fase 1 (ela é estática)
         }
     }
 
@@ -134,6 +146,8 @@ public class CucaBossController : MonoBehaviour, IDamageable
 
     public void StartCombat()
     {
+        if (isCombatActive) return;
+
         if (bossIntro == null)
         {
             if (transform.parent != null) bossIntro = transform.parent.GetComponentInChildren<BossTrigger>();
@@ -153,7 +167,14 @@ public class CucaBossController : MonoBehaviour, IDamageable
         isTransitioning = false;
         currentPhase = 1;
         currentHealth = phase1MaxHealth;
-        attackTimer = 2.2f; // Delay de "acordar" após a cutscene
+        attackTimer = 2.0f;
+
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.linearVelocity = Vector2.zero;
+        }
+        if (agent != null) agent.enabled = false;
 
         if (BossHealthBarUI.Instance != null)
         {
@@ -165,21 +186,38 @@ public class CucaBossController : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if (playerTransform == null)
+        {
+            FindPlayer();
+        }
+
+        // Se o combate ainda não começou, inicia automaticamente quando o jogador se aproxima
+        if (!isCombatActive)
+        {
+            if (playerTransform != null)
+            {
+                FlipTowards(playerTransform.position);
+                float dist = Vector3.Distance(transform.position, playerTransform.position);
+                if (dist <= playerDetectionRadius)
+                {
+                    StartCombat();
+                }
+            }
+            return;
+        }
+
         bool isCutscene = GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing;
-        if (isDead || isTransitioning || !isCombatActive || isCutscene)
+        if (isDead || isTransitioning || isCutscene)
         {
             StopMovement();
             return;
         }
 
-        if (playerTransform == null)
+        if (playerTransform != null)
         {
-            FindPlayer();
-            return;
+            // Mantém a orientação visual olhando para o jogador
+            FlipTowards(playerTransform.position);
         }
-
-        // Mantém a orientação visual olhando para o jogador
-        FlipTowards(playerTransform.position);
 
         if (currentPhase == 1)
         {
@@ -194,8 +232,13 @@ public class CucaBossController : MonoBehaviour, IDamageable
     #region Fase 1: Estática & Disparos 360°
     private void UpdatePhase1()
     {
-        // Na Fase 1 a Cuca fica parada no ponto central da arena
-        StopMovement();
+        // Na Fase 1 a Cuca é 100% imóvel e o jogador não consegue empurrá-la
+        transform.position = arenaCenter;
+        if (rb != null && rb.bodyType != RigidbodyType2D.Kinematic)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.linearVelocity = Vector2.zero;
+        }
 
         attackTimer -= Time.deltaTime;
         if (attackTimer <= 0f && !isExecutingAction)
@@ -229,10 +272,16 @@ public class CucaBossController : MonoBehaviour, IDamageable
         isExecutingAction = false;
     }
 
+    public Vector3 GetBodyCenterPosition()
+    {
+        return transform.position + Vector3.up * orbSpawnCenterOffsetY;
+    }
+
     private void SpawnRadialOrbs(int count, float damage, float speed, float startAngleOffset)
     {
         if (purpleOrbPrefab == null) return;
 
+        Vector3 centerPos = GetBodyCenterPosition();
         float angleStep = 360f / count;
         for (int i = 0; i < count; i++)
         {
@@ -240,7 +289,7 @@ public class CucaBossController : MonoBehaviour, IDamageable
             float rad = angle * Mathf.Deg2Rad;
             Vector3 dir = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f).normalized;
 
-            Vector3 spawnPos = transform.position + dir * 0.7f;
+            Vector3 spawnPos = centerPos + dir * 0.8f;
             GameObject orbObj = Instantiate(purpleOrbPrefab, spawnPos, Quaternion.identity);
 
             if (orbObj.TryGetComponent(out Projectile proj))
@@ -251,7 +300,7 @@ public class CucaBossController : MonoBehaviour, IDamageable
 
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.PlayImpactBurst(transform.position, new Color(0.7f, 0.1f, 0.9f), 2.2f);
+            CombatVisualEffects.Instance.PlayImpactBurst(centerPos, new Color(0.7f, 0.1f, 0.9f), 2.2f);
         }
     }
     #endregion
@@ -274,12 +323,12 @@ public class CucaBossController : MonoBehaviour, IDamageable
         // Efeito de energia sombria crescente
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.PlayImpactBurst(transform.position, new Color(0.85f, 0.1f, 1f), 3.0f);
+            CombatVisualEffects.Instance.PlayImpactBurst(GetBodyCenterPosition(), new Color(0.85f, 0.1f, 1f), 3.0f);
         }
 
         yield return new WaitForSeconds(0.85f);
 
-        // Conclui transformação e inicia Fase 2
+        // Conclui transformação e habilita física dinâmica e movimentação para Fase 2
         currentPhase = 2;
         currentHealth = phase2MaxHealth;
         isTransitioning = false;
@@ -287,12 +336,27 @@ public class CucaBossController : MonoBehaviour, IDamageable
         attackTimer = 1.2f;
         meleeTimer = 0f;
 
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.gravityScale = 0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rb.mass = 500f;
+        }
+
+        if (agent != null)
+        {
+            agent.enabled = true;
+            agent.isStopped = false;
+            agent.speed = phase2MoveSpeed;
+        }
+
         if (BossHealthBarUI.Instance != null)
         {
             BossHealthBarUI.Instance.ShowBoss($"{bossName} (Fase Final)", currentHealth, phase2MaxHealth);
         }
 
-        Debug.Log("[CucaBoss] FASE 2 INICIADA! Cuca liberou todos os poderes dos bosses!");
+        Debug.Log("[CucaBoss] FASE 2 INICIADA! Cuca liberou todos os poderes dos bosses e começou a se mover!");
     }
     #endregion
 
@@ -335,8 +399,9 @@ public class CucaBossController : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(0.22f);
 
         // Dano Melee em cone/arco frontal
-        Vector3 forward = (playerTransform.position - transform.position).normalized;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position + forward * 1.2f, 1.4f);
+        Vector3 bodyCenter = GetBodyCenterPosition();
+        Vector3 forward = (playerTransform.position - bodyCenter).normalized;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(bodyCenter + forward * 1.2f, 1.4f);
         foreach (var hit in hits)
         {
             if (hit.CompareTag("Player") && hit.TryGetComponent(out IDamageable dmg))
@@ -347,7 +412,7 @@ public class CucaBossController : MonoBehaviour, IDamageable
 
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.PlayImpactBurst(transform.position + forward * 1.2f, new Color(0.9f, 0.1f, 0.3f), 1.8f);
+            CombatVisualEffects.Instance.PlayImpactBurst(bodyCenter + forward * 1.2f, new Color(0.9f, 0.1f, 0.3f), 1.8f);
         }
 
         yield return new WaitForSeconds(0.35f);
@@ -582,18 +647,27 @@ public class CucaBossController : MonoBehaviour, IDamageable
             }
         }
 
-        StartCoroutine(DamageFlashRoutine());
+        if (damageFlashRoutine != null)
+        {
+            StopCoroutine(damageFlashRoutine);
+        }
+        damageFlashRoutine = StartCoroutine(DamageFlashRoutine());
     }
+
+    private Coroutine damageFlashRoutine;
 
     private IEnumerator DamageFlashRoutine()
     {
-        if (spriteRenderer != null && spriteRenderer.enabled)
+        if (spriteRenderer != null)
         {
-            Color orig = spriteRenderer.color;
             spriteRenderer.color = damageFlashColor;
             yield return new WaitForSeconds(0.12f);
-            spriteRenderer.color = orig;
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.color = Color.white;
+            }
         }
+        damageFlashRoutine = null;
     }
 
     private IEnumerator DeathRoutine()
