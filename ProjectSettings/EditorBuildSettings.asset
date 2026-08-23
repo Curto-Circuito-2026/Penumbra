@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mata Atlantica.unity
     guid: d4826160e1df10e47a1ea83a8b6ef174
+  - enabled: 1
+    path: Assets/Scenes/CucasLair.unity
+    guid: 68ae5a12ab0aae14182704bbec0385ba
   - enabled: 0
     path: Assets/Scenes/Region_City.unity
     guid: 6815fd0aedfa8d64c888f3751bb888b7

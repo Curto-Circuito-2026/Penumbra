@@ -10428,9 +10428,9 @@ MonoBehaviour:
     spawnPoint: {x: 525, y: 280}
   - title: Covil da Cuca
     subtitle: Batalha Final
-    scene: {fileID: 102900000, guid: 10e9cd3ac42d3f34fadb1eddf2a96bcb, type: 3}
-    sceneName: Region_End
-    spawnPoint: {x: 0, y: 0}
+    scene: {fileID: 102900000, guid: 68ae5a12ab0aae14182704bbec0385ba, type: 3}
+    sceneName: CucasLair
+    spawnPoint: {x: 604.69, y: 268.43}
   cinematicManager: {fileID: 51770919}
   sceneController: {fileID: 1519875259}
   gameStateManager: {fileID: 0}
