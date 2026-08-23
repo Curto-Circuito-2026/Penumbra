@@ -67,9 +67,7 @@ public class BossTrigger : ICinematicClip
         if (enemy == null)
         {
             Debug.LogWarning("[BossTrigger] Boss não encontrado para a Cutscene!");
-            if (parent != null && parent.gameStateManager != null) parent.gameStateManager.SetState(GameState.Playing);
-            else if (GameStateManager.Instance != null) GameStateManager.Instance.SetState(GameState.Playing);
-            Destroy(gameObject);
+            EndCutsceneSafely();
             yield break;
         }
 
@@ -81,6 +79,12 @@ public class BossTrigger : ICinematicClip
         {
             Camera c = parent.cam ?? Camera.main;
             if (c != null) parent.camManager = c.GetComponent<CameraManager>();
+        }
+
+        if (enemy == null)
+        {
+            EndCutsceneSafely();
+            yield break;
         }
 
         // Calcula o centro visual do Boss (ao invés do pivô no chão/pés)
@@ -97,11 +101,18 @@ public class BossTrigger : ICinematicClip
         {
             parent.camManager.Zoom(battleCameraZoom, 1f);
             yield return parent.camManager.Move(bossCenter, 2f).ToYieldInstruction();
+
+            if (enemy == null)
+            {
+                EndCutsceneSafely();
+                yield break;
+            }
+
             parent.camManager.SetTarget(enemy.transform, bossCamOffset);
             parent.camManager.Zoom(bossZoom, 1f);
         }
 
-        if (parent != null)
+        if (parent != null && enemy != null)
         {
             parent.ShowTitle(enemy.actorName, BossSubtitle);
         }
@@ -118,8 +129,16 @@ public class BossTrigger : ICinematicClip
             parent.camManager.Zoom(battleCameraZoom, 1f);
         }
 
-        while ((enemy != null && enemy.moving) || (main != null && main.moving)) { yield return null; }
+        while ((enemy != null && enemy.moving) || (main != null && main.moving))
+        {
+            yield return null;
+        }
 
+        EndCutsceneSafely();
+    }
+
+    private void EndCutsceneSafely()
+    {
         if (parent != null && parent.camManager != null && main != null)
         {
             parent.camManager.SetTarget(main.transform, new Vector3(0f, 0f, -10f));
@@ -134,7 +153,10 @@ public class BossTrigger : ICinematicClip
             GameStateManager.Instance.SetState(GameState.Playing);
         }
 
-        Destroy(gameObject);
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void PlayBossBGM()
