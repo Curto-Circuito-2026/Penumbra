@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: "Companheiro de Ca\xE7a"
   description: Invoca um Besta-Fera espectral aliado com pouca vida que persegue
     e ataca inimigos e chefes por 15 segundos ao seu lado.
-  icon: {fileID: 0}
+  icon: {fileID: -6207298038394112916, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   cooldown: 20
   range: 5
   damage: 22

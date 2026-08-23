@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: Pele de Carvalho
   description: "Fortalece sua pele como a casca ancestral das \xE1rvores, reduzindo
     em 50% todo dano recebido durante 6 segundos."
-  icon: {fileID: 0}
+  icon: {fileID: 921909661, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   cooldown: 12
   range: 5
   damage: 0

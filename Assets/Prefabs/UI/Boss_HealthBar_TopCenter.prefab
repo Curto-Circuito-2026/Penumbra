@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -40}
-  m_SizeDelta: {x: 620, y: 65}
+  m_SizeDelta: {x: 412, y: 124}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!225 &3080095213180886471
 CanvasGroup:
@@ -131,16 +131,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.08, g: 0.08, b: 0.12, a: 0.85}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.85}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 918973745, guid: d4897d1cec772314fae881ad11c61edd, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -182,8 +182,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -12, y: -12}
+  m_AnchoredPosition: {x: -0.000045776367, y: 9.599998}
+  m_SizeDelta: {x: -0.000061035, y: -12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2240700270248180073
 CanvasRenderer:
@@ -206,14 +206,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.35, b: 0.1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1233874697, guid: d4897d1cec772314fae881ad11c61edd, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -234,6 +234,7 @@ GameObject:
   - component: {fileID: 6977087490184908408}
   - component: {fileID: 7064539225363988851}
   - component: {fileID: 670205785749781251}
+  - component: {fileID: 3875540619703074860}
   m_Layer: 0
   m_Name: Boss_Name_Text
   m_TagString: Untagged
@@ -257,7 +258,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 6}
+  m_AnchoredPosition: {x: 0, y: -5.2}
   m_SizeDelta: {x: 500, y: 30}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &7064539225363988851
@@ -290,8 +291,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: BOITATA - Serpente de Fogo
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a45acf9e7df318147bd4997a32830b9e, type: 2}
+  m_sharedMaterial: {fileID: 7355650572923841792, guid: a45acf9e7df318147bd4997a32830b9e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -315,8 +316,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22
-  m_fontSizeBase: 22
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -360,6 +361,24 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3875540619703074860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5103118394575329894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0152f3b36482f44abfba6c8ff6fa25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WavyText
+  speed: 7
+  frequency: 0.5
+  height: 7
+  sparkleColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  sparkleSpeed: 12
+  sparkleChance: 0.4
 --- !u!1 &5402913299714369776
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,7 +396,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5547775265896045641
 RectTransform:
   m_ObjectHideFlags: 0
@@ -562,9 +581,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 3
-  m_PreserveAspect: 0
+  m_Sprite: {fileID: 1233874697, guid: d4897d1cec772314fae881ad11c61edd, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 0
   m_FillAmount: 1

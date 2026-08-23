@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: "P\xE9 de Vento"
   description: As brisas da mata envolvem seus passos, concedendo +60% de velocidade
     de movimento por 5 segundos.
-  icon: {fileID: 0}
+  icon: {fileID: 1448489390, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   cooldown: 10
   range: 5
   damage: 0

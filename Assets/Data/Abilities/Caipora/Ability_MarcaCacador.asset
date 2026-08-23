@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: "Marca do Ca\xE7ador"
   description: Marca um inimigo na mira por 8 segundos. O alvo marcado recebe +50%
     de dano de todos os seus ataques e habilidades.
-  icon: {fileID: 0}
+  icon: {fileID: -231332020, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   cooldown: 8
   range: 12
   damage: 0

@@ -102,7 +102,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 10
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -168,7 +168,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 53
+        y: 81
         width: 53
         height: 55
       alignment: 0
@@ -190,7 +190,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 53
-        y: 102
+        y: 130
         width: 18
         height: 6
       alignment: 0
@@ -212,7 +212,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 54
-        y: 96
+        y: 124
         width: 21
         height: 5
       alignment: 0
@@ -234,7 +234,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 77
-        y: 88
+        y: 116
         width: 19
         height: 20
       alignment: 0
@@ -256,7 +256,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 105
-        y: 75
+        y: 103
         width: 87
         height: 33
       alignment: 0
@@ -278,7 +278,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 192
-        y: 82
+        y: 110
         width: 28
         height: 26
       alignment: 0
@@ -299,10 +299,10 @@ TextureImporter:
       name: hp_bar
       rect:
         serializedVersion: 2
-        x: 54
-        y: 90
-        width: 18
-        height: 5
+        x: 55
+        y: 119
+        width: 16
+        height: 3
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 2, y: 1, z: 2, w: 1}
@@ -322,7 +322,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 55
-        y: 84
+        y: 112
         width: 21
         height: 5
       alignment: 0
@@ -344,7 +344,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 77
-        y: 68
+        y: 96
         width: 19
         height: 20
       alignment: 0
@@ -366,7 +366,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 105
-        y: 41
+        y: 69
         width: 87
         height: 34
       alignment: 0
@@ -388,7 +388,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 192
-        y: 54
+        y: 82
         width: 28
         height: 26
       alignment: 0
@@ -410,7 +410,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 79
-        y: 45
+        y: 73
         width: 15
         height: 15
       alignment: 0
@@ -432,7 +432,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 79
-        y: 29
+        y: 57
         width: 15
         height: 15
       alignment: 0
@@ -454,7 +454,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 188
-        y: 14
+        y: 42
         width: 32
         height: 29
       alignment: 0
@@ -476,7 +476,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 104
-        y: 6
+        y: 34
         width: 41
         height: 25
       alignment: 0
@@ -498,7 +498,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 154
-        y: 13
+        y: 41
         width: 31
         height: 27
       alignment: 0
@@ -511,6 +511,72 @@ TextureImporter:
       bones: []
       spriteID: a710a6344454810f0800000000000000
       internalID: -1146089945674677894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss_bar_bg
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 27
+        width: 103
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 24, y: 15, z: 7, w: 11}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e12d0630801d1674fa4d04c9473c4213
+      internalID: 918973745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boss_bar_filled
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 103
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 24, y: 7, z: 7, w: 6}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11c39ee6314d29e45ad1be90ebc3da42
+      internalID: 1233874697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: star_fragment
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 76
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31b64e0df9df2a14ab745761494ca7c2
+      internalID: -631835810
       vertices: []
       indices: 
       edges: []
@@ -529,6 +595,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      boss_bar_bg: 918973745
+      boss_bar_filled: 1233874697
       button: -3961260540072826498
       button_hover: -7944455362764302572
       hp_bar: 1077016520007379914
@@ -542,6 +610,7 @@ TextureImporter:
       skill_slot: 4861599383363060508
       stamina_bar: 3595626823672922160
       stamina_bar_off: 3103623573544960591
+      star_fragment: -631835810
       star_icon: 3240665275519444552
       star_icon_off: -3707663016371027281
       ui_pack_10: 7533477328325934387

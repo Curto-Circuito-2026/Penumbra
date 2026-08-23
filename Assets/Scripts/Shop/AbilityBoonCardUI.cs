@@ -9,23 +9,16 @@ public class AbilityBoonCardUI : MonoBehaviour
 {
     [Header("Elementos de Texto")]
     [SerializeField] private TextMeshProUGUI boonNameText;
-    [SerializeField] private TextMeshProUGUI rarityText;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI statDetailText;
     [SerializeField] private TextMeshProUGUI costText;
 
     [Header("Elementos Visuais")]
     [SerializeField] private Image iconImage;
-    [SerializeField] private Image cardBackgroundImage;
-
     [SerializeField] private Sprite StarFullSprite;
     [SerializeField] private Sprite StarEmptySprite;
     [SerializeField] private Image StarElement;
 
-
-    [Header("Controles")]
-    [SerializeField] private Button selectButton;
-    [SerializeField] private TextMeshProUGUI buyButtonText;
 
     private AbilityBoonSO currentBoon;
     private AbilitySwapUI parentUI;
@@ -50,11 +43,6 @@ public class AbilityBoonCardUI : MonoBehaviour
             boonNameText.text = $"<color={rarityColorHex}><b>{boon.BoonName}</b></color>";
         }
 
-        // 2. Tag de Raridade
-        if (rarityText != null)
-        {
-            rarityText.text = $"<color={rarityColorHex}><b>[{boon.GetRarityDisplayName()}]</b></color>";
-        }
 
         // 3. Descrição
         if (descriptionText != null)
@@ -87,14 +75,7 @@ public class AbilityBoonCardUI : MonoBehaviour
             }
         }
 
-       
 
-        // 7. Botão de Seleção
-        if (selectButton != null)
-        {
-            selectButton.onClick.RemoveAllListeners();
-            selectButton.onClick.AddListener(OnSelectClicked);
-        }
 
         // 8. Atualiza disponibilidade com base no saldo de estrelas
         UpdateAffordability();
