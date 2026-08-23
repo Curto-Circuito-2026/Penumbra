@@ -20,6 +20,10 @@ public class CutsceneClip : ICinematicClip
     [SerializeField] TMP_Text dialogText;
     [SerializeField] float typeSpeed = 0.06f;
 
+    [Header("Audio & Voice (Dublagem)")]
+    [Tooltip("Lista de clipes de dublagem correspondentes a cada cena (opcional).")]
+    [SerializeField] private List<AudioClip> sceneVoices;
+
     [Header("Scene 1 Objects")]
     [Header("Scene 2 Objects")]
     [Header("Scene 3 Objects")]
@@ -154,6 +158,11 @@ public class CutsceneClip : ICinematicClip
 
     private void ChangeScene()
     {
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopVoice();
+        }
+
         if (curScene < scenes.Count && scenes[curScene] != null)
         {
             scenes[curScene].SetActive(false);
@@ -171,6 +180,12 @@ public class CutsceneClip : ICinematicClip
         if (curScene < scenes.Count && scenes[curScene] != null)
         {
             scenes[curScene].SetActive(true);
+        }
+
+        // Toca a dublagem da cena se configurada
+        if (sceneVoices != null && curScene < sceneVoices.Count && sceneVoices[curScene] != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.PlayVoice(sceneVoices[curScene]);
         }
 
         if (curScene < sceneText.Count)
@@ -240,6 +255,11 @@ public class CutsceneClip : ICinematicClip
         if (isSkipped) return;
         isSkipped = true;
         Debug.Log("[CutsceneClip] Cutscene pulada pelo jogador (Skip).");
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopVoice();
+        }
 
         StopAllCoroutines();
 
@@ -336,6 +356,11 @@ public class CutsceneClip : ICinematicClip
 
         if (!isSkipped)
         {
+            if (AudioController.Instance != null)
+            {
+                AudioController.Instance.StopVoice();
+            }
+
             if (parent != null && parent.gameStateManager != null) { parent.gameStateManager.SetState(GameState.Playing); }
             else if (GameStateManager.Instance != null) { GameStateManager.Instance.SetState(GameState.Playing); }
 

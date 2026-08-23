@@ -128,6 +128,11 @@ public class DialogueManager : MonoBehaviour
             nodeEnding.onEnd.Raise();
         }
 
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopVoice();
+        }
+
         callback?.Invoke();
     }
 
@@ -184,6 +189,12 @@ public class DialogueManager : MonoBehaviour
         if (dialogueText != null)
         {
             dialogueText.text = "";
+        }
+
+        // Toca o áudio de dublagem se atribuído no nó
+        if (node != null && node.VoiceClip != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.PlayVoice(node.VoiceClip);
         }
 
         // Configura o nome do personagem: dá preferência à sobrescrita se definida, senão usa o nome do nó
@@ -264,6 +275,12 @@ public class DialogueManager : MonoBehaviour
         {
             DialogueNode nodeEnding = currentNode;
 
+            // Para a voz anterior antes de trocar de nó
+            if (AudioController.Instance != null)
+            {
+                AudioController.Instance.StopVoice();
+            }
+
             // Avança para a próxima fala se existir
             if (currentNode.NextNode != null)
             {
@@ -293,6 +310,11 @@ public class DialogueManager : MonoBehaviour
         isDialogueActive = false;
         currentNode = null;
         isTyping = false;
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopVoice();
+        }
 
         if (dialoguePanel != null)
         {

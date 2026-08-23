@@ -25,9 +25,14 @@ public class DialogueNode : ScriptableObject
     [Tooltip("Evento para rodar no final desse nó")]
     [SerializeField] public GameEvent onEnd;
 
+    [Header("Audio / Dublagem")]
+    [Tooltip("Áudio de voz/dublagem correspondente a esta fala (opcional).")]
+    [SerializeField] private AudioClip voiceClip;
+
     // Propriedades de acesso público
     public string SpeakerName => speakerName;
     public Sprite SpeakerPortrait => speakerPortrait;
     public string DialogueText => dialogueText;
     public DialogueNode NextNode => nextNode;
+    public AudioClip VoiceClip => voiceClip;
 }
