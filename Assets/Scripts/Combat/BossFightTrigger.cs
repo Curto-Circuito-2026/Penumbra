@@ -204,7 +204,8 @@ public class BossFightTrigger : MonoBehaviour
 
         if (triggerOnce)
         {
-            gameObject.SetActive(false);
+            Collider2D col = GetComponent<Collider2D>();
+            if (col != null) col.enabled = false;
         }
     }
 }

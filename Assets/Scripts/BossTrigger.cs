@@ -29,6 +29,14 @@ public class BossTrigger : ICinematicClip
                    GameObject.Find("Boss_Mapinguari") ??
                    GameObject.Find("Boss_Matinta") ??
                    GameObject.Find("Boss_Cuca") ??
+                   (transform.parent != null ? transform.parent.GetComponentInChildren<MatintaBossController>()?.gameObject : null) ??
+                   (transform.parent != null ? transform.parent.GetComponentInChildren<MapinguariBossController>()?.gameObject : null) ??
+                   (transform.parent != null ? transform.parent.GetComponentInChildren<CucaBossController>()?.gameObject : null) ??
+                   (transform.parent != null ? transform.parent.GetComponentInChildren<BoitataBossController>()?.gameObject : null) ??
+                   UnityEngine.Object.FindAnyObjectByType<MatintaBossController>()?.gameObject ??
+                   UnityEngine.Object.FindAnyObjectByType<MapinguariBossController>()?.gameObject ??
+                   UnityEngine.Object.FindAnyObjectByType<CucaBossController>()?.gameObject ??
+                   UnityEngine.Object.FindAnyObjectByType<BoitataBossController>()?.gameObject ??
                    GameObject.FindWithTag("Enemy");
         }
 

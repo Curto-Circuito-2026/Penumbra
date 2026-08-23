@@ -129,8 +129,25 @@ public class CucaBossController : MonoBehaviour, IDamageable
         if (p != null) playerTransform = p.transform;
     }
 
+    [Header("Ativação e Cutscene")]
+    [SerializeField] private BossTrigger bossIntro;
+
     public void StartCombat()
     {
+        if (bossIntro == null)
+        {
+            if (transform.parent != null) bossIntro = transform.parent.GetComponentInChildren<BossTrigger>();
+            if (bossIntro == null) bossIntro = UnityEngine.Object.FindAnyObjectByType<BossTrigger>();
+        }
+
+        CinematicManager cinematicManager = GameObject.Find("CinematicManager") != null ? GameObject.Find("CinematicManager").GetComponent<CinematicManager>() : (CinematicManager.Instance ?? UnityEngine.Object.FindAnyObjectByType<CinematicManager>());
+
+        if (cinematicManager != null && bossIntro != null)
+        {
+            bossIntro.Boss = this.gameObject;
+            cinematicManager.PlayClip(bossIntro.gameObject);
+        }
+
         isCombatActive = true;
         isDead = false;
         isTransitioning = false;

@@ -126,6 +126,12 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
 
     public void StartCombat()
     {
+        if (bossIntro == null)
+        {
+            if (transform.parent != null) bossIntro = transform.parent.GetComponentInChildren<BossTrigger>();
+            if (bossIntro == null) bossIntro = UnityEngine.Object.FindAnyObjectByType<BossTrigger>();
+        }
+
         CinematicManager cinematicManager = GameObject.Find("CinematicManager") != null ? GameObject.Find("CinematicManager").GetComponent<CinematicManager>() : (CinematicManager.Instance ?? UnityEngine.Object.FindAnyObjectByType<CinematicManager>());
 
         if (cinematicManager != null && bossIntro != null)
