@@ -190,8 +190,14 @@ public class AudioController : MonoBehaviour
     public void SetMasterVolume(float volume)
     {
         masterVolume = Mathf.Clamp01(volume);
+        AudioListener.volume = masterVolume;
         ApplyVolumes();
         SaveVolumeSettings();
+    }
+
+    public float GetMasterVolume()
+    {
+        return masterVolume;
     }
 
     public void SetMusicVolume(float volume)
