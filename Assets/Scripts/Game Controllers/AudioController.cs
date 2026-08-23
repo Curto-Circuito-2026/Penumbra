@@ -3,6 +3,7 @@ using UnityEngine;
 public class AudioController : MonoBehaviour
 {
     public static AudioController Instance { get; private set; }
+    private const string VolumeKey = "MasterVolume";
 
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource bgmSource;
@@ -13,11 +14,26 @@ public class AudioController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            float savedVolume = PlayerPrefs.GetFloat(VolumeKey, 1f);
+            SetMasterVolume(savedVolume);
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SetMasterVolume(float volume)
+    {
+        AudioListener.volume = Mathf.Clamp01(volume);
+        PlayerPrefs.SetFloat(VolumeKey, AudioListener.volume);
+        PlayerPrefs.Save();
+    }
+
+    public float GetMasterVolume()
+    {
+        return AudioListener.volume;
     }
 
     public void PlaySFX(AudioClip clip, float volume = 1f)
