@@ -193,6 +193,14 @@ public class RunManager : MonoBehaviour
             return;
         }
 
+        // A fase final da Cuca (CucasLair) inicia em silêncio de tensão (para a música do Hub).
+        // A música do Boss (Boss 4.mp3) só tocará quando o jogador acionar o BossTrigger!
+        if (sceneName.Contains("Cuca") || sceneName.Contains("Covil") || sceneName.Contains("End") || sceneName == "CucasLair")
+        {
+            AudioController.Instance.StopBGM(fadeDuration: 1.2f);
+            return;
+        }
+
         // Procura na lista de regiões do Inspector
         for (int i = 0; i < (regions != null ? regions.Count : 0); i++)
         {
@@ -224,10 +232,6 @@ public class RunManager : MonoBehaviour
         else if (sceneName.Contains("Cidade") || sceneName.Contains("Destruida"))
         {
             fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 3.mp3");
-        }
-        else if (sceneName.Contains("Cuca") || sceneName.Contains("Covil"))
-        {
-            fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 4.mp3");
         }
 #endif
         if (fallbackClip != null)
