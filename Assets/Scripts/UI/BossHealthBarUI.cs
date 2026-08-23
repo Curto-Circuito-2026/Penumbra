@@ -28,6 +28,8 @@ public class BossHealthBarUI : MonoBehaviour
     private float currentHp = 100f;
     private Coroutine ghostCoroutine;
     private bool isVisible = false;
+    private Sequence activeHideSequence;
+    private Tween activeHideTween;
 
     private void Awake()
     {
@@ -66,6 +68,8 @@ public class BossHealthBarUI : MonoBehaviour
             GameStateManager.Instance.OnStateChanged -= HandleGameStateChanged;
         }
         PlayerStats.OnAnyPlayerDied -= HandlePlayerDied;
+        activeHideSequence.Stop();
+        activeHideTween.Stop();
     }
 
     private void HandleGameStateChanged(GameState previousState, GameState newState)
@@ -87,7 +91,13 @@ public class BossHealthBarUI : MonoBehaviour
     public void HideImmediate()
     {
         isVisible = false;
-        if (ghostCoroutine != null) StopCoroutine(ghostCoroutine);
+        activeHideSequence.Stop();
+        activeHideTween.Stop();
+        if (ghostCoroutine != null)
+        {
+            StopCoroutine(ghostCoroutine);
+            ghostCoroutine = null;
+        }
         if (canvasGroup != null)
         {
             canvasGroup.alpha = 0f;
@@ -102,19 +112,31 @@ public class BossHealthBarUI : MonoBehaviour
     /// </summary>
     public void ShowBoss(string bossName, float initialHp, float maxHp)
     {
+        activeHideSequence.Stop();
+        activeHideTween.Stop();
+
         currentHp = initialHp;
         currentMaxHp = maxHp;
         isVisible = true;
 
+        if (ghostCoroutine != null)
+        {
+            StopCoroutine(ghostCoroutine);
+            ghostCoroutine = null;
+        }
+
         if (bossNameText != null) bossNameText.text = bossName;
         UpdateFillDirect(currentHp / currentMaxHp);
 
-        gameObject.SetActive(true);
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+        }
 
         if (canvasGroup != null)
         {
             canvasGroup.alpha = 0f;
-            Tween.Alpha(canvasGroup, 1f, 0.6f, Ease.OutQuad);
+            activeHideTween = Tween.Alpha(canvasGroup, 1f, 0.6f, Ease.OutQuad);
 
             RectTransform rect = GetComponent<RectTransform>();
             if (rect != null)
@@ -131,11 +153,18 @@ public class BossHealthBarUI : MonoBehaviour
     /// </summary>
     public void UpdateHealth(float newHp, float maxHp)
     {
-        if (!isVisible) return;
-
         currentMaxHp = maxHp;
         currentHp = Mathf.Clamp(newHp, 0f, maxHp);
         float targetFill = currentHp / currentMaxHp;
+
+        if (!gameObject.activeInHierarchy)
+        {
+            activeHideSequence.Stop();
+            activeHideTween.Stop();
+            gameObject.SetActive(true);
+            isVisible = true;
+            if (canvasGroup != null) canvasGroup.alpha = 1f;
+        }
 
         if (healthNumbersText != null)
         {
@@ -148,17 +177,11 @@ public class BossHealthBarUI : MonoBehaviour
             Tween.UIFillAmount(healthFillImage, targetFill, 0.2f, Ease.OutQuad);
         }
 
-        // 2. Anima a barra fantasma com leve atraso
-        if (ghostFillImage != null)
+        // 2. Anima a barra fantasma com leve atraso se ativo
+        if (ghostFillImage != null && isActiveAndEnabled)
         {
             if (ghostCoroutine != null) StopCoroutine(ghostCoroutine);
             ghostCoroutine = StartCoroutine(AnimateGhostBar(targetFill));
-        }
-
-        // Se a vida zerar, esconde a barra com animação de vitória
-        if (currentHp <= 0f)
-        {
-            HideBoss(true);
         }
     }
 
@@ -180,23 +203,35 @@ public class BossHealthBarUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Oculta a barra de vida do Boss.
+    /// Oculta a barra de vida do Boss com animação suave de fade out.
     /// </summary>
     public void HideBoss(bool victory = false)
     {
         if (!isVisible) return;
         isVisible = false;
 
+        activeHideSequence.Stop();
+        activeHideTween.Stop();
+        if (ghostCoroutine != null)
+        {
+            StopCoroutine(ghostCoroutine);
+            ghostCoroutine = null;
+        }
+
         if (canvasGroup != null)
         {
             float delay = victory ? 1.5f : 0.2f;
-            Tween.Delay(delay, () =>
-            {
-                Tween.Alpha(canvasGroup, 0f, 0.8f, Ease.InQuad).OnComplete(() =>
+            activeHideSequence = Sequence.Create()
+                .ChainDelay(delay)
+                .Chain(Tween.Alpha(canvasGroup, 0f, 0.8f, Ease.InQuad))
+                .ChainCallback(() =>
                 {
                     gameObject.SetActive(false);
                 });
-            });
+        }
+        else
+        {
+            gameObject.SetActive(false);
         }
     }
 }
