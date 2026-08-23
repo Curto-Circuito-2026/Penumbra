@@ -85,7 +85,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 15
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 5428111548643727763, guid: 02af2908828138f40a6b5e11d4a32b2d, type: 3}
   m_Color: {r: 0.45, g: 1, b: 0.88, a: 0.95}
@@ -96,7 +96,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
   m_BlendShapeWeights: []
 --- !u!70 &2799150464607918077
 CapsuleCollider2D:
