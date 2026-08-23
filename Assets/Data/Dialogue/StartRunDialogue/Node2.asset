@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
   speakerName: Teste
   speakerPortrait: {fileID: 0}
-  dialogueText: "come\xE7a entao a run aii"
+  dialogueText: Iremos mais uma vez a Terra
   nextNode: {fileID: 0}
   onStart: {fileID: 0}
   onEnd: {fileID: 11400000, guid: 2b85eae5133cf464880b6b9daee35c0c, type: 2}
+  voiceClip: {fileID: 0}

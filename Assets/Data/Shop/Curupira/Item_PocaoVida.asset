@@ -15,8 +15,8 @@ MonoBehaviour:
   itemName: "Po\xE7\xE3o de Vida da Mata"
   itemDescription: Restaura +50 pontos de vida do guerreiro com ervas medicinais.
   itemIcon: {fileID: 0}
-  price: 2
-  currency: 0
+  price: 20
+  currency: 1
   effectType: 0
   effectValue: 50
   maxPurchases: 99

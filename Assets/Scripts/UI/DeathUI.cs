@@ -53,7 +53,7 @@ public class DeathUI : MonoBehaviour
 
     /// <summary>
     /// Ação do botão de reiniciar. Restaura o jogador e altera o status para JOGANDO.
-    /// Reseta a fase de volta para a Fase 1 (Roguelike Reset).
+    /// Reseta a fase de volta para a Fase 1 (Roguelike Reset) ou recarrega a cena ativa no modo de teste.
     /// </summary>
     public void OnRestartClicked()
     {
@@ -62,6 +62,12 @@ public class DeathUI : MonoBehaviour
         if (StageManager.Instance != null)
         {
             StageManager.Instance.ResetToStage1();
+        }
+        else
+        {
+            // Se estiver testando direto em uma cena (ex: CucasLair), recarrega a cena ativa
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene);
         }
 
         if (playerStats != null)
@@ -73,7 +79,7 @@ public class DeathUI : MonoBehaviour
             GameStateManager.Instance.SetPlaying();
         }
 
-        Debug.Log("[DeathUI] Botão Reiniciar clicado. O jogador renasceu, a fase resetou para 1 e o estado voltou para JOGANDO!");
+        Debug.Log("[DeathUI] Botão Reiniciar clicado. O jogador renasceu e o estado voltou para JOGANDO!");
     }
 
     public void SetRestartButton(Button btn)

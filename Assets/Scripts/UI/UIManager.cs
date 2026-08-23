@@ -169,6 +169,7 @@ public class UIManager : MonoBehaviour
     public void RegisterPanel(GameObject panel, List<GameState> visibleInStates)
     {
         if (panel == null) return;
+        if (panel == deathPanel || panel == pausePanel || panel == dialoguePanel) return;
 
         if (dynamicPanels.ContainsKey(panel))
         {
@@ -250,7 +251,7 @@ public class UIManager : MonoBehaviour
         var dynamicPanelsSnapshot = new List<KeyValuePair<GameObject, List<GameState>>>(dynamicPanels);
         foreach (var kvp in dynamicPanelsSnapshot)
         {
-            if (kvp.Key != null)
+            if (kvp.Key != null && kvp.Key != deathPanel && kvp.Key != pausePanel && kvp.Key != dialoguePanel)
             {
                 bool isVisible = kvp.Value != null && kvp.Value.Contains(state);
                 if (kvp.Key.activeSelf != isVisible)
@@ -264,7 +265,7 @@ public class UIManager : MonoBehaviour
         UIStateVisibility[] allVisibilities = UnityEngine.Object.FindObjectsByType<UIStateVisibility>(FindObjectsInactive.Include);
         foreach (var vis in allVisibilities)
         {
-            if (vis != null && vis.gameObject != null)
+            if (vis != null && vis.gameObject != null && vis.gameObject != deathPanel && vis.gameObject != pausePanel && vis.gameObject != dialoguePanel)
             {
                 bool isVisible = vis.VisibleInStates != null && vis.VisibleInStates.Contains(state);
                 if (vis.gameObject.activeSelf != isVisible)

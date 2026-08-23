@@ -152,7 +152,15 @@ public class CurrencyUIHUD : MonoBehaviour
     {
         if (fragmentsText != null)
         {
-            fragmentsText.text = string.Format(fragmentsFormat, fragments);
+            int maxFrags = playerCurrency != null ? playerCurrency.FragmentsPerStar : 5;
+            try
+            {
+                fragmentsText.text = string.Format(fragmentsFormat, fragments, maxFrags);
+            }
+            catch
+            {
+                fragmentsText.text = $"Frag: {fragments}";
+            }
         }
     }
 
@@ -160,7 +168,14 @@ public class CurrencyUIHUD : MonoBehaviour
     {
         if (starsText != null)
         {
-            starsText.text = string.Format(starsFormat, stars);
+            try
+            {
+                starsText.text = string.Format(starsFormat, stars);
+            }
+            catch
+            {
+                starsText.text = $"Estrelas: {stars}";
+            }
         }
     }
 }

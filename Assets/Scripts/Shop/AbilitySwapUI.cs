@@ -379,9 +379,9 @@ public class AbilitySwapUI : MonoBehaviour
 
         // Fallback caso o modal não esteja na cena
         PlayerCurrency currency = PlayerCurrency.Instance ?? Object.FindAnyObjectByType<PlayerCurrency>();
-        if (currency == null || currency.Stars < chosenBoon.StarCost) return;
+        if (currency == null || currency.StarFragments < chosenBoon.StarCost) return;
 
-        if (currency.SpendStars(chosenBoon.StarCost))
+        if (currency.SpendStarFragments(chosenBoon.StarCost))
         {
             GameObject player = GameObject.FindWithTag("Player");
             PlayerCombatController combat = Object.FindAnyObjectByType<PlayerCombatController>();
@@ -443,7 +443,7 @@ public class AbilitySwapUI : MonoBehaviour
 
         if (starsBalanceText != null)
         {
-            starsBalanceText.text = $"Estrelas: {currentStars}";
+            starsBalanceText.text = $"Fragmentos: {currentStars}";
         }
 
         if (rerollButton != null)

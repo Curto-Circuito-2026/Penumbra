@@ -193,6 +193,14 @@ public class RunManager : MonoBehaviour
             return;
         }
 
+        // A fase final da Cuca (CucasLair) inicia em silêncio de tensão (para a música do Hub).
+        // A música do Boss (Boss 4.mp3) só tocará quando o jogador acionar o BossTrigger!
+        if (sceneName.Contains("Cuca") || sceneName.Contains("Covil") || sceneName.Contains("End") || sceneName == "CucasLair")
+        {
+            AudioController.Instance.StopBGM(fadeDuration: 1.2f);
+            return;
+        }
+
         // Procura na lista de regiões do Inspector
         for (int i = 0; i < (regions != null ? regions.Count : 0); i++)
         {
@@ -551,7 +559,7 @@ public class RunManager : MonoBehaviour
             if (reg.title.Contains("Floresta") || reg.title.Contains("Mata")) return "Mata Atlantica";
             if (reg.title.Contains("Cidade") || reg.title.Contains("Destruida")) return "Cidade Destruida";
             if (reg.title.Contains("Pantano")) return "Pantano";
-            if (reg.title.Contains("Cuca") || reg.title.Contains("Covil")) return "Region_End";
+            if (reg.title.Contains("Cuca") || reg.title.Contains("Covil")) return "CucasLair";
         }
 
         switch (regionIndex)
@@ -559,7 +567,7 @@ public class RunManager : MonoBehaviour
             case 0: return "Mata Atlantica";
             case 1: return "Cidade Destruida";
             case 2: return "Pantano";
-            case 3: return "Region_End";
+            case 3: return "CucasLair";
             default: return "Mata Atlantica";
         }
     }
