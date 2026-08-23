@@ -192,7 +192,7 @@ public class GameStateManager : MonoBehaviour
     public void SetDead() => SetState(GameState.Dead);
 
     /// <summary>
-    /// Efeitos colaterais por estado (ex: congelar/descongelar o tempo).
+    /// Efeitos colaterais por estado (ex: congelar/descongelar o tempo e pausar/retomar áudio).
     /// O tempo é congelado APENAS em GameState.Paused. No Menu, o tempo permanece normal (1f) para permitir animações e transições.
     /// </summary>
     private void ApplyStateEffects(GameState state)
@@ -200,10 +200,18 @@ public class GameStateManager : MonoBehaviour
         if (pauseTimeScaleOnPause && state == GameState.Paused)
         {
             Time.timeScale = 0f;
+            if (AudioController.Instance != null)
+            {
+                AudioController.Instance.PauseBGM();
+            }
         }
         else
         {
             Time.timeScale = 1f;
+            if (previousState == GameState.Paused && AudioController.Instance != null)
+            {
+                AudioController.Instance.ResumeBGM();
+            }
         }
     }
 }

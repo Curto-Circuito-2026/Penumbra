@@ -275,6 +275,15 @@ public class EnemyAIController : MonoBehaviour
     {
         if (enemyStats != null && enemyStats.IsDead && CurrentState != ExplodeState) return;
 
+        // Bloqueia IA e perseguição de inimigos enquanto o jogo não estiver em Gameplay (ex: Menu/Loja, Diálogo, Pausa, Cutscene, Morte)
+        bool canAct = GameStateManager.Instance == null || GameStateManager.Instance.CurrentState == GameState.Playing;
+        if (!canAct)
+        {
+            StopMovement();
+            if (animator != null) animator.SetFloat(SpeedHash, 0f);
+            return;
+        }
+
         // Atualiza timer de cooldown de ataque
         if (attackCooldownTimer > 0f)
         {
@@ -342,8 +351,8 @@ public class EnemyAIController : MonoBehaviour
     {
         if (TargetPlayer == null) return false;
 
-        // 1. Checa estado global do jogo (GameState.Dead)
-        if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState == GameState.Dead)
+        // 1. Checa estado global do jogo (apenas considera o Player como alvo ativo em GameState.Playing)
+        if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing)
         {
             return false;
         }

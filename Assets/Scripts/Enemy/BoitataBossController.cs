@@ -153,7 +153,7 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
     private void HandleGameStateChanged(GameState previousState, GameState newState)
     {
-        if (newState == GameState.Dead || newState == GameState.Menu)
+        if (newState == GameState.Dead)
         {
             HandlePlayerDied();
         }

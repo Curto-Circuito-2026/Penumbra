@@ -247,6 +247,12 @@ public class PlayerStats : MonoBehaviour, IDamageable
     {
         if (IsDead) return;
 
+        // Imunidade a dano fora do gameplay ativo (ex: dentro da Loja/Menu, Diálogo, Pausa, Cutscene)
+        if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing)
+        {
+            return;
+        }
+
         // 1. Aplica redução percentual de defesa (Pele de Carvalho)
         if (damageReductionPercent > 0f)
         {
