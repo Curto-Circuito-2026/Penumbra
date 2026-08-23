@@ -247,9 +247,11 @@ public class AudioController : MonoBehaviour
 
     #region Music (BGM) & Crossfade
 
+    private AudioClip targetBgmClip = null;
+
     /// <summary>
-    /// Toca uma trilha de música de fundo (BGM) com suporte opcional a crossfade suave.
-    /// Se a mesma música já estiver tocando, mantém a reprodução.
+    /// Toca uma trilha de música de fundo (BGM) com suporte a crossfade suave e responsivo.
+    /// Se a mesma música já estiver tocando como alvo, mantém a reprodução sem reiniciar.
     /// </summary>
     /// <param name="clip">AudioClip da música.</param>
     /// <param name="fadeDuration">Duração do crossfade em segundos (0 para troca instantânea).</param>
@@ -258,19 +260,23 @@ public class AudioController : MonoBehaviour
     {
         if (clip == null) return;
 
-        // Se o mesmo clipe já estiver tocando no source ativo, não reinicia
-        if (activeBgmSource != null && activeBgmSource.clip == clip && activeBgmSource.isPlaying)
+        // Se este clipe já é o alvo atual e está tocando no source ativo sem estar em transição pendente
+        if (targetBgmClip == clip && activeBgmSource != null && activeBgmSource.clip == clip && activeBgmSource.isPlaying && bgmCrossfadeCoroutine == null)
         {
             return;
         }
 
+        targetBgmClip = clip;
+
         if (bgmCrossfadeCoroutine != null)
         {
             StopCoroutine(bgmCrossfadeCoroutine);
+            bgmCrossfadeCoroutine = null;
         }
         if (bgmFadeOutCoroutine != null)
         {
             StopCoroutine(bgmFadeOutCoroutine);
+            bgmFadeOutCoroutine = null;
         }
 
         bgmCrossfadeCoroutine = StartCoroutine(CrossfadeBGMCoroutine(clip, fadeDuration, loop));
@@ -278,17 +284,48 @@ public class AudioController : MonoBehaviour
 
     private IEnumerator CrossfadeBGMCoroutine(AudioClip newClip, float duration, bool loop)
     {
-        AudioSource incoming = inactiveBgmSource;
-        AudioSource outgoing = activeBgmSource;
+        AudioSource incoming;
+        AudioSource outgoing;
 
-        incoming.clip = newClip;
-        incoming.loop = loop;
-        incoming.volume = 0f;
-        incoming.Play();
+        // Se a fonte ativa já tem newClip (ex: usuário fechou a loja rápido e quer voltar à música anterior)
+        if (activeBgmSource != null && activeBgmSource.clip == newClip)
+        {
+            incoming = activeBgmSource;
+            outgoing = inactiveBgmSource;
+        }
+        else if (inactiveBgmSource != null && inactiveBgmSource.clip == newClip)
+        {
+            incoming = inactiveBgmSource;
+            outgoing = activeBgmSource;
+
+            activeBgmSource = incoming;
+            inactiveBgmSource = outgoing;
+        }
+        else
+        {
+            incoming = inactiveBgmSource;
+            outgoing = activeBgmSource;
+
+            incoming.clip = newClip;
+            incoming.loop = loop;
+            incoming.volume = 0f;
+
+            activeBgmSource = incoming;
+            inactiveBgmSource = outgoing;
+        }
+
+        if (!incoming.isPlaying)
+        {
+            incoming.loop = loop;
+            incoming.Play();
+        }
 
         currentBgmBaseTargetVolume = 1f;
         float duckFactor = isDucking ? duckingMultiplier : 1f;
         float targetVolume = masterVolume * musicVolume * duckFactor;
+
+        float initialIncomingVol = incoming.volume;
+        float initialOutgoingVol = outgoing != null ? outgoing.volume : 0f;
 
         if (duration <= 0.01f)
         {
@@ -302,8 +339,6 @@ public class AudioController : MonoBehaviour
         else
         {
             float timer = 0f;
-            float initialOutgoingVol = outgoing != null ? outgoing.volume : 0f;
-
             while (timer < duration)
             {
                 timer += Time.unscaledDeltaTime;
@@ -312,10 +347,13 @@ public class AudioController : MonoBehaviour
                 duckFactor = isDucking ? duckingMultiplier : 1f;
                 targetVolume = masterVolume * musicVolume * duckFactor;
 
-                incoming.volume = Mathf.Lerp(0f, targetVolume, progress);
+                float inCurve = Mathf.Sin(progress * (Mathf.PI / 2f));
+                float outCurve = Mathf.Cos(progress * (Mathf.PI / 2f));
+
+                incoming.volume = Mathf.Lerp(initialIncomingVol, targetVolume, inCurve);
                 if (outgoing != null)
                 {
-                    outgoing.volume = Mathf.Lerp(initialOutgoingVol, 0f, progress);
+                    outgoing.volume = Mathf.Lerp(initialOutgoingVol, 0f, 1f - outCurve);
                 }
 
                 yield return null;
@@ -329,9 +367,6 @@ public class AudioController : MonoBehaviour
             }
         }
 
-        // Alterna as referências de fontes ativas/inativas
-        activeBgmSource = incoming;
-        inactiveBgmSource = outgoing;
         bgmCrossfadeCoroutine = null;
     }
 
@@ -340,6 +375,8 @@ public class AudioController : MonoBehaviour
     /// </summary>
     public void StopBGM(float fadeDuration = 1f)
     {
+        targetBgmClip = null;
+
         if (activeBgmSource == null || !activeBgmSource.isPlaying) return;
 
         if (bgmCrossfadeCoroutine != null)
@@ -365,7 +402,9 @@ public class AudioController : MonoBehaviour
         while (timer < duration)
         {
             timer += Time.unscaledDeltaTime;
-            activeBgmSource.volume = Mathf.Lerp(startVol, 0f, timer / duration);
+            float progress = Mathf.Clamp01(timer / duration);
+            float curve = Mathf.Cos(progress * (Mathf.PI / 2f));
+            activeBgmSource.volume = startVol * curve;
             yield return null;
         }
 
@@ -375,24 +414,40 @@ public class AudioController : MonoBehaviour
     }
 
     /// <summary>
-    /// Pausa a música de fundo instantaneamente.
+    /// Pausa a música de fundo e canais de fala instantaneamente (ao pausar o jogo com ESC).
     /// </summary>
     public void PauseBGM()
     {
-        if (activeBgmSource != null && activeBgmSource.isPlaying)
+        if (bgmSourceA != null && bgmSourceA.isPlaying)
         {
-            activeBgmSource.Pause();
+            bgmSourceA.Pause();
+        }
+        if (bgmSourceB != null && bgmSourceB.isPlaying)
+        {
+            bgmSourceB.Pause();
+        }
+        if (voiceSource != null && voiceSource.isPlaying)
+        {
+            voiceSource.Pause();
         }
     }
 
     /// <summary>
-    /// Retoma a música de fundo pausada.
+    /// Retoma a música de fundo e canais de fala pausados.
     /// </summary>
     public void ResumeBGM()
     {
-        if (activeBgmSource != null && !activeBgmSource.isPlaying && activeBgmSource.clip != null)
+        if (bgmSourceA != null && bgmSourceA.clip != null && bgmSourceA.volume > 0.001f)
         {
-            activeBgmSource.UnPause();
+            bgmSourceA.UnPause();
+        }
+        if (bgmSourceB != null && bgmSourceB.clip != null && bgmSourceB.volume > 0.001f)
+        {
+            bgmSourceB.UnPause();
+        }
+        if (voiceSource != null && voiceSource.clip != null)
+        {
+            voiceSource.UnPause();
         }
     }
 
@@ -492,7 +547,8 @@ public class AudioController : MonoBehaviour
         {
             timer += Time.unscaledDeltaTime;
             float progress = Mathf.Clamp01(timer / duration);
-            activeBgmSource.volume = Mathf.Lerp(startVol, targetVol, progress);
+            float smoothT = Mathf.SmoothStep(0f, 1f, progress);
+            activeBgmSource.volume = Mathf.Lerp(startVol, targetVol, smoothT);
             yield return null;
         }
 
