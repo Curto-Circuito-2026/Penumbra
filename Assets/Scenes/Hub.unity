@@ -1195,7 +1195,7 @@ MonoBehaviour:
   hubBgm: {fileID: 0}
   useFixedTestOrder: 0
   testRegionOrder: 00000000010000000200000003000000
-  forceSingleRegion: -1
+  forceSingleRegion: 1
   pendingRegions: 
 --- !u!4 &1554215480
 Transform:
