@@ -238,6 +238,12 @@ public class ShopUI : MonoBehaviour
         RefreshBalances();
         SubscribeCurrencyEvents();
 
+        // Toca a música da loja correspondente ao bioma/hub
+        if (RunManager.Instance != null)
+        {
+            RunManager.Instance.PlayShopBGM();
+        }
+
         Debug.Log($"[ShopUI] Loja '{title}' aberta com {finalCatalog?.Count ?? 0} itens!");
     }
 
@@ -258,6 +264,12 @@ public class ShopUI : MonoBehaviour
 
         // Notifica o DialogueTrigger para evitar reabrir diálogo acidentalmente
         DialogueTrigger.NotifyDialogueOrShopClosed();
+
+        // Restaura a música de fundo da fase/cena atual
+        if (RunManager.Instance != null)
+        {
+            RunManager.Instance.PlaySceneBGM(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
 
         // Restaura o estado do jogo para Playing
         if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState == GameState.Menu)

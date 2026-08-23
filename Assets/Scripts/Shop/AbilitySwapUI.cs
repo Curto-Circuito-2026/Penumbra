@@ -191,6 +191,12 @@ public class AbilitySwapUI : MonoBehaviour
         RefreshBalances();
         SubscribeCurrencyEvents();
 
+        // Toca a música da loja correspondente ao bioma/hub
+        if (RunManager.Instance != null)
+        {
+            RunManager.Instance.PlayShopBGM();
+        }
+
         Debug.Log($"[AbilitySwapUI] Painel de Bênçãos '{title}' aberto com sucesso!");
     }
 
@@ -412,6 +418,12 @@ public class AbilitySwapUI : MonoBehaviour
 
         UnsubscribeCurrencyEvents();
         DialogueTrigger.NotifyDialogueOrShopClosed();
+
+        // Restaura a música de fundo da fase/cena atual
+        if (RunManager.Instance != null)
+        {
+            RunManager.Instance.PlaySceneBGM(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
 
         if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState == GameState.Menu)
         {
