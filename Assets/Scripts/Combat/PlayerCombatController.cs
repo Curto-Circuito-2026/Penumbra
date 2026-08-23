@@ -34,12 +34,7 @@ public class PlayerCombatController : MonoBehaviour
     [Header("Habilidades Equipadas (ScriptableObjects)")]
     [SerializeField] private Ability slotQ;
     [SerializeField] private Ability slotE;
-    [SerializeField] private Ability slotR; // Ultimate
-
-    [Header("Carga da Ultimate")]
-    [SerializeField] private float ultimateCharge = 0f;
-    [SerializeField] private float maxUltimateCharge = 100f;
-    [SerializeField] private float chargePerHit = 20f;
+    [SerializeField] private Ability slotR;
 
     [Header("Retorno Visual & Indicadores")]
     [SerializeField] private LineRenderer rangeIndicator;
@@ -98,9 +93,6 @@ public class PlayerCombatController : MonoBehaviour
     public event Action<Ability, Ability, Ability> OnEquippedAbilitiesChanged; // (Q, E, R)
     public event Action<int, bool> OnSlotUnlockStateChanged;                 // (slotIndex, isUnlocked)
 
-    public float UltimateCharge => ultimateCharge;
-    public float MaxUltimateCharge => maxUltimateCharge;
-    public bool IsUltimateReady => ultimateCharge >= maxUltimateCharge;
 
     /// <summary>
     /// Propriedade que indica se o jogador está em modo de perseguição de combate ativo.
@@ -196,7 +188,6 @@ public class PlayerCombatController : MonoBehaviour
     private void Start()
     {
         OnEquippedAbilitiesChanged?.Invoke(slotQ, slotE, slotR);
-        OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
     }
 
     private void Update()
@@ -317,12 +308,12 @@ public class PlayerCombatController : MonoBehaviour
             }
         }
 
-        // Tecla R - Ultimate Direcional (Requer Slot R Desbloqueado)
+        // Tecla R - Habilidade 3 Direcional (Requer Slot R Desbloqueado)
         if (keyRAction.WasPressedThisFrame())
         {
             if (IsSlotUnlocked(2))
             {
-                TryCastUltimate(mouseWorldPos);
+                TryTargetOrCastAbility(2, slotR, ref cooldownR, mouseWorldPos);
             }
             else
             {
@@ -472,7 +463,6 @@ public class PlayerCombatController : MonoBehaviour
         if (targetDmg != null)
         {
             targetDmg.TakeDamage(meleeDamage, dir);
-            AddUltimateCharge(chargePerHit);
         }
         else
         {
@@ -483,7 +473,6 @@ public class PlayerCombatController : MonoBehaviour
                 if (IsValidEnemyTarget(col, out IDamageable hitDmg))
                 {
                     hitDmg.TakeDamage(meleeDamage, dir);
-                    AddUltimateCharge(chargePerHit);
                     break;
                 }
             }
@@ -547,7 +536,6 @@ public class PlayerCombatController : MonoBehaviour
                 if (targetDmg != null)
                 {
                     targetDmg.TakeDamage(rangedDamage, dir);
-                    AddUltimateCharge(chargePerHit);
                 }
                 else
                 {
@@ -557,7 +545,6 @@ public class PlayerCombatController : MonoBehaviour
                         if (IsValidEnemyTarget(col, out IDamageable hitDmg))
                         {
                             hitDmg.TakeDamage(rangedDamage, dir);
-                            AddUltimateCharge(chargePerHit);
                             break;
                         }
                     }
@@ -567,7 +554,6 @@ public class PlayerCombatController : MonoBehaviour
         else if (targetDmg != null)
         {
             targetDmg.TakeDamage(rangedDamage, dir);
-            AddUltimateCharge(chargePerHit);
         }
     }
 
@@ -686,45 +672,6 @@ public class PlayerCombatController : MonoBehaviour
         }
     }
 
-    private void TryCastUltimate(Vector3 mouseWorldPos)
-    {
-        if (characterController == null) characterController = GetComponent<CharacterController2D>();
-        if (characterController != null && characterController.IsDashing) return;
-
-        if (slotR == null) return;
-        if (cooldownR > 0f)
-        {
-            Debug.Log($"[PlayerCombatController] Ultimate {slotR.AbilityName} em recarga ({cooldownR:F1}s restante)!");
-            return;
-        }
-        if (!IsUltimateReady)
-        {
-            Debug.Log($"[PlayerCombatController] Ultimate não está carregada! Carga atual: {ultimateCharge}/{maxUltimateCharge}");
-            return;
-        }
-
-        Vector3 dir = (mouseWorldPos - transform.position).normalized;
-        if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
-
-        float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
-        float castDist = Mathf.Min(mouseDist, slotR.Range);
-
-        // A Ultimate cai exatamente onde o mouse está mirando (limitado pelo alcance)!
-        Vector3 targetPos = transform.position + dir * castDist;
-
-        // Dispara a animação de Casting na direção da Ultimate
-        if (characterController != null)
-        {
-            characterController.TriggerCastAnimation(dir);
-        }
-
-        ultimateCharge = 0f;
-        cooldownR = slotR.Cooldown;
-        OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
-        OnAbilityCooldownUpdated?.Invoke(2, cooldownR, slotR.Cooldown);
-
-        StartCoroutine(ExecuteDelayedUltimateCast(targetPos, 0.25f));
-    }
 
     private IEnumerator ExecuteDelayedUltimateCast(Vector3 targetPos, float delay)
     {
@@ -735,11 +682,7 @@ public class PlayerCombatController : MonoBehaviour
         }
     }
 
-    public void AddUltimateCharge(float amount)
-    {
-        ultimateCharge = Mathf.Clamp(ultimateCharge + amount, 0f, maxUltimateCharge);
-        OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
-    }
+
 
     #region Dynamic Ability Loadout API
     /// <summary>
@@ -958,7 +901,7 @@ public class PlayerCombatController : MonoBehaviour
         {
             case PendingActionType.Melee:
                 name = "Ataque Corpo a Corpo (Botão Esquerdo)";
-                description = $"Golpe físico rápido de curto alcance. Causa {meleeDamage:F0} de dano e gera +{chargePerHit:F0}% de carga para a Ultimate.";
+                description = $"Golpe físico rápido de curto alcance. Causa {meleeDamage:F0} de dano";
                 cooldown = meleeCooldown;
                 manaCost = 0f;
                 icon = null;
@@ -966,7 +909,7 @@ public class PlayerCombatController : MonoBehaviour
 
             case PendingActionType.Ranged:
                 name = "Ataque à Distância (Botão Direito)";
-                description = $"Disparo de projétil à distância. Causa {rangedDamage:F0} de dano e gera +{chargePerHit:F0}% de carga para a Ultimate.";
+                description = $"Disparo de projétil à distância. Causa {rangedDamage:F0} de dano";
                 cooldown = rangedCooldown;
                 manaCost = 0f;
                 icon = null;
@@ -981,7 +924,7 @@ public class PlayerCombatController : MonoBehaviour
                 break;
 
             case PendingActionType.AbilityR:
-                GetAbilityInfo(slotR, "R - Ultimate", out name, out description, out cooldown, out manaCost, out icon);
+                GetAbilityInfo(slotR, "R", out name, out description, out cooldown, out manaCost, out icon);
                 break;
 
             default:

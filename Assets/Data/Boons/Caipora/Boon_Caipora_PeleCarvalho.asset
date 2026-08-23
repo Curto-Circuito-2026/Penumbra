@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: Pele de Carvalho
   rarity: 1
-  icon: {fileID: 0}
+  icon: {fileID: 921909661, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: Reduz o dano sofrido em 50% por 6 segundos com uma aura de casca protetora.
   statDetail: "\u25B8 Redu\xE7\xE3o de Dano: -50% (6s)"
   effectType: 6

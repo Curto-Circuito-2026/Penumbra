@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cdef052cb9845a042ad6f966c4a9688a
+guid: 35bc2d6a998e196479936a53e57e763a
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - The Libra Heart Font
+  - Upheaval TT (BRK)
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

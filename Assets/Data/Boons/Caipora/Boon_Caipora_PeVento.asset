@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "P\xE9 de Vento"
   rarity: 0
-  icon: {fileID: 0}
+  icon: {fileID: 1448489390, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Acelera seu movimento em +60% por 5s com brisas \xE1geis da floresta."
   statDetail: "\u25B8 Velocidade de Movimento: +60% (5s)"
   effectType: 5
