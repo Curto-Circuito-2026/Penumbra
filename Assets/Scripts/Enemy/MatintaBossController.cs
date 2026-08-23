@@ -55,6 +55,17 @@ public class MatintaBossController : MonoBehaviour, IDamageable
     [SerializeField] private bool autoStartCombat = false;
     [SerializeField] private BossTrigger bossIntro;
 
+    [Header("Áudio da Transformação em Pássaro")]
+    [Tooltip("Som que toca desde o início da transformação (casulo) até o momento em que os pássaros ilusórios partem para o ataque.")]
+    [SerializeField] private AudioClip illusionTransformSFX;
+    [Tooltip("AudioSource dedicado a este som. Se deixado vazio, um é criado automaticamente.")]
+    [SerializeField] private AudioSource transformAudioSource;
+
+    [Header("Outros SFX")]
+    [SerializeField] private AudioClip magicCastSFX;
+    [SerializeField] private AudioClip birdProjectileLaunchSFX;
+    [SerializeField] private AudioClip deathSFX;
+
     // Componentes
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -111,6 +122,14 @@ public class MatintaBossController : MonoBehaviour, IDamageable
         }
 
         currentHealth = maxHealth;
+
+        if (transformAudioSource == null)
+        {
+            transformAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+        transformAudioSource.playOnAwake = false;
+        transformAudioSource.loop = false;
+        transformAudioSource.spatialBlend = 0f;
     }
 
     private void Start()
@@ -357,6 +376,8 @@ public class MatintaBossController : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(0.28f);
 
+        AudioController.Instance.PlaySFX(magicCastSFX);
+
         // Quantidade de Corpo-Secos baseada na vida atual da Matinta
         float healthPct = currentHealth / maxHealth;
         int summonCount = 2;
@@ -398,6 +419,8 @@ public class MatintaBossController : MonoBehaviour, IDamageable
     {
         Debug.Log("[MatintaBoss] Lançando Projétil Pássaro Sombrio!");
         if (animator != null) animator.SetTrigger(MagicHash);
+
+        AudioController.Instance.PlaySFX(birdProjectileLaunchSFX);
 
         yield return new WaitForSeconds(0.25f);
 
@@ -448,6 +471,27 @@ public class MatintaBossController : MonoBehaviour, IDamageable
     #endregion
 
     #region Especial: Ilusão do Casulo e Transformação em Pássaro
+
+    private void PlayIllusionTransformSFX()
+    {
+        if (transformAudioSource == null || illusionTransformSFX == null) return;
+
+        float sfxVolume = AudioController.Instance != null ? AudioController.Instance.SFXVolume : 1f;
+        float masterVolume = AudioController.Instance != null ? AudioController.Instance.MasterVolume : 1f;
+
+        transformAudioSource.clip = illusionTransformSFX;
+        transformAudioSource.volume = masterVolume * sfxVolume;
+        transformAudioSource.Play();
+    }
+
+    private void StopIllusionTransformSFX()
+    {
+        if (transformAudioSource != null && transformAudioSource.isPlaying)
+        {
+            transformAudioSource.Stop();
+        }
+    }
+
     private IEnumerator PerformIllusionTransformationRoutine()
     {
         Debug.Log("[MatintaBoss] Fechando casulo, transformando-se em Pássaro e iniciando revoada!");
@@ -459,6 +503,7 @@ public class MatintaBossController : MonoBehaviour, IDamageable
         // 1. Animação de entrar no casulo e emergir como pássaro
         if (animator != null) animator.SetTrigger(TransformInHash);
         if (bodyCollider != null) bodyCollider.enabled = false;
+        PlayIllusionTransformSFX();
 
         yield return new WaitForSeconds(0.60f);
 
@@ -534,6 +579,9 @@ public class MatintaBossController : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(0.60f);
 
         if (bodyCollider != null) bodyCollider.enabled = true;
+        
+        // Encerra o áudio da transformação exatamente no momento em que os pássaros partem para o ataque
+        StopIllusionTransformSFX();
 
         // 6. Todos os outros pássaros mergulham em linha reta no jogador como projéteis de ataque!
         foreach (var bird in illusionBirds)
@@ -665,6 +713,8 @@ public class MatintaBossController : MonoBehaviour, IDamageable
             }
         }
         activeMinions.Clear();
+
+        AudioController.Instance.PlaySFX(deathSFX);
 
         // Drop de Estrelas (4 a 6 estrelas)
         int drops = Random.Range(4, 7);
