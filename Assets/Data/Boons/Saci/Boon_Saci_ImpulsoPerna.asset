@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Saci_ImpulsoPerna
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: "Impulso de Uma Perna"
+  rarity: 1
+  icon: {fileID: 0}
+  description: "O Saci expande seu vigor f\xEDsico com a energia vital da mata, mas restringe seu ritmo e agilidade."
+  statDetail: "\u25B8 Vida M\xE1xima: +50"
+  effectType: 1
+  effectValue: 50
+  debuffEffectType: 5
+  debuffValue: 1.5
+  debuffDetail: "- Velocidade de Movimento: -1.5"
+  starCost: 1
+  grantedAbility: {fileID: 0}

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Saci_TrancaFuria
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: "Tran\xE7a da F\xFAria"
+  rarity: 2
+  icon: {fileID: 0}
+  description: "Uma barganha travessa que imbu\xED seus golpes com for\xE7a avassaladora, cobrando um alto pre\xE7o do seu corpo."
+  statDetail: "\u25B8 Dano de Combate: +35"
+  effectType: 4
+  effectValue: 35
+  debuffEffectType: 1
+  debuffValue: 35
+  debuffDetail: "- Vida M\xE1xima: -35"
+  starCost: 1
+  grantedAbility: {fileID: 0}

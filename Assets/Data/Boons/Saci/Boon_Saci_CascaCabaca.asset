@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Saci_CascaCabaca
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: "Casca de Caba\xE7a"
+  rarity: 1
+  icon: {fileID: 0}
+  description: "Envolve seu corpo com a prote\xE7\xE3o m\xE1gica da caba\xE7a do Saci, reduzindo o dano sofrido, por\xE9m amortecendo a for\xE7a dos seus ataques."
+  statDetail: "\u25B8 Defesa / Prote\xE7\xE3o: +30%"
+  effectType: 6
+  effectValue: 30
+  debuffEffectType: 4
+  debuffValue: 15
+  debuffDetail: "- Dano de Combate: -15"
+  starCost: 1
+  grantedAbility: {fileID: 0}

@@ -185,7 +185,22 @@ MonoBehaviour:
   swapSubtitle: "Um truque por um pre\xE7o... Aceite uma travessura com sua devida
     contrapartida."
   characterIllustration: {fileID: 21300000, guid: 40a8f419fbd400e44add7fcc911c751e, type: 3}
-  availableBoons: []
+  availableBoons:
+  - {fileID: 11400000, guid: e1a7b8c2d3e4f5061728394051627384, type: 2}
+  - {fileID: 11400000, guid: f2b8c9d3e4f506172839405162738495, type: 2}
+  - {fileID: 11400000, guid: a3c9d0e1f2a3b4c5d6e7f8091a2b3c4d, type: 2}
+  - {fileID: 11400000, guid: b4d0e1f2a3b4c5d6e7f8091a2b3c4d5e, type: 2}
+  - {fileID: 11400000, guid: c5e1f2a3b4c5d6e7f8091a2b3c4d5e6f, type: 2}
+  - {fileID: 11400000, guid: d6f2a3b4c5d6e7f8091a2b3c4d5e6f70, type: 2}
+  - {fileID: 11400000, guid: e7f8091a2b3c4d5e6f708192a3b4c5d6, type: 2}
+  - {fileID: 11400000, guid: f8091a2b3c4d5e6f708192a3b4c5d6e7, type: 2}
+  - {fileID: 11400000, guid: a9102b3c4d5e6f708192a3b4c5d6e7f8, type: 2}
+  - {fileID: 11400000, guid: ba213c4d5e6f708192a3b4c5d6e7f8a9, type: 2}
+  - {fileID: 11400000, guid: cb324d5e6f708192a3b4c5d6e7f8a9b0, type: 2}
+  - {fileID: 11400000, guid: dc435e6f708192a3b4c5d6e7f8a9b0c1, type: 2}
+  - {fileID: 11400000, guid: ed546f708192a3b4c5d6e7f8a9b0c1d2, type: 2}
+  - {fileID: 11400000, guid: fe65708192a3b4c5d6e7f8a9b0c1d2e3, type: 2}
+  - {fileID: 11400000, guid: 0f768192a3b4c5d6e7f8a9b0c1d2e3f4, type: 2}
   openSwapEvent: {fileID: 11400000, guid: 314b669510171bf4b92bf54f59a84915, type: 2}
 --- !u!114 &3438793677863822357
 MonoBehaviour:
