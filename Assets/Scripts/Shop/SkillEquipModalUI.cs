@@ -243,7 +243,7 @@ public class SkillEquipModalUI : MonoBehaviour
 
         if (confirmButtonText != null)
         {
-            confirmButtonText.text = $"<b>Equipar no Slot [{slotLetter}]</b>\n(<color=#FFD700>{cost} {starUnit}</color>)";
+            confirmButtonText.text = $"<b>Equipar no Slot [{slotLetter}]</b>\n(<color=#4FC3F7>{cost} {starUnit}</color>)";
         }
     }
 
@@ -258,9 +258,9 @@ public class SkillEquipModalUI : MonoBehaviour
             return;
         }
 
-        if (currency.Stars < pendingBoon.StarCost)
+        if (currency.StarFragments < pendingBoon.StarCost)
         {
-            Debug.LogWarning($"[SkillEquipModalUI] Estrelas insuficientes! Custo: {pendingBoon.StarCost}, Atual: {currency.StarFragments}");
+            Debug.LogWarning($"[SkillEquipModalUI] Fragmentos insuficientes! Custo: {pendingBoon.StarCost}, Atual: {currency.StarFragments}");
             return;
         }
 
@@ -288,14 +288,25 @@ public class SkillEquipModalUI : MonoBehaviour
             combat.RecordStageBoonAcquisition(pendingBoon, selectedSlotIndex);
         }
 
+        // Força atualização visual imediata na HUD de Combate
+        CombatUIHUD combatHUD = Object.FindAnyObjectByType<CombatUIHUD>(FindObjectsInactive.Include);
+        if (combatHUD != null && combat != null)
+        {
+            combatHUD.UpdateEquippedAbilities(
+                combat.GetEquippedAbility(0),
+                combat.GetEquippedAbility(1),
+                combat.GetEquippedAbility(2)
+            );
+        }
+
         Debug.Log($"[SkillEquipModalUI] '{pendingBoon.BoonName}' comprada e equipada no Slot {selectedSlotIndex}!");
 
         AbilityBoonSO justBought = pendingBoon;
 
-        // 3. Fecha apenas o modal de seleção de slot, mantendo a loja aberta para o jogador
+        // 3. Fecha o modal de seleção de slot
         CloseModal();
-
-        // 4. Notifica a loja para fazer reroll do slot comprado
+ 
+        // 4. Notifica a loja para fazer reroll do slot comprado, mantendo a loja aberta
         if (parentSwapUI != null)
         {
             parentSwapUI.OnBoonPurchased(justBought);
