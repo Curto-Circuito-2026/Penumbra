@@ -69,6 +69,18 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private TrailRenderer fireTrail;
 
+    [Header("SFX do Personagem")]
+    [Tooltip("Nomeie cada clipe de acordo com a ação que ele representa")]
+    [SerializeField] private AudioClip FireRainSFX;
+    [SerializeField] private AudioClip RoarSFX;
+    [SerializeField] private AudioClip FireBallCircleSFX;
+    [SerializeField] private AudioClip FireWindMillSFX;
+    [Tooltip("AudioSource dedicado ao som do catavento de fogo. Se deixado vazio, um é criado automaticamente.")]
+    [SerializeField] private AudioSource windMillAudioSource;
+    [SerializeField] private AudioClip arrastandoSFX;
+    [Tooltip("AudioSource dedicado a esse som. Se deixado vazio, um é criado automaticamente.")]
+    [SerializeField] private AudioSource draggingAudioSource;
+
     private Transform playerTransform;
     private bool isDead = false;
     private bool isExecutingAttack = false;
@@ -127,6 +139,22 @@ public class BoitataBossController : MonoBehaviour, IDamageable
             int playerLayer = LayerMask.NameToLayer("Player");
             playerLayerMask = playerLayer != -1 ? (1 << playerLayer) : ~0;
         }
+
+        if (draggingAudioSource == null)
+        {
+            draggingAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+        draggingAudioSource.playOnAwake = false;
+        draggingAudioSource.loop = true; // repete o clipe até chamarmos Stop()
+        draggingAudioSource.spatialBlend = 0f;
+
+        if (windMillAudioSource == null)
+        {
+            windMillAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+        windMillAudioSource.playOnAwake = false;
+        windMillAudioSource.loop = true;
+        windMillAudioSource.spatialBlend = 0f;
     }
 
     private Vector3 homePosition;
@@ -335,6 +363,28 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     }
 
     #region Ataque 1: Investidas de Fogo Cruzando o FightZone
+
+    private void PlayDraggingSFX()
+    {
+        if (draggingAudioSource == null || arrastandoSFX == null) return;
+
+        float sfxVolume = AudioController.Instance != null ? AudioController.Instance.SFXVolume : 1f;
+        float masterVolume = AudioController.Instance != null ? AudioController.Instance.MasterVolume : 1f;
+
+        draggingAudioSource.clip = arrastandoSFX;
+        draggingAudioSource.volume = masterVolume * sfxVolume;
+        draggingAudioSource.Play();
+    }
+
+    private void StopDraggingSFX()
+    {
+        if (draggingAudioSource != null && draggingAudioSource.isPlaying)
+        {
+            draggingAudioSource.Stop();
+        }
+    }
+
+
     /// <summary>
     /// Spawna linhas de aviso em direções aleatórias cruzando o Fightzone com curvas.
     /// O número de investidas escala com a vida perdida (2 a 100% de vida até 5 a <= 20% de vida).
@@ -342,11 +392,18 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     private IEnumerator PerformHashtagGridAttack()
     {
         isExecutingAttack = true;
+        PlayDraggingSFX();
 
         Bounds bounds = GetFightZoneBounds();
 
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(RoarSFX);
+        }
+
         // Calcula a quantidade de investidas com base na vida
         float healthPercent = Mathf.Clamp01(currentHealth / maxHealth);
+        // ... (resto do método continua exatamente igual ao que você já tem)
         float healthRange = Mathf.Max(0.01f, 1f - lowHealthThreshold);
         float t = Mathf.Clamp01((1f - healthPercent) / healthRange);
         int baseCount = Mathf.RoundToInt(Mathf.Lerp(minDashCount, maxDashCount, t));
@@ -355,7 +412,7 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         // Dispara cada investida com seu próprio aviso telegrafado de sombra
         for (int i = 0; i < dashCount; i++)
         {
-            if (isDead) yield break;
+            if (isDead) { StopDraggingSFX(); yield break; }
 
             Vector3[] path = GenerateRandomDashPath(bounds);
 
@@ -367,14 +424,14 @@ public class BoitataBossController : MonoBehaviour, IDamageable
 
             yield return new WaitForSeconds(dashTelegraphDuration);
 
-            if (isDead) yield break;
+            if (isDead) { StopDraggingSFX(); yield break; }
 
             // 2. Dispara a serpente rasgando o caminho na velocidade configurada
             BossTelegraphVisuals.Instance.SpawnFireSerpentDash(path, dashSpeed, dashDamage, playerLayerMask);
 
             yield return new WaitForSeconds(dashInterval);
         }
-
+        StopDraggingSFX();
         isExecutingAttack = false;
     }
 
@@ -433,6 +490,11 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         isExecutingAttack = true;
 
         if (animator != null) animator.SetTrigger(RoarTrigger);
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(FireRainSFX);
+        }
 
         if (CombatVisualEffects.Instance != null)
         {
@@ -595,6 +657,11 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         if (animator != null) animator.SetTrigger(RoarTrigger);
         yield return new WaitForSeconds(0.25f);
 
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(FireBallCircleSFX);
+        }
+
         Vector3 mouthPos = GetCurrentMouthPosition();
 
         if (CombatVisualEffects.Instance != null)
@@ -645,12 +712,35 @@ public class BoitataBossController : MonoBehaviour, IDamageable
     /// <summary>
     /// Projeta 4 feixes de fogo contínuos em formato de '+' a partir da chama da cauda e gira 360 graus na arena, acompanhando o rabo ativo suavemente.
     /// </summary>
+    private void PlayFireWindMillSFX()
+    {
+        if (windMillAudioSource == null || FireWindMillSFX == null) return;
+
+        float sfxVolume = AudioController.Instance != null ? AudioController.Instance.SFXVolume : 1f;
+        float masterVolume = AudioController.Instance != null ? AudioController.Instance.MasterVolume : 1f;
+
+        windMillAudioSource.clip = FireWindMillSFX;
+        windMillAudioSource.volume = masterVolume * sfxVolume;
+        windMillAudioSource.Play();
+    }
+
+    private void StopFireWindMillSFX()
+    {
+        if (windMillAudioSource != null && windMillAudioSource.isPlaying)
+        {
+            windMillAudioSource.Stop();
+        }
+    }
+
     private IEnumerator PerformSpinningFireBeamsAttack()
     {
+
         isExecutingAttack = true;
 
         smoothedTailFlamePos = GetCurrentTailFlamePosition();
         Vector3 initialTailPos = smoothedTailFlamePos;
+
+        PlayFireWindMillSFX();
 
         Bounds bounds = GetFightZoneBounds();
         float beamLength = Mathf.Max(bounds.extents.x, bounds.extents.y) * 1.5f;
@@ -683,7 +773,7 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         ));
 
         yield return new WaitForSeconds(0.4f);
-
+        StopFireWindMillSFX();
         isExecutingAttack = false;
     }
     #endregion
@@ -756,6 +846,8 @@ public class BoitataBossController : MonoBehaviour, IDamageable
         if (isDead) return;
         isDead = true;
         isCombatActive = false;
+        StopDraggingSFX();
+        StopFireWindMillSFX();
         StopAllCoroutines();
         StartCoroutine(DieRoutine());
     }

@@ -55,6 +55,13 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
     [SerializeField] private bool autoStartCombat = false;
     [SerializeField] private BossTrigger bossIntro;
 
+    [Header("SFX do Personagem")]
+    [Tooltip("Nomeie cada clipe de acordo com a ação que ele representa")]
+    [SerializeField] private AudioClip JumpingSFX;
+    [SerializeField] private AudioClip LandingSFX;
+    [SerializeField] private AudioClip ThrowingSFX;
+    [SerializeField] private AudioClip PunchSFX;
+
     private Transform playerTransform;
     private bool isDead = false;
     private bool isExecutingAttack = false;
@@ -358,6 +365,11 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
         Debug.Log("[MapinguariBoss] Executando Ataque Melee: Soco / Porradona!");
         if (animator != null) animator.SetTrigger(PunchHash);
 
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(PunchSFX);
+        }
+
         // Windup até o frame de impacto
         yield return new WaitForSeconds(0.25f);
 
@@ -403,6 +415,11 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
 
         if (animator != null) animator.SetTrigger(JumpHash);
         if (bodyCollider != null) bodyCollider.enabled = false;
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(JumpingSFX);
+        }
 
         // 1. Pulo Reto para Cima (Saindo completamente da tela)
         Vector3 startPos = transform.position;
@@ -450,6 +467,11 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
 
         // 4. Impacto e Esmagamento no Chão (Slam)
         Debug.Log("[MapinguariBoss] Esmagamento no Chão realizado!");
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(LandingSFX);
+        }
 
         if (CombatVisualEffects.Instance != null)
         {
@@ -529,6 +551,11 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
         Debug.Log("[MapinguariBoss] Executando Ataque 3: Arremesso de Pedra Giratória!");
 
         if (animator != null) animator.SetTrigger(ThrowHash);
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(ThrowingSFX);
+        }
 
         // Windup do arremesso
         yield return new WaitForSeconds(0.24f);

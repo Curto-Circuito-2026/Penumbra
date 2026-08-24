@@ -227248,6 +227248,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1931144149}
     m_Modifications:
+    - target: {fileID: 857753502346532065, guid: 28520749e16254f43a3d3c1739806de2, type: 3}
+      propertyPath: PunchSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 96fe85935a5446848a9e38b8240176b9, type: 3}
+    - target: {fileID: 857753502346532065, guid: 28520749e16254f43a3d3c1739806de2, type: 3}
+      propertyPath: JumpingSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 20b26d8462cd8dd43ae561c14f953d91, type: 3}
+    - target: {fileID: 857753502346532065, guid: 28520749e16254f43a3d3c1739806de2, type: 3}
+      propertyPath: LandingSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: ebe8765273d770b4bad376f7e11c12e8, type: 3}
+    - target: {fileID: 857753502346532065, guid: 28520749e16254f43a3d3c1739806de2, type: 3}
+      propertyPath: ThrowingSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: db00433424d3b164792a711ba8a4697a, type: 3}
     - target: {fileID: 1817937365407196304, guid: 28520749e16254f43a3d3c1739806de2, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.64027
