@@ -197,8 +197,9 @@ public class EndCutsceneClip : ICinematicClip
         }
 
         // Aguarda a digitação terminar ou ser acelerada pelo jogador
-        while (isTyping && !isSkipped  && AudioController.Instance.GetVoiceBusy())
+        while ((isTyping || AudioController.Instance.GetVoiceBusy()) && !isSkipped)
         {
+            if (!isTyping && skipSceneDelay) { break; }
             yield return null;
         }
 
