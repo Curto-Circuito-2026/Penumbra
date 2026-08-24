@@ -1396,6 +1396,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1519875259}
     - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: forceSingleRegion
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
       propertyPath: regions.Array.data[0].title
       value: Mata Eterea
       objectReference: {fileID: 0}

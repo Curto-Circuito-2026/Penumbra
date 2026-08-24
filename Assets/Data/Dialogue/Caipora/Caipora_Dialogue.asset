@@ -10,7 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f03cf499bd150f84c94de7afa9e16fd8, type: 3}
-  m_Name: StartRunSequence
+  m_Name: Caipora_Dialogue
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   startingNode:
-  - {fileID: 11400000, guid: 5b52c4e98757d7143b1d420ee730feaa, type: 2}
+  - {fileID: 11400000, guid: 15b191b2ab373c847bf3f72574d58d57, type: 2}
+  - {fileID: 11400000, guid: 27a07827decb2a448b39ca49622ba8d5, type: 2}
+  - {fileID: 11400000, guid: 44af44dafb29d4441b87c0d254e70e49, type: 2}

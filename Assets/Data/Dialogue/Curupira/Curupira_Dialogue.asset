@@ -10,7 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f03cf499bd150f84c94de7afa9e16fd8, type: 3}
-  m_Name: StartRunSequence
+  m_Name: Curupira_Dialogue
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   startingNode:
-  - {fileID: 11400000, guid: 5b52c4e98757d7143b1d420ee730feaa, type: 2}
+  - {fileID: 11400000, guid: 152f7a5e17a15864c89aba4d5b088ba4, type: 2}
+  - {fileID: 11400000, guid: 17e36f2babf0cce42930775ea299a704, type: 2}
+  - {fileID: 11400000, guid: 24eb401177918da46936332b1c4ac0d4, type: 2}

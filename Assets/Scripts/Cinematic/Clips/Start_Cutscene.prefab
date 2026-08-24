@@ -2614,7 +2614,13 @@ MonoBehaviour:
   dialogBox: {fileID: 3701079996917628514}
   dialogText: {fileID: 6973079354323140241}
   typeSpeed: 0.06
-  sceneVoices: []
+  BGMusic: {fileID: 8300000, guid: 5d78fea1aa55bc444ba3534009f3f46b, type: 3}
+  sceneVoices:
+  - {fileID: 8300000, guid: d634bae41c749f24ebba887171ec5942, type: 3}
+  - {fileID: 8300000, guid: 0ce2449e09f815148a65810672a32874, type: 3}
+  - {fileID: 8300000, guid: 3bfc3cf71a8477a43aa97f88d740691e, type: 3}
+  - {fileID: 8300000, guid: 5ea72f04acda1ec4c8f9a82a3e57e53f, type: 3}
+  - {fileID: 8300000, guid: 7f3a208765668b3428fdc87fb7689efd, type: 3}
   Cuca: {fileID: 5222286729615533422}
   Matinta: {fileID: 8163848049802891075}
   Boitata: {fileID: 8989224231818447625}

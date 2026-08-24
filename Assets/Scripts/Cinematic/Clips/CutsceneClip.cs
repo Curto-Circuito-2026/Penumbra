@@ -22,6 +22,7 @@ public class CutsceneClip : ICinematicClip
 
     [Header("Audio & Voice (Dublagem)")]
     [Tooltip("Lista de clipes de dublagem correspondentes a cada cena (opcional).")]
+    [SerializeField] private AudioClip BGMusic;
     [SerializeField] private List<AudioClip> sceneVoices;
 
     [Header("Scene 1 Objects")]
@@ -199,8 +200,9 @@ public class CutsceneClip : ICinematicClip
         }
 
         // Aguarda a digitação terminar ou ser acelerada pelo jogador
-        while (isTyping && !isSkipped)
+        while ((isTyping || AudioController.Instance.GetVoiceBusy()) && !isSkipped)
         {
+            if (!isTyping && skipSceneDelay){ break;}
             yield return null;
         }
 
@@ -259,6 +261,7 @@ public class CutsceneClip : ICinematicClip
         if (AudioController.Instance != null)
         {
             AudioController.Instance.StopVoice();
+            if (BGMusic) AudioController.Instance.StopBGM();
         }
 
         StopAllCoroutines();
@@ -314,6 +317,7 @@ public class CutsceneClip : ICinematicClip
     public override IEnumerator Play()
     {
         Debug.Log("[CutsceneClip] Iniciando Cutscene...");
+        if (BGMusic) AudioController.Instance.PlayBGM(BGMusic);
         EnsureSkipPromptUI();
 
         if (dacingObjects != null)
@@ -359,6 +363,7 @@ public class CutsceneClip : ICinematicClip
             if (AudioController.Instance != null)
             {
                 AudioController.Instance.StopVoice();
+                if (BGMusic) AudioController.Instance.StopBGM();
             }
 
             if (parent != null && parent.gameStateManager != null) { parent.gameStateManager.SetState(GameState.Playing); }

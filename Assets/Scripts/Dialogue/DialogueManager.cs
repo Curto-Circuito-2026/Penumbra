@@ -183,7 +183,7 @@ public class DialogueManager : MonoBehaviour
             StopCoroutine(typingCoroutine);
         }
 
-        typingCoroutine = StartCoroutine(TypeText(sequence.StartingNode));
+        typingCoroutine = StartCoroutine(TypeText(sequence.getNode()));
     }
 
     /// <summary>

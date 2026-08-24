@@ -579,6 +579,10 @@ public class AudioController : MonoBehaviour
         voiceWatchCoroutine = null;
     }
 
+    public bool GetVoiceBusy() {
+        return voiceSource.isPlaying;
+    }
+
     private void ApplyDucking(bool enable)
     {
         if (isDucking == enable) return;

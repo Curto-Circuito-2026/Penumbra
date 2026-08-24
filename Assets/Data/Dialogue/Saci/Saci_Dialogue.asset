@@ -10,7 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f03cf499bd150f84c94de7afa9e16fd8, type: 3}
-  m_Name: StartRunSequence
+  m_Name: Saci_Dialogue
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   startingNode:
-  - {fileID: 11400000, guid: 5b52c4e98757d7143b1d420ee730feaa, type: 2}
+  - {fileID: 11400000, guid: 2eeeed042b1243849842fecc20665809, type: 2}
+  - {fileID: 11400000, guid: f661963dfd070c544b744c055b5b834e, type: 2}
+  - {fileID: 11400000, guid: 5f5eccaeaf9435c47836f1a19daf3997, type: 2}
