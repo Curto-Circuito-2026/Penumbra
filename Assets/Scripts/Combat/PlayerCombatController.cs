@@ -913,6 +913,50 @@ public class PlayerCombatController : MonoBehaviour
         OnEquippedAbilitiesChanged?.Invoke(slotQ, slotE, slotR);
         Debug.Log("[PlayerCombatController] Habilidades e buffs da fase revertidos. Habilidades salvas no checkpoint mantidas.");
     }
+
+    /// <summary>
+    /// Limpa todas as habilidades e bênçãos acumuladas ao encerrar/reiniciar uma nova Run a partir do Hub.
+    /// Garante que o jogador renasça com os slots de habilidades zerados/iniciais.
+    /// </summary>
+    public void ResetAllRunBoonsAndAbilities()
+    {
+        Debug.Log("[PlayerCombatController] Resetando todas as habilidades e bênçãos para uma nova Run...");
+
+        // Remove efeitos de todas as bênçãos acumuladas
+        if (stageSessionBoons != null)
+        {
+            foreach (var boon in stageSessionBoons)
+            {
+                if (boon != null) boon.RemoveBoon(gameObject);
+            }
+            stageSessionBoons.Clear();
+        }
+
+        if (confirmedBoons != null)
+        {
+            foreach (var boon in confirmedBoons)
+            {
+                if (boon != null) boon.RemoveBoon(gameObject);
+            }
+            confirmedBoons.Clear();
+        }
+
+        // Reseta os slots Q, E, R
+        slotQ = null;
+        slotE = null;
+        slotR = null;
+
+        cooldownQ = 0f;
+        cooldownE = 0f;
+        cooldownR = 0f;
+
+        checkpointEquippedAbilities = new Ability[3];
+
+        OnEquippedAbilitiesChanged?.Invoke(null, null, null);
+        OnAbilityCooldownUpdated?.Invoke(0, 0f, 1f);
+        OnAbilityCooldownUpdated?.Invoke(1, 0f, 1f);
+        OnAbilityCooldownUpdated?.Invoke(2, 0f, 1f);
+    }
     #endregion
 
     /// <summary>

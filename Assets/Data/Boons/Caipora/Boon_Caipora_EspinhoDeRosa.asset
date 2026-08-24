@@ -16,7 +16,7 @@ MonoBehaviour:
   rarity: 0
   icon: {fileID: 621552655, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Dispara 5 espinhos de rosa poderosos na dire\xE7\xE3o do inimigo"
-  statDetail: 15 de dano por espinho
+  statDetail: 6 de dano por espinho
   effectType: 5
   effectValue: 1.6
   debuffEffectType: 1

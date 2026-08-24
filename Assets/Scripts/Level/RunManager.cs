@@ -396,6 +396,13 @@ public class RunManager : MonoBehaviour
         if (playerStats != null)
         {
             playerStats.RestartPlayer();
+
+            PlayerCombatController combat = playerStats.GetComponent<PlayerCombatController>() ?? FindAnyObjectByType<PlayerCombatController>();
+            if (combat != null)
+            {
+                combat.ResetAllRunBoonsAndAbilities();
+            }
+
             GameObject spawn = GameObject.Find("PlayerSpawnPoint") ?? GameObject.Find("SpawnPoint") ?? GameObject.Find("Player_Spawn");
             if (spawn != null)
             {
