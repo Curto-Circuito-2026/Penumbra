@@ -280,6 +280,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8851b1a2a41f27c4596db91d3e460da9, type: 2}
   - {fileID: 11400000, guid: f47fd9433d9dfed4eb2387ff9170a091, type: 2}
   - {fileID: 11400000, guid: b502ad2a6f4802148b77e2b0319abc20, type: 2}
+  - {fileID: 11400000, guid: 58442f1a787f8404fbd380cc2acfc46b, type: 2}
+  - {fileID: 11400000, guid: d59f371bd9ccc89459cc34ca1ea24c31, type: 2}
   openSwapEvent: {fileID: 11400000, guid: 4c29a8db752493848b4180192f31f3d2, type: 2}
 --- !u!114 &2307545845589398091
 MonoBehaviour:

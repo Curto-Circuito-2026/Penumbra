@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "Barganha da Fuma\xE7a"
   rarity: 1
-  icon: {fileID: 0}
-  description: "Uma cortina de fuma\xE7a m\xEDstica protege seu corpo contra ataques, mas o ar sufocante drena parte da sua sa\xFAde m\xE1xima."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "Uma cortina de fuma\xE7a m\xEDstica protege seu corpo contra ataques,
+    mas o ar sufocante drena parte da sua sa\xFAde m\xE1xima."
   statDetail: "\u25B8 Defesa / Prote\xE7\xE3o: +20%"
   effectType: 6
   effectValue: 20

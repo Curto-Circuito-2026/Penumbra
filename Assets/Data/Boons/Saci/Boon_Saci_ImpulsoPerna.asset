@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
   m_Name: Boon_Saci_ImpulsoPerna
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
-  boonName: "Impulso de Uma Perna"
+  boonName: Impulso de Uma Perna
   rarity: 1
-  icon: {fileID: 0}
-  description: "O Saci expande seu vigor f\xEDsico com a energia vital da mata, mas restringe seu ritmo e agilidade."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "O Saci expande seu vigor f\xEDsico com a energia vital da mata, mas
+    restringe seu ritmo e agilidade."
   statDetail: "\u25B8 Vida M\xE1xima: +50"
   effectType: 1
   effectValue: 50
   debuffEffectType: 5
   debuffValue: 1.5
-  debuffDetail: "- Velocidade de Movimento: -1.5"
+  debuffDetail: '- Velocidade de Movimento: -1.5'
   starCost: 1
   grantedAbility: {fileID: 0}

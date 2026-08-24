@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "Tran\xE7a da F\xFAria"
   rarity: 2
-  icon: {fileID: 0}
-  description: "Uma barganha travessa que imbu\xED seus golpes com for\xE7a avassaladora, cobrando um alto pre\xE7o do seu corpo."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "Uma barganha travessa que imbu\xED seus golpes com for\xE7a avassaladora,
+    cobrando um alto pre\xE7o do seu corpo."
   statDetail: "\u25B8 Dano de Combate: +35"
   effectType: 4
   effectValue: 35

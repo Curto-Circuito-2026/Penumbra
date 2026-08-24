@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
   m_Name: Boon_Saci_DesafioSaci
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
-  boonName: "Desafio do Saci"
+  boonName: Desafio do Saci
   rarity: 4
-  icon: {fileID: 0}
-  description: "O Saci remenda as feridas mais mortais do seu corpo em uma aposta arriscada, mas encurta consideravelmente o limite da sua sa\xFAde."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "O Saci remenda as feridas mais mortais do seu corpo em uma aposta
+    arriscada, mas encurta consideravelmente o limite da sua sa\xFAde."
   statDetail: "\u25B8 Cura Instant\xE2nea: +100 HP"
   effectType: 0
   effectValue: 100

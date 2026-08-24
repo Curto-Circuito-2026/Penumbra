@@ -282,6 +282,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4ac4442624c2fa14fa8486cd3465981b, type: 2}
   - {fileID: 11400000, guid: 8e7c7d59e74d6e54787cde01bb0f0336, type: 2}
   - {fileID: 11400000, guid: 3c800e795da148a4e83db30eeb7fa936, type: 2}
+  - {fileID: 11400000, guid: 46015a3823bfae94f84d0f312f9860d5, type: 2}
+  - {fileID: 11400000, guid: daec3276a5147a34fbb2ce4f2d6098e1, type: 2}
   openSwapEvent: {fileID: 11400000, guid: 42771a7554582fd42bc1bd8c2cda347a, type: 2}
 --- !u!114 &7267981261399986669
 MonoBehaviour:

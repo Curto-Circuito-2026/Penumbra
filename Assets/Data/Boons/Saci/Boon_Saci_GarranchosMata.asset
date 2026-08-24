@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
   m_Name: Boon_Saci_GarranchosMata
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
-  boonName: "Garranchos da Mata"
+  boonName: Garranchos da Mata
   rarity: 3
-  icon: {fileID: 0}
-  description: "Imbui suas armas com galhos e espinhos cortantes da floresta. Garante for\xE7a brutal, mas os espinhos ferem suas m\xE3os ao selar o acordo."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "Imbui suas armas com galhos e espinhos cortantes da floresta. Garante
+    for\xE7a brutal, mas os espinhos ferem suas m\xE3os ao selar o acordo."
   statDetail: "\u25B8 Dano de Combate: +50"
   effectType: 4
   effectValue: 50
   debuffEffectType: 0
   debuffValue: 30
-  debuffDetail: "- Dano Imediato: -30 HP"
+  debuffDetail: '- Dano Imediato: -30 HP'
   starCost: 1
   grantedAbility: {fileID: 0}

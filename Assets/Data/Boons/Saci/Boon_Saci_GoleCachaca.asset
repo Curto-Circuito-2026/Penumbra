@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "Gole da Cacha\xE7a"
   rarity: 1
-  icon: {fileID: 0}
-  description: "Um gole da m\xEDstica fermenta\xE7\xE3o da garrafa do Saci revigora seu corpo com vitalidade, mas deixa seus reflexos e golpes atordoados."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "Um gole da m\xEDstica fermenta\xE7\xE3o da garrafa do Saci revigora
+    seu corpo com vitalidade, mas deixa seus reflexos e golpes atordoados."
   statDetail: "\u25B8 Vida M\xE1xima: +40"
   effectType: 1
   effectValue: 40
   debuffEffectType: 4
   debuffValue: 12
-  debuffDetail: "- Dano de Combate: -12"
+  debuffDetail: '- Dano de Combate: -12'
   starCost: 1
   grantedAbility: {fileID: 0}

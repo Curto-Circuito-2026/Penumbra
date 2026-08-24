@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "Dan\xE7a do Vento"
   rarity: 0
-  icon: {fileID: 0}
-  description: "O ritmo saltitante da dan\xE7a do Saci acelera seus passos pelo mapa, por\xE9m esgota a resist\xEAncia natural do seu corpo."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "O ritmo saltitante da dan\xE7a do Saci acelera seus passos pelo mapa,
+    por\xE9m esgota a resist\xEAncia natural do seu corpo."
   statDetail: "\u25B8 Velocidade de Movimento: +2.0"
   effectType: 5
   effectValue: 2

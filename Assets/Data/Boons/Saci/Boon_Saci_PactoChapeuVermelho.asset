@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "Pacto do Chap\xE9u Vermelho"
   rarity: 4
-  icon: {fileID: 0}
-  description: "O acordo definitivo do lend\xE1rio Saci-Perer\xEA. Concede poder de combate esmagador, mas deixa voc\xEA extremamente vulner\xE1vel."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "O acordo definitivo do lend\xE1rio Saci-Perer\xEA. Concede poder
+    de combate esmagador, mas deixa voc\xEA extremamente vulner\xE1vel."
   statDetail: "\u25B8 Dano de Combate: +60"
   effectType: 4
   effectValue: 60

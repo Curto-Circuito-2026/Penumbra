@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
   m_Name: Boon_Saci_AcordoRedemoinho
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
-  boonName: "Acordo do Redemoinho"
+  boonName: Acordo do Redemoinho
   rarity: 1
-  icon: {fileID: 0}
-  description: "O Saci empresta a agilidade do seu redemoinho aos seus p\xE9s, mas a rota\xE7\xE3o inst\xE1vel consome sua vitalidade."
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "O Saci empresta a agilidade do seu redemoinho aos seus p\xE9s, mas
+    a rota\xE7\xE3o inst\xE1vel consome sua vitalidade."
   statDetail: "\u25B8 Velocidade de Movimento: +2.5"
   effectType: 5
   effectValue: 2.5
