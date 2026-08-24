@@ -186,9 +186,15 @@ public class RunManager : MonoBehaviour
         if (sceneName == "Hub" || sceneName.Contains("Hub"))
         {
             AudioClip clip = hubBgm;
+            if (clip == null)
+            {
+                clip = Resources.Load<AudioClip>("Audio/Menu") 
+                    ?? Resources.Load<AudioClip>("Audio/Loja/Lojinha 4")
+                    ?? Resources.Load<AudioClip>("Menu");
 #if UNITY_EDITOR
-            if (clip == null) clip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Menu.mp3");
+                if (clip == null) clip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Menu.mp3");
 #endif
+            }
             if (clip != null) AudioController.Instance.PlayBGM(clip, fadeDuration: 1.2f, loop: true);
             return;
         }
