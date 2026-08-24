@@ -165,7 +165,6 @@ public class BossTrigger : ICinematicClip
 
         AudioClip clip = bossMusicClip;
 
-#if UNITY_EDITOR
         if (clip == null)
         {
             string bName = enemy != null && !string.IsNullOrEmpty(enemy.actorName) 
