@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b569d930102358ec1f504e06fc709550, type: 3}
-  m_Name: Item_CristalMana
+  m_Name: Item_CascaJequitiba
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemSO
-  itemName: Cristal de Mana Selvagem
-  itemDescription: "Restaura +80 pontos de mana e energiza feiti\xE7os ancestrais."
+  itemName: "Casca de Jequitib\xE1"
+  itemDescription: "Armadura viva extra\xEDda da \xE1rvore mais antiga da mata. Reduz
+    o dano recebido permanentemente em +10%."
   itemIcon: {fileID: 0}
   price: 3
   currency: 0
-  effectType: 2
-  effectValue: 30
-  maxPurchases: 3
+  effectType: 6
+  effectValue: 10
+  maxPurchases: 2

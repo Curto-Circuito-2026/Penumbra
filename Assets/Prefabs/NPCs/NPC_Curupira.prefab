@@ -187,11 +187,12 @@ MonoBehaviour:
   itemsForSale:
   - {fileID: 11400000, guid: c2bde15a5e9b78c4c80a0f0c9c562521, type: 2}
   - {fileID: 11400000, guid: 3a6620c427d2fa84dba9f710dc45aaa6, type: 2}
-  - {fileID: 11400000, guid: d375651f33d8e444fae7e997eff610ba, type: 2}
-  - {fileID: 11400000, guid: 0db9376424db7164a8e430b328dba0d7, type: 2}
   - {fileID: 11400000, guid: c6c96b5fb0756c841941b972b5a5bc31, type: 2}
   - {fileID: 11400000, guid: 8c27027697fc86b43a03dcd09bda235a, type: 2}
   - {fileID: 11400000, guid: 2d6ca43f6a9886c46b6bf7a965c8e0fa, type: 2}
+  - {fileID: 11400000, guid: ab9815544fcdedb46ad9766353b7b868, type: 2}
+  - {fileID: 11400000, guid: 84792515b9ab74b4baad10b8c7333e8b, type: 2}
+  - {fileID: 11400000, guid: d54b848682c1b2641bf360c57efc35f3, type: 2}
   openShopEvent: {fileID: 11400000, guid: 713134a008a622d478da4d3a3105d9f5, type: 2}
 --- !u!114 &7362906105101545597
 MonoBehaviour:

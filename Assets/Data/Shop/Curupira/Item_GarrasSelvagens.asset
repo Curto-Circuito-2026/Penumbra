@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b569d930102358ec1f504e06fc709550, type: 3}
-  m_Name: Item_PocaoGrande
+  m_Name: Item_GarrasSelvagens
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemSO
-  itemName: Elixir da Floresta Profunda
-  itemDescription: Aumenta em 30 a defesa
+  itemName: Garras Selvagens
+  itemDescription: "Garras encantadas pelo esp\xEDrito da floresta. Aumenta permanentemente
+    +5 de Dano em todos os ataques."
   itemIcon: {fileID: 0}
-  price: 4
+  price: 2
   currency: 0
-  effectType: 6
-  effectValue: 30
-  maxPurchases: 4
+  effectType: 4
+  effectValue: 5
+  maxPurchases: 3
