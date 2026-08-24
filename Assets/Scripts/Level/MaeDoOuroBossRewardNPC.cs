@@ -284,7 +284,11 @@ public class MaeDoOuroBossRewardNPC : MonoBehaviour
         }
 
         var startProp = typeof(DialogueSequence).GetField("startingNode", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        if (startProp != null) startProp.SetValue(seq, nodes[0]);
+        if (startProp != null)
+        {
+            List<DialogueNode> startingList = new List<DialogueNode> { nodes[0] };
+            startProp.SetValue(seq, startingList);
+        }
 
         return seq;
     }

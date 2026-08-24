@@ -736,7 +736,20 @@ public class CucaBossController : MonoBehaviour, IDamageable
     {
         isDead = true;
         isCombatActive = false;
+        this.enabled = false; // Desativa o Update() para evitar chamar StartCombat() novamente na morte
         StopMovement();
+
+        // Congela o jogador imediatamente definindo o estado para Cutscene
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.SetState(GameState.Cutscene);
+        }
+
+        // Para a música do Boss com fade out suave
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopBGM(fadeDuration: 1.5f);
+        }
 
         Debug.Log($"[CucaBoss] {bossName} FOI TOTALMENTE DERROTADA!");
 
@@ -779,6 +792,31 @@ public class CucaBossController : MonoBehaviour, IDamageable
         }
 
         if (spriteRenderer != null) spriteRenderer.enabled = false;
+
+        // Aguarda o fim do fade-out completo da barra de vida do boss e da música (Total de 2.5s desde a morte)
+        yield return new WaitForSeconds(1.65f);
+
+        // Se o boss for a Cuca, reproduz a cutscene final antes de spawnar a Mãe do Ouro
+        GameObject endCutscenePrefab = Resources.Load<GameObject>("Cinematic/End_Cutscene")
+                                       ?? Resources.Load<GameObject>("Prefabs/Cinematic/End_Cutscene")
+                                       ?? Resources.Load<GameObject>("End_Cutscene");
+
+        if (endCutscenePrefab != null && CinematicManager.Instance != null)
+        {
+            bool cutsceneFinished = false;
+            CinematicManager.Instance.onEnd = () =>
+            {
+                cutsceneFinished = true;
+            };
+
+            CinematicManager.Instance.PlayClip(endCutscenePrefab);
+
+            // Aguarda a reprodução da cutscene terminar
+            while (!cutsceneFinished)
+            {
+                yield return null;
+            }
+        }
 
         // Mãe do Ouro surge onde o boss foi derrotado (ela cuidará do drop e da cura)
         MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Cuca);

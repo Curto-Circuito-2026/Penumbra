@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ccf2639e752c5e438b573f983d2b1b3, type: 3}
+  m_Name: MaeDoOuro_Matinta_Node
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
+  speakerName: "M\xE3e do Ouro"
+  speakerPortrait: {fileID: 0}
+  dialogueText: "Esta velha corva n\xE3o vai cobrar mais nenhum presente, a noite
+    finalmente se livrou dos seus assobios."
+  nextNode: {fileID: 0}
+  onStart: {fileID: 0}
+  onEnd: {fileID: 0}
+  voiceClip: {fileID: 8300000, guid: 129109ec24071554eacfa2fc8b3f2679, type: 3}
