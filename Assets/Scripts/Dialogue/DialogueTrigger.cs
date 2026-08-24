@@ -87,7 +87,7 @@ public class DialogueTrigger : MonoBehaviour
                 highlightOutline.sprite = mainSpriteRenderer.sprite;
                 highlightOutline.color = Color.white;
                 highlightOutline.sortingLayerID = mainSpriteRenderer.sortingLayerID;
-                highlightOutline.sortingOrder = Mathf.Max(1, mainSpriteRenderer.sortingOrder - 1);
+                highlightOutline.sortingOrder = -1;  //Mathf.Max(1, mainSpriteRenderer.sortingOrder - 1);
             }
         }
 
@@ -179,7 +179,7 @@ public class DialogueTrigger : MonoBehaviour
                     highlightOutline.flipX = mainSpriteRenderer.flipX;
                     highlightOutline.flipY = mainSpriteRenderer.flipY;
                     highlightOutline.sortingLayerID = mainSpriteRenderer.sortingLayerID;
-                    highlightOutline.sortingOrder = Mathf.Max(1, mainSpriteRenderer.sortingOrder - 1);
+                    highlightOutline.sortingOrder = -1; //Mathf.Max(1, mainSpriteRenderer.sortingOrder - 1);
                 }
 
                 // Brilho pulsante suave na borda branca

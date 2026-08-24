@@ -199,7 +199,7 @@ public class SkillEquipModalUI : MonoBehaviour
         }
         else
         {
-            if (slotENameText != null) slotENameText.text = "<color=#FF7777>🔒 Bloqueado</color>";
+            if (slotENameText != null) slotENameText.text = "<color=#FF7777>Bloqueado</color>";
             if (slotEIcon != null) slotEIcon.gameObject.SetActive(false);
         }
 
@@ -217,7 +217,7 @@ public class SkillEquipModalUI : MonoBehaviour
         }
         else
         {
-            if (slotRNameText != null) slotRNameText.text = "<color=#FF7777>🔒 Bloqueado</color>";
+            if (slotRNameText != null) slotRNameText.text = "<color=#FF7777>Bloqueado</color>";
             if (slotRIcon != null) slotRIcon.gameObject.SetActive(false);
         }
     }
@@ -239,11 +239,11 @@ public class SkillEquipModalUI : MonoBehaviour
 
         string slotLetter = selectedSlotIndex == 0 ? "Q" : (selectedSlotIndex == 1 ? "E" : "R");
         int cost = pendingBoon != null ? pendingBoon.StarCost : 1;
-        string starUnit = cost == 1 ? "Estrela" : "Estrelas";
+        string starUnit = cost == 1 ? "Fragmento" : "Fragmentos";
 
         if (confirmButtonText != null)
         {
-            confirmButtonText.text = $"<b>Equipar no Slot [{slotLetter}]</b>  (<color=#FFD700>★ {cost} {starUnit}</color>)";
+            confirmButtonText.text = $"<b>Equipar no Slot [{slotLetter}]</b>\n(<color=#FFD700>{cost} {starUnit}</color>)";
         }
     }
 
@@ -260,12 +260,12 @@ public class SkillEquipModalUI : MonoBehaviour
 
         if (currency.Stars < pendingBoon.StarCost)
         {
-            Debug.LogWarning($"[SkillEquipModalUI] Estrelas insuficientes! Custo: {pendingBoon.StarCost}, Atual: {currency.Stars}");
+            Debug.LogWarning($"[SkillEquipModalUI] Estrelas insuficientes! Custo: {pendingBoon.StarCost}, Atual: {currency.StarFragments}");
             return;
         }
 
         // 1. Debita as estrelas
-        if (!currency.SpendStars(pendingBoon.StarCost))
+        if (!currency.SpendStarFragments(pendingBoon.StarCost))
         {
             return;
         }

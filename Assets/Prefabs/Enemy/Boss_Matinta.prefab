@@ -258,6 +258,11 @@ MonoBehaviour:
   damageFlashColor: {r: 0.6, g: 0.2, b: 0.8, a: 1}
   autoStartCombat: 0
   bossIntro: {fileID: 0}
+  illusionTransformSFX: {fileID: 0}
+  transformAudioSource: {fileID: 0}
+  magicCastSFX: {fileID: 0}
+  birdProjectileLaunchSFX: {fileID: 0}
+  deathSFX: {fileID: 0}
   deathSprites: []
 --- !u!95 &3411721256248370903
 Animator:

@@ -143,6 +143,14 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 0.11704481
       objectReference: {fileID: 0}
+    - target: {fileID: 5378130997645647602, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
+      propertyPath: highlightOutline
+      value: 
+      objectReference: {fileID: 1439464986}
+    - target: {fileID: 5378130997645647602, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
+      propertyPath: interactionPrompt
+      value: 
+      objectReference: {fileID: 1620703728}
     - target: {fileID: 5770423936427267421, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.17
@@ -187,21 +195,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NPC_MaeDoOuro
       objectReference: {fileID: 0}
-    - target: {fileID: 7459713949862126560, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7459713949862126560, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
-      propertyPath: m_SortingOrder
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6973868966842751377, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1578562530}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
 --- !u!1 &747791504
 GameObject:
@@ -429,6 +426,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.011704445
       objectReference: {fileID: 0}
+    - target: {fileID: 7707749949146877808, guid: 763136e7975afaa4498896d1b529b4e9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -592,7 +593,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: -1
+  m_SortingOrder: -2
   m_TargetDisplay: 0
 --- !u!224 &1191017209
 RectTransform:
@@ -780,6 +781,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1237514294}
   m_CullTransparentMesh: 1
+--- !u!212 &1439464986 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5376228585065964510, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
+  m_PrefabInstance: {fileID: 152517954}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1519875259 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2209455309866756908, guid: a8f84b22e54e0cf40b305b1fe84aed9e, type: 3}
@@ -802,48 +808,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79930964689dc3741b3dcda8106694bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
---- !u!1 &1578562524 stripped
+--- !u!1 &1620703728 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 6973868966842751377, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8993607789322038525, guid: 9fbcdf3cf2a6f2545948a8c25a685a50, type: 3}
   m_PrefabInstance: {fileID: 152517954}
   m_PrefabAsset: {fileID: 0}
---- !u!70 &1578562530
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1578562524}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: -0.16111255, y: -0.093275785}
-  m_Size: {x: 2.2814279, y: 2.2814279}
-  m_Direction: 0
 --- !u!1001 &1697260721
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1426,6 +1395,34 @@ PrefabInstance:
       propertyPath: sceneController
       value: 
       objectReference: {fileID: 1519875259}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: regions.Array.data[0].title
+      value: Mata Eterea
+      objectReference: {fileID: 0}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: regions.Array.data[1].scene
+      value: 
+      objectReference: {fileID: 102900000, guid: bbb75bfc21194aa4f8f74b2684e5f627, type: 3}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: regions.Array.data[2].scene
+      value: 
+      objectReference: {fileID: 102900000, guid: 183bdc03af477b7409699e65fecd5a66, type: 3}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: regions.Array.data[3].scene
+      value: 
+      objectReference: {fileID: 102900000, guid: 68ae5a12ab0aae14182704bbec0385ba, type: 3}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: regions.Array.data[1].subtitle
+      value: Dominio da Matinta Perera
+      objectReference: {fileID: 0}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: regions.Array.data[2].subtitle
+      value: Terras do Mapinguari
+      objectReference: {fileID: 0}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: regions.Array.data[3].sceneName
+      value: CucasLair
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

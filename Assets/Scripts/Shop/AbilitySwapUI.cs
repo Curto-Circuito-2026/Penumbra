@@ -440,10 +440,11 @@ public class AbilitySwapUI : MonoBehaviour
     {
         PlayerCurrency currency = PlayerCurrency.Instance ?? Object.FindAnyObjectByType<PlayerCurrency>();
         int currentStars = currency != null ? currency.Stars : 0;
+        int currentFrags = currency != null ? currency.StarFragments : 0;
 
         if (starsBalanceText != null)
         {
-            starsBalanceText.text = $"Fragmentos: {currentStars}";
+            starsBalanceText.text = $"Fragmentos: {currentFrags}";
         }
 
         if (rerollButton != null)

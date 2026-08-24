@@ -15,8 +15,8 @@ MonoBehaviour:
   itemName: "Ess\xEAncia da Selva"
   itemDescription: "Acelera a regenera\xE7\xE3o de Mana em +3 por segundo."
   itemIcon: {fileID: 0}
-  price: 5
-  currency: 1
+  price: 2
+  currency: 0
   effectType: 3
   effectValue: 3
   maxPurchases: 0

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Item_PocaoGrande
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemSO
   itemName: Elixir da Floresta Profunda
-  itemDescription: Restaura completamente +120 pontos de vida do guerreiro.
+  itemDescription: Aumenta em 30 a defesa
   itemIcon: {fileID: 0}
-  price: 45
-  currency: 1
-  effectType: 0
-  effectValue: 120
-  maxPurchases: 99
+  price: 4
+  currency: 0
+  effectType: 6
+  effectValue: 30
+  maxPurchases: 4

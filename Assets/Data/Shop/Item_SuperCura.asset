@@ -15,8 +15,8 @@ MonoBehaviour:
   itemName: "N\xE9ctar dos Deuses"
   itemDescription: Restaura instantaneamente +100 pontos de vida.
   itemIcon: {fileID: 0}
-  price: 6
-  currency: 1
+  price: 4
+  currency: 0
   effectType: 0
   effectValue: 100
   maxPurchases: 2

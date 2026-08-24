@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemSO
   itemName: "L\xE1grima de Iara"
-  itemDescription: Cura completamente todos os pontos de vida.
+  itemDescription: 
   itemIcon: {fileID: 0}
   price: 2
   currency: 0
-  effectType: 0
+  effectType: 6
   effectValue: 999
   maxPurchases: 1

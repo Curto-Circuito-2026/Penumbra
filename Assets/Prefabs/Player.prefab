@@ -67,7 +67,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -88,7 +88,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 182
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3138980234765749329, guid: a08ac25ac3d2fdc48b39933c5c644cf1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -236,17 +236,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterController2D
   walkSpeed: 5
-  runSpeed: 8.5
   dashDistance: 3
   dashSpeed: 18
-  maxStamina: 100
-  currentStamina: 100
-  runStaminaCostPerSecond: 20
-  dashStaminaCost: 0
-  staminaRegenRate: 15
-  staminaRegenDelay: 1
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  runColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   dashColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!114 &7216750349317481606
 MonoBehaviour:
@@ -273,13 +265,12 @@ MonoBehaviour:
   slotQ: {fileID: 11400000, guid: ebcb93c77bd25ba4a950f4c83aa81cd4, type: 2}
   slotE: {fileID: 11400000, guid: 14acf3265c9ae7b4d8d22fa1e415c077, type: 2}
   slotR: {fileID: 11400000, guid: 8f23d0f8339c2ab46b3e0558080be4cd, type: 2}
-  ultimateCharge: 0
-  maxUltimateCharge: 100
-  chargePerHit: 20
   rangeIndicator: {fileID: 0}
   targetSelectionRing: {fileID: 0}
   multiRangeIndicator: {fileID: 0}
   circleSegments: 40
+  isSlotEUnlocked: 0
+  isSlotRUnlocked: 0
 --- !u!114 &8739442164859496148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,3 +323,4 @@ MonoBehaviour:
   stars: 5
   fragmentsPerStar: 10
   persistStars: 0
+  runManager: {fileID: 0}

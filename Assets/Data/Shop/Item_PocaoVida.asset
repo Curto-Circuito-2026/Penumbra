@@ -16,7 +16,7 @@ MonoBehaviour:
   itemDescription: Restaura instantaneamente +50 pontos de vida do jogador.
   itemIcon: {fileID: 0}
   price: 3
-  currency: 1
+  currency: 0
   effectType: 0
   effectValue: 50
   maxPurchases: 0
