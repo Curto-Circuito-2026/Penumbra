@@ -19,4 +19,4 @@ MonoBehaviour:
   nextNode: {fileID: 0}
   onStart: {fileID: 0}
   onEnd: {fileID: 11400000, guid: 42771a7554582fd42bc1bd8c2cda347a, type: 2}
-  voiceClip: {fileID: 0}
+  voiceClip: {fileID: 8300000, guid: 06ffd5ea09578374ea4bcd88a308f4cf, type: 3}

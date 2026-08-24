@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float maxLifetime = 5f;
     [SerializeField] private LayerMask targetHitLayers;
 
+    [SerializeField] private Sprite image;
+
     [Header("Efeitos Visuais")]
     [SerializeField] private Color impactColor = new Color(0.2f, 0.8f, 1f, 1f);
 
@@ -26,13 +29,24 @@ public class Projectile : MonoBehaviour
     /// <summary>
     /// Inicializa o projétil com a direção travada no instante do disparo, o conjurador e as layers alvo.
     /// </summary>
-    public void Initialize(Vector3 direction, GameObject casterObject, float projectileDamage = -1f, LayerMask targetLayers = default)
+    public void Initialize(Vector3 direction, GameObject casterObject, float projectileDamage = -1f, LayerMask targetLayers = default, Sprite image = null)
     {
         moveDirection = direction.normalized;
         if (moveDirection.sqrMagnitude < 0.001f) moveDirection = Vector3.right;
 
         caster = casterObject;
         if (projectileDamage > 0f) damage = projectileDamage;
+
+        if (image != null)
+        {
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr == null)
+            {
+                sr = this.AddComponent<SpriteRenderer>();
+            }
+
+            sr.sprite = image;
+        }
 
         // Garante que targetHitLayers nunca fique vazio (0)
         if (targetLayers != 0)

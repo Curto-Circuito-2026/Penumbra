@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: Investida Naval
   rarity: 3
-  icon: {fileID: -911345348, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  icon: {fileID: -361151072, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Dash aqu\xE1tico ofensivo que atravessa e fere m\xFAltiplos inimigos
     com a f\xFAria das mar\xE9s."
   statDetail: "\u25B8 Dano de Atravessamento: 40 Dano"

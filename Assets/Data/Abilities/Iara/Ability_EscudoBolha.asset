@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: Escudo Bolha
   description: "Cria uma bolha protetora ao redor da Naia que absorve at\xE9 80 de
     dano por 8 segundos. Repele inimigos ao estourar."
-  icon: {fileID: -20548571, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  icon: {fileID: 781211626, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   cooldown: 14
   range: 5
   damage: 0

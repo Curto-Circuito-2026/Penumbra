@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 /// <summary>
 /// Gerenciador de Efeitos Visuais (VFX) e Retorno Visual para o sistema de combate 2D.
@@ -203,6 +204,52 @@ public class CombatVisualEffects : MonoBehaviour
         Destroy(bolt, 0.1f);
     }
     #endregion
+
+    public struct VfxProjectile
+    {
+        public Vector3 origin;
+        public Vector3 target;
+        public Action onImpact;
+        public GameObject sprite;
+    }
+    public void spawnProjectile(Vector3 origin, Vector3 target, Action onImpact, GameObject sprite)
+    {
+        
+         StartCoroutine(AnimateProjectile(origin, target, sprite, onImpact));
+
+    }
+
+    public IEnumerator AnimateProjectile(Vector3 origin, Vector3 target, GameObject sprite, Action onImpact)
+    {
+        Vector3 direction = target - origin;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+
+        var projectile = Instantiate(sprite, origin, rotation);
+
+        float speed = 15f;
+        float dist = Vector3.Distance(origin, target);
+        float duration = dist > 0 ? dist / speed : 0.01f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            if (projectile == null) yield break;
+
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            projectile.transform.position = Vector3.Lerp(origin, target, t);
+            yield return null;
+        }
+
+        onImpact?.Invoke();
+        //PlayExplosionVFX(target, new Color(1f, 0.4f, 0.1f, 1f), new Color(1f, 0.8f, 0.2f, 1f), 2.2f);
+        //TriggerCameraShake(0.18f, 0.15f);
+        if (projectile != null)
+        {
+            Destroy(projectile, 0.15f);
+        }
+    }
 
     #region 3. Q - Habilidade Q (Bola de Fogo / Fireball)
     /// <summary>

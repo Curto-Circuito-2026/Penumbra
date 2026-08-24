@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
+using static CombatVisualEffects;
+using static Unity.Collections.Unicode;
 
 [CreateAssetMenu(fileName = "NewDamageAbility", menuName = "Combat/Abilities/Damage Ability")]
 public class DamageAbility : Ability
 {
-    public enum AbilityType { SingleTarget, AoE, Projectile }
+    public enum AbilityType { SingleTarget, AoE, Projectile, ScatterShot }
 
     [Header("Efeitos da Habilidade")]
     [Tooltip("Tipo da habilidade: Alvo único, Área de Efeito (AoE) ou Projétil.")]
@@ -12,11 +15,21 @@ public class DamageAbility : Ability
     [Tooltip("Raio de efeito no caso de dano em área (AoE).")]
     [SerializeField] private float aoeRadius = 3.5f;
 
-    [Tooltip("Prefab do projétil (se tipo for Projétil).")]
+    [Tooltip("Prefab ou sprite do projétil (se tipo for Projétil).")]
     [SerializeField] private GameObject projectilePrefab;
+
+    [SerializeField] private Sprite projectileSprite;
 
     [Tooltip("Efeito visual / VFX gerado no impacto/local do conjuração.")]
     [SerializeField] private GameObject vfxPrefab;
+
+    [Header("Configurações do Scattershot")]
+    [Tooltip("Quantidade de projéteis (pellets) disparados.")]
+    [SerializeField] private int pelletCount = 5;
+    [Tooltip("Ângulo total de dispersão (cone) em graus.")]
+    [SerializeField] private float spreadAngle = 45f;
+    [Tooltip("Alcance máximo do tiro de espingarda.")]
+    [SerializeField] private float scatterRange = 8f;
 
     private Vector3 GetCastSpawnPosition(GameObject caster, Vector3 direction)
     {
@@ -53,6 +66,13 @@ public class DamageAbility : Ability
         Vector3 casterPos = caster != null ? GetCastSpawnPosition(caster, rawDirection) : targetPosition;
         Vector3 direction = (targetPosition - casterPos).normalized;
         if (direction.sqrMagnitude < 0.001f) direction = rawDirection;
+
+        if (type == AbilityType.ScatterShot)
+        {
+            //
+            ApplyScatterDamage(caster, casterPos, direction);
+            return true;
+        }
 
         bool hasVFX = CombatVisualEffects.Instance != null;
 
@@ -94,6 +114,38 @@ public class DamageAbility : Ability
             ApplyDamage(caster, targetPosition, targetEntity, direction);
             return true;
         }
+    }
+
+    private void ApplyScatterDamage(GameObject caster, Vector3 startPos, Vector3 baseDirection)
+    {
+        if (projectilePrefab == null)
+        {
+            Debug.LogWarning("Scattershot precisa de um Projectile Prefab assinalado no Inspector!");
+            return;
+        }
+
+        float baseAngle = Mathf.Atan2(baseDirection.y, baseDirection.x) * Mathf.Rad2Deg;
+        float angleStep = pelletCount > 1 ? spreadAngle / (pelletCount - 1) : 0;
+        float currentAngle = baseAngle - (spreadAngle / 2f);
+
+        for (int i = 0; i < pelletCount; i++)
+        {
+            float dirX = Mathf.Cos(currentAngle * Mathf.Deg2Rad);
+            float dirY = Mathf.Sin(currentAngle * Mathf.Deg2Rad);
+            Vector3 pelletDir = new Vector3(dirX, dirY, 0).normalized;
+
+            GameObject projObj = Instantiate(projectilePrefab, startPos, Quaternion.identity);
+
+            if (!projObj.TryGetComponent<Projectile>(out var projScript))
+            {
+                projScript = projObj.AddComponent<Projectile>();
+            }
+
+            projScript.Initialize(pelletDir, caster, damage, 0, projectileSprite);
+
+            currentAngle += angleStep;
+        }
+
     }
 
     private bool IsCasterOrAlly(GameObject obj, GameObject caster)

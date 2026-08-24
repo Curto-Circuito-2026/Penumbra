@@ -3774,7 +3774,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -190.1, y: 150.35007}
+  m_AnchoredPosition: {x: -190.1, y: 147.1}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1126472199
@@ -3803,9 +3803,10 @@ MonoBehaviour:
     extras:\n\tdiednight - demo church\n\thilau - \"16x16 RPG Tileset\"\n\tKenmi
     - cute fantasy pack\n\tMichele \"Buch\" Bucelli - sheet\n\nFontes:\n\tUpheaval
     - \xC6nigma\n\tPixelout - Ilhamtaro\n\t\n\n\t\tSOM\n\nM\xFAsicas:\n\tGuilherme
-    Lindolfo\n\nEfeitos Sonoros:\n\t\nVozes:\n\tCaipora -\n\tCuca - \n\tCurupira
-    - Ricardo Tavares Alexandre\n\tJaci - \n\tIara -\n\tNai\xE1 - Nicolli Farias\n\tM\xE3e
-    D'ouro - \n\tSaci - \n\n\t\n\n\n"
+    Lindolfo\n\nEfeitos Sonoros:\n\tPixaBay\n\nVozes:\n\tCaipora - Nicolly Maymi
+    da Costa Iiesaki\n\tCurupira - Ricardo Tavares Alexandre\n\tJaci -  Carlos Eduardo
+    Gruninger Passaes\n\tIara - J\xFAlia da Cunha Lima\n\tNai\xE1 - Nicolli Farias\n\tM\xE3e
+    D'ouro - Eduarda de Souza Nascimento \n\tSaci - Gabriel Favilla Pera\n\n\t\n\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 96d11ca07c66a92418efe30b3243cfb7, type: 2}
   m_sharedMaterial: {fileID: -5333208048131682903, guid: 96d11ca07c66a92418efe30b3243cfb7, type: 2}
@@ -3832,8 +3833,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

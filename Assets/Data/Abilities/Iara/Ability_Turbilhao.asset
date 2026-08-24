@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: "Turbilh\xE3o"
   description: "Conjura um v\xF3rtex d'\xE1gua devastador que puxa continuamente
     os inimigos para o centro e causa dano peri\xF3dico por 4 segundos."
-  icon: {fileID: 621552655, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  icon: {fileID: -188740768, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   cooldown: 10
   range: 8.5
   damage: 18

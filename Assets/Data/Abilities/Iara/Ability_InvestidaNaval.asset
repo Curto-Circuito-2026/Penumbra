@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: Investida Naval
   description: "Avan\xE7a velozmente em torrente d'\xE1gua, causando 40 de dano m\xE1gico
     e empurrando inimigos atravessados."
-  icon: {fileID: -911345348, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  icon: {fileID: -361151072, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   cooldown: 6
   range: 5
   damage: 40

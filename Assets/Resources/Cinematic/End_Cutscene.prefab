@@ -3110,7 +3110,13 @@ MonoBehaviour:
   dialogBox: {fileID: 4987763691156795107}
   dialogText: {fileID: 6071435770500733027}
   typeSpeed: 0.06
-  sceneVoices: []
+  BGMusic: {fileID: 8300000, guid: 86505cacac93f34439292a9158d484da, type: 3}
+  sceneVoices:
+  - {fileID: 8300000, guid: 871904ea0178bb14cbdf05d313fe9640, type: 3}
+  - {fileID: 8300000, guid: 43320e57e13b3c64cbfeb15a8d21a71e, type: 3}
+  - {fileID: 8300000, guid: 1a3f04de91916c14daf314b10f55be0b, type: 3}
+  - {fileID: 8300000, guid: 897f74586dbf132409d695aff4503906, type: 3}
+  - {fileID: 8300000, guid: c59bbe7dbd431074d9056293440412e6, type: 3}
   Naia: {fileID: 1696628162538123595}
   Enemy_Left: {fileID: 4830194097763004270}
   Enemy_BottomRight: {fileID: 714676177186868234}

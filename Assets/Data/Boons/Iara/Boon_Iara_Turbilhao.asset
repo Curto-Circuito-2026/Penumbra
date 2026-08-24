@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
   boonName: "Turbilh\xE3o"
   rarity: 2
-  icon: {fileID: 621552655, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  icon: {fileID: -188740768, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "V\xF3rtex d'\xE1gua que atrai todos os inimigos ao centro e causa
     dano cont\xEDnuo."
   statDetail: "\u25B8 Pux\xE3o de \xC1rea + Dano por Segundo (4s)"

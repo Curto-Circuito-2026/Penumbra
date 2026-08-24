@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 4336392205205559305}
   - component: {fileID: 3909010239285448736}
   - component: {fileID: 6677365412847846266}
+  - component: {fileID: -3973762018550914453}
   m_Layer: 0
-  m_Name: WhirlpoolArea
+  m_Name: Thorn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,7 +96,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 8625a3bd31984cf44a8ce7830a61656c, type: 3}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -118,8 +119,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 0.15, g: 0.55, b: 0.95, a: 0.45}
+  m_Sprite: {fileID: -631835810, guid: d4897d1cec772314fae881ad11c61edd, type: 3}
+  m_Color: {r: 0.20359382, g: 0.4811321, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -129,3 +130,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!114 &-3973762018550914453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4240494574003634524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 473753d9da44dc64fb399b70f5d08fab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Projectile
+  speed: 10
+  damage: 15
+  maxLifetime: 1
+  targetHitLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  image: {fileID: -631835810, guid: d4897d1cec772314fae881ad11c61edd, type: 3}
+  impactColor: {r: 0.20392159, g: 0.48235297, b: 0, a: 1}
