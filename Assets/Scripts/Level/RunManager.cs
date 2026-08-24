@@ -375,6 +375,9 @@ public class RunManager : MonoBehaviour
 
     private IEnumerator RestartCoroutine()
     {
+        // Reseta a fila de fases para que a próxima run recomece do início (nova sequência completa de fases)
+        pendingRegions = null;
+
         // Fade out suave da música atual antes de voltar ao Hub
         if (AudioController.Instance != null)
         {
