@@ -65941,7 +65941,7 @@ PrefabInstance:
     - target: {fileID: 1397588559561247959, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
       propertyPath: magicBallSFX
       value: 
-      objectReference: {fileID: 8300000, guid: 27c855f44885c6c4687d9f2c06e00540, type: 3}
+      objectReference: {fileID: 8300000, guid: a22887533cf57c544a1c659f63d885fd, type: 3}
     - target: {fileID: 1397588559561247959, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
       propertyPath: magicCastSFX
       value: 
