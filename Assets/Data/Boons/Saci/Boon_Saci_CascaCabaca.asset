@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Envolve seu corpo com a prote\xE7\xE3o m\xE1gica da caba\xE7a do
     Saci, reduzindo o dano sofrido, por\xE9m amortecendo a for\xE7a dos seus ataques."
-  statDetail: "\u25B8 Defesa / Prote\xE7\xE3o: +30%"
+  statDetail: "\u25B8 Defesa / Prote\xE7\xE3o: +15%"
   effectType: 6
-  effectValue: 30
+  effectValue: 15
   debuffEffectType: 4
   debuffValue: 15
   debuffDetail: '- Dano de Combate: -15'

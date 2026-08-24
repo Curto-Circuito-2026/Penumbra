@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: O Saci remenda suas feridas na hora com travessuras da mata, mas suas
     pernas ficam pesadas com o encanto.
-  statDetail: "\u25B8 Cura Instant\xE2nea: +60 HP"
+  statDetail: "\u25B8 Cura Instant\xE2nea: +30 HP"
   effectType: 0
-  effectValue: 60
+  effectValue: 30
   debuffEffectType: 5
   debuffValue: 1
   debuffDetail: '- Velocidade de Movimento: -1.0'

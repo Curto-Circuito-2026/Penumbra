@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "O acordo definitivo do lend\xE1rio Saci-Perer\xEA. Concede poder
     de combate esmagador, mas deixa voc\xEA extremamente vulner\xE1vel."
-  statDetail: "\u25B8 Dano de Combate: +60"
+  statDetail: "\u25B8 Dano de Combate: +30"
   effectType: 4
-  effectValue: 60
+  effectValue: 30
   debuffEffectType: 1
   debuffValue: 40
   debuffDetail: "- Vida M\xE1xima: -40"

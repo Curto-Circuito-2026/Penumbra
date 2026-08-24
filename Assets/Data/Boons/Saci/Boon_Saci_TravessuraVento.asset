@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Seus p\xE9s flutuam sobre as correntes de ar do Saci para uma agilidade
     extrema, mas seus golpes perdem o peso e a for\xE7a."
-  statDetail: "\u25B8 Velocidade de Movimento: +3.0"
+  statDetail: "\u25B8 Velocidade de Movimento: +1.5"
   effectType: 5
-  effectValue: 3
+  effectValue: 1.5
   debuffEffectType: 4
   debuffValue: 20
   debuffDetail: '- Dano de Combate: -20'

@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Traga a fuma\xE7a m\xEDstica do cachimbo do Saci para revitalizar
     suas feridas na hora, ao custo de desgastar sua vitalidade total."
-  statDetail: "\u25B8 Cura Instant\xE2nea: +80 HP"
+  statDetail: "\u25B8 Cura Instant\xE2nea: +40 HP"
   effectType: 0
-  effectValue: 80
+  effectValue: 40
   debuffEffectType: 1
   debuffValue: 25
   debuffDetail: "- Vida M\xE1xima: -25"

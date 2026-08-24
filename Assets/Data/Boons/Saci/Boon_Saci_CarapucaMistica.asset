@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Cria uma barreira de ventanias e fuma\xE7a ao seu redor absorvendo
     a for\xE7a dos golpes inimigos, ao custo de pesar a sua locomo\xE7\xE3o."
-  statDetail: "\u25B8 Defesa / Prote\xE7\xE3o: +40%"
+  statDetail: "\u25B8 Defesa / Prote\xE7\xE3o: +20%"
   effectType: 6
-  effectValue: 40
+  effectValue: 20
   debuffEffectType: 5
   debuffValue: 1.8
   debuffDetail: '- Velocidade de Movimento: -1.8'

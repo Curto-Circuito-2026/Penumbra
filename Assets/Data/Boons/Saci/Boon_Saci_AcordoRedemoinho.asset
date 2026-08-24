@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "O Saci empresta a agilidade do seu redemoinho aos seus p\xE9s, mas
     a rota\xE7\xE3o inst\xE1vel consome sua vitalidade."
-  statDetail: "\u25B8 Velocidade de Movimento: +2.5"
+  statDetail: "\u25B8 Velocidade de Movimento: +1.2"
   effectType: 5
-  effectValue: 2.5
+  effectValue: 1.2
   debuffEffectType: 1
   debuffValue: 20
   debuffDetail: "- Vida M\xE1xima: -20"

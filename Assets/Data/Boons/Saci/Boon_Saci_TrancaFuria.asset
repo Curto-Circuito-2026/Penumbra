@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Uma barganha travessa que imbu\xED seus golpes com for\xE7a avassaladora,
     cobrando um alto pre\xE7o do seu corpo."
-  statDetail: "\u25B8 Dano de Combate: +35"
+  statDetail: "\u25B8 Dano de Combate: +18"
   effectType: 4
-  effectValue: 35
+  effectValue: 18
   debuffEffectType: 1
   debuffValue: 35
   debuffDetail: "- Vida M\xE1xima: -35"

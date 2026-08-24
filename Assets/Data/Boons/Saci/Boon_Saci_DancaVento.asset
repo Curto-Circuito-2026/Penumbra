@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "O ritmo saltitante da dan\xE7a do Saci acelera seus passos pelo mapa,
     por\xE9m esgota a resist\xEAncia natural do seu corpo."
-  statDetail: "\u25B8 Velocidade de Movimento: +2.0"
+  statDetail: "\u25B8 Velocidade de Movimento: +1.0"
   effectType: 5
-  effectValue: 2
+  effectValue: 1
   debuffEffectType: 1
   debuffValue: 15
   debuffDetail: "- Vida M\xE1xima: -15"

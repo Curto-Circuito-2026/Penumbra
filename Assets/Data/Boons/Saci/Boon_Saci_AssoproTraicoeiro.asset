@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Um sopro de vento violento potencializa drasticamente seus ataques,
     mas deixa seus passos pesados e dif\xEDceis de mover."
-  statDetail: "\u25B8 Dano de Combate: +45"
+  statDetail: "\u25B8 Dano de Combate: +20"
   effectType: 4
-  effectValue: 45
+  effectValue: 20
   debuffEffectType: 5
   debuffValue: 2
   debuffDetail: '- Velocidade de Movimento: -2.0'

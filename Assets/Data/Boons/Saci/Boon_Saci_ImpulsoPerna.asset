@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "O Saci expande seu vigor f\xEDsico com a energia vital da mata, mas
     restringe seu ritmo e agilidade."
-  statDetail: "\u25B8 Vida M\xE1xima: +50"
+  statDetail: "\u25B8 Vida M\xE1xima: +25"
   effectType: 1
-  effectValue: 50
+  effectValue: 25
   debuffEffectType: 5
   debuffValue: 1.5
   debuffDetail: '- Velocidade de Movimento: -1.5'

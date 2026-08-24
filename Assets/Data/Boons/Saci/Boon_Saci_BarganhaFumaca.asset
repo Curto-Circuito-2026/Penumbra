@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Uma cortina de fuma\xE7a m\xEDstica protege seu corpo contra ataques,
     mas o ar sufocante drena parte da sua sa\xFAde m\xE1xima."
-  statDetail: "\u25B8 Defesa / Prote\xE7\xE3o: +20%"
+  statDetail: "\u25B8 Defesa / Prote\xE7\xE3o: +10%"
   effectType: 6
-  effectValue: 20
+  effectValue: 10
   debuffEffectType: 1
   debuffValue: 15
   debuffDetail: "- Vida M\xE1xima: -15"

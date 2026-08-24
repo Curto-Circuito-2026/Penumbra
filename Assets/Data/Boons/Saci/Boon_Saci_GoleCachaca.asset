@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Um gole da m\xEDstica fermenta\xE7\xE3o da garrafa do Saci revigora
     seu corpo com vitalidade, mas deixa seus reflexos e golpes atordoados."
-  statDetail: "\u25B8 Vida M\xE1xima: +40"
+  statDetail: "\u25B8 Vida M\xE1xima: +20"
   effectType: 1
-  effectValue: 40
+  effectValue: 20
   debuffEffectType: 4
   debuffValue: 12
   debuffDetail: '- Dano de Combate: -12'

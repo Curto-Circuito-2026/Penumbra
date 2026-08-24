@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
   description: "Imbui suas armas com galhos e espinhos cortantes da floresta. Garante
     for\xE7a brutal, mas os espinhos ferem suas m\xE3os ao selar o acordo."
-  statDetail: "\u25B8 Dano de Combate: +50"
+  statDetail: "\u25B8 Dano de Combate: +25"
   effectType: 4
-  effectValue: 50
+  effectValue: 25
   debuffEffectType: 0
   debuffValue: 30
   debuffDetail: '- Dano Imediato: -30 HP'
