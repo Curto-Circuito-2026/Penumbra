@@ -150,8 +150,7 @@ public static class SetupCurrencyUI
         so.FindProperty("starsText").objectReferenceValue = starsTMP;
         so.ApplyModifiedProperties();
 
-        EditorSceneManager.MarkSceneDirty(scene);
-        EditorSceneManager.SaveScene(scene);
+        // Não salva automaticamente: salvar via Ctrl+S garante formato YAML (Unity 6)
 
         Debug.Log($"[SetupCurrencyUI] UI de Moedas adicionada com sucesso na cena '{scene.name}'!");
     }
