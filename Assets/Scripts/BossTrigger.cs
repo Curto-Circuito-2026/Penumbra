@@ -175,25 +175,46 @@ public class BossTrigger : ICinematicClip
             // 1 = Pântano / Matinta Perera
             if (bName.Contains("matinta"))
             {
-                clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 1.mp3");
+                clip = Resources.Load<AudioClip>("Audio/Boss/Boss 1") ?? Resources.Load<AudioClip>("Boss/Boss 1");
             }
             // 2 = Mata Atlântica / Boitatá
             else if (bName.Contains("boitata"))
             {
-                clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 2.mp3");
+                clip = Resources.Load<AudioClip>("Audio/Boss/Boss 2") ?? Resources.Load<AudioClip>("Boss/Boss 2");
             }
             // 3 = Cidade Destruída / Mapinguari
             else if (bName.Contains("mapinguari"))
             {
-                clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 3.mp3");
+                clip = Resources.Load<AudioClip>("Audio/Boss/Boss 3") ?? Resources.Load<AudioClip>("Boss/Boss 3");
             }
             // 4 = Boss Final / Cuca
             else if (bName.Contains("cuca"))
             {
-                clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 4.mp3");
+                clip = Resources.Load<AudioClip>("Audio/Boss/Boss 4") ?? Resources.Load<AudioClip>("Boss/Boss 4");
             }
-        }
+
+#if UNITY_EDITOR
+            if (clip == null)
+            {
+                if (bName.Contains("matinta"))
+                {
+                    clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 1.mp3");
+                }
+                else if (bName.Contains("boitata"))
+                {
+                    clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 2.mp3");
+                }
+                else if (bName.Contains("mapinguari"))
+                {
+                    clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 3.mp3");
+                }
+                else if (bName.Contains("cuca"))
+                {
+                    clip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Boss/Boss 4.mp3");
+                }
+            }
 #endif
+        }
 
         if (clip != null)
         {

@@ -158,17 +158,30 @@ public class PlayerCombatController : MonoBehaviour
             }
         }
 
-#if UNITY_EDITOR
-        // Auto-carregamento padrão dos áudios de ataque caso não estejam atribuídos no Inspector
+        // Auto-carregamento dos áudios de ataque (suporta Editor e WebGL via Resources)
         if (meleeAttackSFX == null)
         {
-            meleeAttackSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/ataque basico.mp3");
+            meleeAttackSFX = Resources.Load<AudioClip>("Audio/ataque basico")
+                          ?? Resources.Load<AudioClip>("ataque basico");
+#if UNITY_EDITOR
+            if (meleeAttackSFX == null)
+            {
+                meleeAttackSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/ataque basico.mp3");
+            }
+#endif
         }
+
         if (rangedAttackSFX == null)
         {
-            rangedAttackSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/lançando.mp3");
-        }
+            rangedAttackSFX = Resources.Load<AudioClip>("Audio/lançando")
+                          ?? Resources.Load<AudioClip>("lançando");
+#if UNITY_EDITOR
+            if (rangedAttackSFX == null)
+            {
+                rangedAttackSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/lançando.mp3");
+            }
 #endif
+        }
 
         // Configuração dos Inputs via New Input System
         moveAction = new InputAction("MoveInput", expectedControlType: "Vector2");

@@ -220,18 +220,34 @@ public class RunManager : MonoBehaviour
         // 2 = Mata Atlântica (Stage 2.mp3)
         // 3 = Cidade Destruída (Stage 3.mp3)
         AudioClip fallbackClip = null;
-#if UNITY_EDITOR
         if (sceneName.Contains("Pantano"))
         {
-            fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 1.mp3");
+            fallbackClip = Resources.Load<AudioClip>("Audio/Stages/Stage 1") ?? Resources.Load<AudioClip>("Stages/Stage 1");
         }
         else if (sceneName.Contains("Mata"))
         {
-            fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 2.mp3");
+            fallbackClip = Resources.Load<AudioClip>("Audio/Stages/Stage 2") ?? Resources.Load<AudioClip>("Stages/Stage 2");
         }
         else if (sceneName.Contains("Cidade") || sceneName.Contains("Destruida"))
         {
-            fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 3.mp3");
+            fallbackClip = Resources.Load<AudioClip>("Audio/Stages/Stage 3") ?? Resources.Load<AudioClip>("Stages/Stage 3");
+        }
+
+#if UNITY_EDITOR
+        if (fallbackClip == null)
+        {
+            if (sceneName.Contains("Pantano"))
+            {
+                fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 1.mp3");
+            }
+            else if (sceneName.Contains("Mata"))
+            {
+                fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 2.mp3");
+            }
+            else if (sceneName.Contains("Cidade") || sceneName.Contains("Destruida"))
+            {
+                fallbackClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Stages/Stage 3.mp3");
+            }
         }
 #endif
         if (fallbackClip != null)
@@ -256,22 +272,42 @@ public class RunManager : MonoBehaviour
         }
 
         AudioClip shopClip = null;
-#if UNITY_EDITOR
         if (sceneName == "Hub" || sceneName.Contains("Hub"))
         {
-            shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 4.mp3");
+            shopClip = Resources.Load<AudioClip>("Audio/Loja/Lojinha 4") ?? Resources.Load<AudioClip>("Loja/Lojinha 4");
         }
         else if (sceneName.Contains("Pantano"))
         {
-            shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 1.mp3");
+            shopClip = Resources.Load<AudioClip>("Audio/Loja/Lojinha 1") ?? Resources.Load<AudioClip>("Loja/Lojinha 1");
         }
         else if (sceneName.Contains("Mata"))
         {
-            shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 2.mp3");
+            shopClip = Resources.Load<AudioClip>("Audio/Loja/Lojinha 2") ?? Resources.Load<AudioClip>("Loja/Lojinha 2");
         }
         else if (sceneName.Contains("Cidade") || sceneName.Contains("Destruida"))
         {
-            shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 3.mp3");
+            shopClip = Resources.Load<AudioClip>("Audio/Loja/Lojinha 3") ?? Resources.Load<AudioClip>("Loja/Lojinha 3");
+        }
+
+#if UNITY_EDITOR
+        if (shopClip == null)
+        {
+            if (sceneName == "Hub" || sceneName.Contains("Hub"))
+            {
+                shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 4.mp3");
+            }
+            else if (sceneName.Contains("Pantano"))
+            {
+                shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 1.mp3");
+            }
+            else if (sceneName.Contains("Mata"))
+            {
+                shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 2.mp3");
+            }
+            else if (sceneName.Contains("Cidade") || sceneName.Contains("Destruida"))
+            {
+                shopClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Loja/Lojinha 3.mp3");
+            }
         }
 #endif
         if (shopClip != null)

@@ -29,8 +29,13 @@ public class MenuManager : MonoBehaviour
 
         if (menuBgmClip == null)
         {
+            menuBgmClip = Resources.Load<AudioClip>("Audio/Menu")
+                       ?? Resources.Load<AudioClip>("Menu");
 #if UNITY_EDITOR
-            menuBgmClip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Menu.mp3");
+            if (menuBgmClip == null)
+            {
+                menuBgmClip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Menu.mp3");
+            }
 #endif
         }
 
