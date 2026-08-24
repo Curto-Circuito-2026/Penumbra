@@ -26,7 +26,7 @@ public class WindFootAbility : Ability
             if (CombatVisualEffects.Instance != null)
             {
                 CombatVisualEffects.Instance.PlayImpactBurst(caster.transform.position, new Color(0.3f, 0.9f, 0.9f), 2.2f);
-                CombatVisualEffects.Instance.SpawnFloatingText(caster.transform.position + Vector3.up * 1.0f, "💨 Pé de Vento (+60% Vel)!", new Color(0.4f, 1f, 1f), 3.5f);
+                CombatVisualEffects.Instance.SpawnFloatingText(caster.transform.position + Vector3.up * 1.0f, "Pé de Vento (+60% Vel)!", new Color(0.4f, 1f, 1f), 3.5f);
             }
 
             Debug.Log($"[WindFootAbility] Pé de Vento ativado: x{speedMultiplier:F1} velocidade por {buffDuration}s!");

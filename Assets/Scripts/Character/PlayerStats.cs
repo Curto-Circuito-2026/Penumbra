@@ -150,7 +150,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
             if (CombatVisualEffects.Instance != null)
             {
                 CombatVisualEffects.Instance.PlayWaterBurst(transform.position + Vector3.up * 0.45f, 2.2f);
-                CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 1.1f, "💥 Bolha Estourou!", new Color(0.35f, 0.85f, 1f), 3.8f);
+                CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 1.1f, "Bolha Estourou!", new Color(0.35f, 0.85f, 1f), 3.8f);
             }
         }
         else

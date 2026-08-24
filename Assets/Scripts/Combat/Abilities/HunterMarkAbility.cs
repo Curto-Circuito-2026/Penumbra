@@ -76,7 +76,7 @@ public class HunterMarkAbility : Ability
             if (CombatVisualEffects.Instance != null)
             {
                 CombatVisualEffects.Instance.PlayImpactBurst(targetEnemy.transform.position + Vector3.up * 0.6f, new Color(1f, 0.45f, 0.1f), 2.2f);
-                CombatVisualEffects.Instance.SpawnFloatingText(targetEnemy.transform.position + Vector3.up * 1.2f, "🎯 Marcado (+50% Dano)!", new Color(1f, 0.6f, 0.2f), 3.8f);
+                CombatVisualEffects.Instance.SpawnFloatingText(targetEnemy.transform.position + Vector3.up * 1.2f, "Marcado (+50% Dano)!", new Color(1f, 0.6f, 0.2f), 3.8f);
             }
 
             Debug.Log($"[HunterMarkAbility] Inimigo '{targetEnemy.name}' foi marcado pelo Caçador por {markDuration}s!");

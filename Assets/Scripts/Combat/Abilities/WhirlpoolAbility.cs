@@ -75,7 +75,7 @@ public class WhirlpoolAbility : Ability
             if (CombatVisualEffects.Instance != null)
             {
                 CombatVisualEffects.Instance.PlayWaterBurst(spawnPos, aoeRadius);
-                CombatVisualEffects.Instance.SpawnFloatingText(spawnPos + Vector3.up * 1f, "🌊 Turbilhão!", new Color(0.3f, 0.7f, 1f), 3.5f);
+                CombatVisualEffects.Instance.SpawnFloatingText(spawnPos + Vector3.up * 1f, "Turbilhão!", new Color(0.3f, 0.7f, 1f), 3.5f);
             }
 
             Debug.Log($"[WhirlpoolAbility] Turbilhão conjurado com sucesso em {spawnPos}!");

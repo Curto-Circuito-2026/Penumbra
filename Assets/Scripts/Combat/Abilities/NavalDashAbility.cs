@@ -145,7 +145,7 @@ public class NavalDashAbility : Ability
         if (CombatVisualEffects.Instance != null)
         {
             CombatVisualEffects.Instance.PlayWaterBurst(caster.transform.position, 1.8f);
-            CombatVisualEffects.Instance.SpawnFloatingText(caster.transform.position + Vector3.up * 1f, "⚡ Investida Naval!", new Color(0.3f, 0.85f, 1f), 3.5f);
+            CombatVisualEffects.Instance.SpawnFloatingText(caster.transform.position + Vector3.up * 1f, "Investida Naval!", new Color(0.3f, 0.85f, 1f), 3.5f);
         }
 
         Debug.Log($"[NavalDashAbility] Investida Naval concluída! Inimigos atingidos: {hitEnemies.Count}");

@@ -227,7 +227,7 @@ public class AllyCompanionAI : MonoBehaviour, IDamageable
             if (CombatVisualEffects.Instance != null)
             {
                 CombatVisualEffects.Instance.PlayImpactBurst(target.transform.position + Vector3.up * 0.5f, new Color(0.2f, 1f, 0.6f), 1.6f);
-                CombatVisualEffects.Instance.SpawnFloatingText(target.transform.position + Vector3.up * 0.9f, $"🐾 -{attackDamage:F0}", new Color(0.3f, 1f, 0.7f), 3.2f);
+                CombatVisualEffects.Instance.SpawnFloatingText(target.transform.position + Vector3.up * 0.9f, $"-{attackDamage:F0}", new Color(0.3f, 1f, 0.7f), 3.2f);
             }
             Debug.Log($"[AllyCompanionAI] Besta-Fera mordeu '{target.name}' causando {attackDamage} de dano!");
         }

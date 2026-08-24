@@ -62,7 +62,7 @@ public class HuntingCompanionAbility : Ability
             if (CombatVisualEffects.Instance != null)
             {
                 CombatVisualEffects.Instance.PlayImpactBurst(spawnPos, new Color(0.2f, 1f, 0.7f), 3.0f);
-                CombatVisualEffects.Instance.SpawnFloatingText(spawnPos + Vector3.up * 1.2f, "🐺 Companheiro Invocado!", new Color(0.3f, 1f, 0.8f), 3.8f);
+                CombatVisualEffects.Instance.SpawnFloatingText(spawnPos + Vector3.up * 1.2f, "Companheiro Invocado!", new Color(0.3f, 1f, 0.8f), 3.8f);
             }
 
             Debug.Log("[HuntingCompanionAbility] Companheiro de Caça Besta-Fera invocado com sucesso!");

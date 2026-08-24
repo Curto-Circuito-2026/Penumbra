@@ -29,7 +29,7 @@ public class BubbleShieldAbility : Ability
             if (CombatVisualEffects.Instance != null)
             {
                 CombatVisualEffects.Instance.PlayWaterBurst(caster.transform.position, 2.0f);
-                CombatVisualEffects.Instance.SpawnFloatingText(caster.transform.position + Vector3.up * 1.1f, $"🛡️ Escudo Bolha ({shieldAmount:F0} HP)!", new Color(0.3f, 0.8f, 1f), 3.5f);
+                CombatVisualEffects.Instance.SpawnFloatingText(caster.transform.position + Vector3.up * 1.1f, $"Escudo Bolha ({shieldAmount:F0} HP)!", new Color(0.3f, 0.8f, 1f), 3.5f);
             }
 
             Debug.Log($"[BubbleShieldAbility] Escudo Bolha aplicado: {shieldAmount} de absorção por {shieldDuration}s!");
