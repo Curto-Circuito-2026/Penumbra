@@ -487,7 +487,13 @@ public class CombatVisualEffects : MonoBehaviour
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.sortingOrder = 100;
 
-        if (TMP_Settings.defaultFontAsset != null)
+        // Tenta carregar a fonte do jogo "Basic" que está na pasta Resources
+        TMP_FontAsset gameFont = Resources.Load<TMP_FontAsset>("Fonts/Basic");
+        if (gameFont != null)
+        {
+            tmp.font = gameFont;
+        }
+        else if (TMP_Settings.defaultFontAsset != null)
         {
             tmp.font = TMP_Settings.defaultFontAsset;
         }
