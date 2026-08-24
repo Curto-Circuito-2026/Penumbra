@@ -941,6 +941,13 @@ public class PlayerCombatController : MonoBehaviour
             confirmedBoons.Clear();
         }
 
+        // Destrói invocação de companheiro aliado (Besta-Fera) se ainda existir na cena
+        AllyCompanionAI[] allies = Object.FindObjectsByType<AllyCompanionAI>(FindObjectsSortMode.None);
+        foreach (var ally in allies)
+        {
+            if (ally != null) Object.Destroy(ally.gameObject);
+        }
+
         // Reseta os slots Q, E, R
         slotQ = null;
         slotE = null;

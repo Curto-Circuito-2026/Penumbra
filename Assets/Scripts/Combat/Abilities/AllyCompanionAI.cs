@@ -106,6 +106,24 @@ public class AllyCompanionAI : MonoBehaviour, IDamageable
         return auraCachedSprite;
     }
 
+    private void OnEnable()
+    {
+        PlayerStats.OnAnyPlayerDied += HandlePlayerDied;
+    }
+
+    private void OnDisable()
+    {
+        PlayerStats.OnAnyPlayerDied -= HandlePlayerDied;
+    }
+
+    private void HandlePlayerDied()
+    {
+        if (isDead) return;
+        isDead = true;
+        Debug.Log("[AllyCompanionAI] O jogador morreu. O Besta-Fera espectral desaparece!");
+        DespawnSpectral();
+    }
+
     private void Start()
     {
         currentHealth = maxHealth;
@@ -134,6 +152,16 @@ public class AllyCompanionAI : MonoBehaviour, IDamageable
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) playerTransform = p.transform;
             return;
+        }
+
+        if (playerTransform != null)
+        {
+            PlayerStats pStats = playerTransform.GetComponent<PlayerStats>();
+            if (pStats != null && pStats.IsDead)
+            {
+                HandlePlayerDied();
+                return;
+            }
         }
 
         attackTimer -= Time.deltaTime;
