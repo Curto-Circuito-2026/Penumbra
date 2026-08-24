@@ -223,9 +223,18 @@ public class UIManager : MonoBehaviour
         }
 
         // 4. Painel de Pausa (ESC): Visível em Paused
-        if (pausePanel != null && pausePanel.activeSelf != (state == GameState.Paused))
+        if (pausePanel != null)
         {
-            pausePanel.SetActive(state == GameState.Paused);
+            bool shouldBeActive = (state == GameState.Paused);
+            if (pausePanel.activeSelf != shouldBeActive)
+            {
+                pausePanel.SetActive(shouldBeActive);
+            }
+
+            if (shouldBeActive)
+            {
+                ApplyFontToPausePanel();
+            }
         }
 
         // 5. Painel de Morte: Visível em Dead
@@ -318,6 +327,22 @@ public class UIManager : MonoBehaviour
     public void SetPausePanel(GameObject panel) => pausePanel = panel;
     public void SetDeathPanel(GameObject panel) => deathPanel = panel;
     public void SetStatusText(TextMeshProUGUI text) => statusText = text;
+
+    private void ApplyFontToPausePanel()
+    {
+        if (pausePanel == null) return;
+        TMP_FontAsset basicFont = Resources.Load<TMP_FontAsset>("Fonts/Basic");
+        if (basicFont == null) return;
+
+        TMP_Text[] texts = pausePanel.GetComponentsInChildren<TMP_Text>(true);
+        foreach (var txt in texts)
+        {
+            if (txt != null)
+            {
+                txt.font = basicFont;
+            }
+        }
+    }
     #endregion
 }
 

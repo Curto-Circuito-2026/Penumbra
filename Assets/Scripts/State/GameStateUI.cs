@@ -90,7 +90,20 @@ public class GameStateUI : MonoBehaviour
 
         if (pausePanel != null)
         {
-            pausePanel.SetActive(state == GameState.Paused);
+            bool isPaused = (state == GameState.Paused);
+            pausePanel.SetActive(isPaused);
+            if (isPaused)
+            {
+                TMP_FontAsset basicFont = Resources.Load<TMP_FontAsset>("Fonts/Basic");
+                if (basicFont != null)
+                {
+                    TMP_Text[] texts = pausePanel.GetComponentsInChildren<TMP_Text>(true);
+                    foreach (var txt in texts)
+                    {
+                        if (txt != null) txt.font = basicFont;
+                    }
+                }
+            }
         }
     }
 }
