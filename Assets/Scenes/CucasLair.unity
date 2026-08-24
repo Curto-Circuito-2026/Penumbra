@@ -10822,8 +10822,8 @@ Camera:
   m_GameObject: {fileID: 182093815}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -63031,6 +63031,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: CinematicManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3762159741971312960, guid: 12b00562c227fa14fa88dcbadb65ff65, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 182093817}
+    - target: {fileID: 3762159741971312960, guid: 12b00562c227fa14fa88dcbadb65ff65, type: 3}
+      propertyPath: camManager
+      value: 
+      objectReference: {fileID: 182093820}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
