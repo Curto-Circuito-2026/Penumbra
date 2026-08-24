@@ -199,10 +199,11 @@ public class DialogueManager : MonoBehaviour
             dialogueText.text = "";
         }
 
-        // Toca o áudio de dublagem se atribuído no nó
+        // Toca o áudio de dublagem se atribuído no nó e pega o silêncio pulado
+        float silenceDuration = 0f;
         if (node != null && node.VoiceClip != null && AudioController.Instance != null)
         {
-            AudioController.Instance.PlayVoice(node.VoiceClip);
+            silenceDuration = AudioController.Instance.PlayVoice(node.VoiceClip);
         }
 
         // Configura o nome do personagem: dá preferência à sobrescrita se definida, senão usa o nome do nó
@@ -234,8 +235,21 @@ public class DialogueManager : MonoBehaviour
             node.onStart.Raise();
         }
 
-        // Efeito Typewriter
+        // Efeito Typewriter com velocidade sincronizada com o áudio (se houver dublagem)
         string fullText = node.DialogueText;
+        float speedToUse = typingSpeed;
+
+        if (node != null && node.VoiceClip != null && fullText.Length > 0)
+        {
+            float audioDuration = node.VoiceClip.length - silenceDuration;
+            if (audioDuration > 0.1f)
+            {
+                speedToUse = audioDuration / fullText.Length;
+                // Evita que o texto digite rápido ou devagar demais
+                speedToUse = Mathf.Clamp(speedToUse, 0.005f, 0.18f);
+            }
+        }
+
         foreach (char letter in fullText)
         {
             if (dialogueText != null)
@@ -249,7 +263,7 @@ public class DialogueManager : MonoBehaviour
                 audioSource.PlayOneShot(typingSound);
             }
 
-            yield return new WaitForSeconds(typingSpeed);
+            yield return new WaitForSeconds(speedToUse);
         }
 
         isTyping = false;

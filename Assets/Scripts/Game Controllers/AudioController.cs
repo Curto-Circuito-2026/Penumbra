@@ -462,18 +462,34 @@ public class AudioController : MonoBehaviour
     #region Voice & Dubbing (with Audio Ducking)
 
     /// <summary>
+    /// <summary>
     /// Toca uma linha de voz/dublagem no canal dedicado e ativa o Audio Ducking na música de fundo.
     /// Se uma voz já estiver tocando, a substitui imediatamente.
+    /// Retorna o tempo de silêncio inicial ignorado (em segundos).
     /// </summary>
     /// <param name="clip">AudioClip da fala/dublagem.</param>
     /// <param name="volumeScale">Escala opcional de volume (0 a 1).</param>
-    public void PlayVoice(AudioClip clip, float volumeScale = 1f)
+    public float PlayVoice(AudioClip clip, float volumeScale = 1f)
     {
-        if (clip == null || voiceSource == null) return;
+        if (clip == null || voiceSource == null) return 0f;
 
         voiceSource.Stop();
         voiceSource.clip = clip;
         voiceSource.volume = masterVolume * voiceVolume * Mathf.Clamp01(volumeScale);
+
+        // Detecta e pula silêncio inicial
+        float silenceDuration = GetSilenceDurationAtStart(clip);
+        
+        // Garante que o tempo inicial seja válido e menor que o comprimento total
+        if (silenceDuration > 0f && silenceDuration < clip.length - 0.1f)
+        {
+            voiceSource.time = silenceDuration;
+        }
+        else
+        {
+            silenceDuration = 0f;
+        }
+
         voiceSource.Play();
 
         // Ativa o ducking na música
@@ -484,7 +500,44 @@ public class AudioController : MonoBehaviour
         {
             StopCoroutine(voiceWatchCoroutine);
         }
-        voiceWatchCoroutine = StartCoroutine(WatchVoiceEndCoroutine(clip.length));
+        float remainingDuration = Mathf.Max(0.1f, clip.length - silenceDuration);
+        voiceWatchCoroutine = StartCoroutine(WatchVoiceEndCoroutine(remainingDuration));
+
+        return silenceDuration;
+    }
+
+    /// <summary>
+    /// Analisa os primeiros segundos de um AudioClip para detectar silêncio inicial.
+    /// Retorna a duração (em segundos) que deve ser pulada.
+    /// </summary>
+    public static float GetSilenceDurationAtStart(AudioClip clip, float threshold = 0.005f)
+    {
+        if (clip == null) return 0f;
+
+        // Analisa no máximo os primeiros 2 segundos do áudio para otimização
+        int samplesToRead = Mathf.Min(clip.samples, clip.frequency * clip.channels * 2);
+        float[] samples = new float[samplesToRead];
+
+        try
+        {
+            if (clip.GetData(samples, 0))
+            {
+                for (int i = 0; i < samples.Length; i++)
+                {
+                    if (Mathf.Abs(samples[i]) > threshold)
+                    {
+                        // Converte o índice de amostra para tempo em segundos
+                        return (float)i / (clip.frequency * clip.channels);
+                    }
+                }
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"[AudioController] Falha ao analisar silêncio inicial de '{clip.name}': {ex.Message}");
+        }
+
+        return 0f;
     }
 
     /// <summary>
