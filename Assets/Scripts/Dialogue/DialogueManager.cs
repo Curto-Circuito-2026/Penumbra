@@ -70,6 +70,14 @@ public class DialogueManager : MonoBehaviour
         {
             dialoguePanel.SetActive(false);
         }
+
+        // Carrega e força o uso da fonte "Basic" do jogo nos textos do diálogo
+        TMP_FontAsset gameFont = Resources.Load<TMP_FontAsset>("Fonts/Basic");
+        if (gameFont != null)
+        {
+            if (nameText != null) nameText.font = gameFont;
+            if (dialogueText != null) dialogueText.font = gameFont;
+        }
     }
 
     private void Update()

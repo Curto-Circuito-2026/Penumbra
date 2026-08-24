@@ -188,7 +188,7 @@ public class MaeDoOuroBossRewardNPC : MonoBehaviour
         if (CombatVisualEffects.Instance != null)
         {
             CombatVisualEffects.Instance.PlayImpactBurst(transform.position, goldFlashColor, 2.8f);
-            CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 1.5f, "✦ A Mãe do Ouro Surgiu! ✦", goldFlashColor, 4.5f);
+            CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 1.5f, "A Mae do Ouro Surgiu!", goldFlashColor, 4.5f);
         }
 
         // Animação suave de surgimento (Pop com bounce)
