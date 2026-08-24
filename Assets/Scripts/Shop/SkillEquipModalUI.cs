@@ -101,6 +101,14 @@ public class SkillEquipModalUI : MonoBehaviour
     /// </summary>
     public void OpenModal(AbilityBoonSO boon, AbilitySwapUI swapUI)
     {
+        if (boon == null) return;
+
+        // Validação de segurança: se a bênção for passiva (sem habilidade ativa Q/E/R), cancela a abertura do modal
+        if (boon.GrantedAbility == null)
+        {
+            return;
+        }
+
         pendingBoon = boon;
         parentSwapUI = swapUI;
         selectedSlotIndex = 0; // Default para Slot Q
