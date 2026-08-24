@@ -334,7 +334,7 @@ public class RunManager : MonoBehaviour
     {
         if (starsText != null)
         {
-            starsText.text = $"Seu{(starFragments == 1 ? "" : "s")} {starFragments} fragmento{(starFragments == 1 ? "" : "s")} de estrela\r\n{(starFragments == 1 ? "Foi" : "Foram")} convertido{(starFragments == 1 ? "" : "s")} em\r\n{starsGained} estrela{(starsGained == 1 ? "" : "s")}\r\n\r\n<size=80%><color=#FFD700>Total na Carteira: {totalStars} ★</color></size>";
+            starsText.text = $"Seu{(starFragments == 1 ? "" : "s")} {starFragments} fragmento{(starFragments == 1 ? "" : "s")} de estrela\r\n{(starFragments == 1 ? "Foi" : "Foram")} convertido{(starFragments == 1 ? "" : "s")} em\r\n{starsGained} estrela{(starsGained == 1 ? "" : "s")}\r\n\r\n<size=80%><color=#FFD700>Total na Carteira: {totalStars}</color></size>";
         }
         if (deathScreen != null) deathScreen.SetActive(true);
     }
