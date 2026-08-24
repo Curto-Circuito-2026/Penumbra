@@ -499,6 +499,32 @@ public class RunManager : MonoBehaviour
             Debug.Log($"[RunManager] Fase {completedRegion} concluída e removida da lista! Fases restantes: {pendingRegions.Count} [{string.Join(", ", pendingRegions)}]");
         }
 
+        // Se a lista ficou vazia, mas a cena atual NÃO é a Cuca (batalha final), reconstrói a fila restante para garantir a progressão contínua
+        if (pendingRegions == null || pendingRegions.Count == 0)
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            if (!currentSceneName.Contains("Cuca") && !currentSceneName.Contains("Covil"))
+            {
+                Debug.LogWarning($"[RunManager] Fila pendente vazia ao concluir {currentSceneName}. Reconstruindo fila de progressão para as regiões restantes!");
+                pendingRegions = new List<int>();
+                if (currentSceneName.Contains("Mata"))
+                {
+                    pendingRegions.Add(1); // Cidade Destruída (Mapinguari)
+                    pendingRegions.Add(2); // Pântano de Matinta
+                    pendingRegions.Add(3); // Covil da Cuca
+                }
+                else if (currentSceneName.Contains("Cidade") || currentSceneName.Contains("Destruida"))
+                {
+                    pendingRegions.Add(2); // Pântano de Matinta
+                    pendingRegions.Add(3); // Covil da Cuca
+                }
+                else if (currentSceneName.Contains("Pantano"))
+                {
+                    pendingRegions.Add(3); // Covil da Cuca
+                }
+            }
+        }
+
         if (pendingRegions != null && pendingRegions.Count > 0)
         {
             // Vai DIRETO para a próxima fase!
