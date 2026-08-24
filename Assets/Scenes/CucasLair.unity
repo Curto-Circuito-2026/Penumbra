@@ -63031,6 +63031,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: CinematicManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3762159741971312960, guid: 12b00562c227fa14fa88dcbadb65ff65, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 182093817}
+    - target: {fileID: 3762159741971312960, guid: 12b00562c227fa14fa88dcbadb65ff65, type: 3}
+      propertyPath: camManager
+      value: 
+      objectReference: {fileID: 182093820}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
