@@ -268,28 +268,16 @@ public class MaeDoOuroBossRewardNPC : MonoBehaviour
         for (int i = 0; i < lines.Length; i++)
         {
             DialogueNode node = ScriptableObject.CreateInstance<DialogueNode>();
-            var speakerProp = typeof(DialogueNode).GetField("speakerName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            var textProp = typeof(DialogueNode).GetField("dialogueText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-            if (speakerProp != null) speakerProp.SetValue(node, speaker);
-            if (textProp != null) textProp.SetValue(node, lines[i]);
-
+            node.InitializeRuntime(speaker, lines[i]);
             nodes.Add(node);
         }
 
         for (int i = 0; i < nodes.Count - 1; i++)
         {
-            var nextProp = typeof(DialogueNode).GetField("nextNode", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (nextProp != null) nextProp.SetValue(nodes[i], nodes[i + 1]);
+            nodes[i].InitializeRuntime(speaker, lines[i], nodes[i + 1]);
         }
 
-        var startProp = typeof(DialogueSequence).GetField("startingNode", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        if (startProp != null)
-        {
-            List<DialogueNode> startingList = new List<DialogueNode> { nodes[0] };
-            startProp.SetValue(seq, startingList);
-        }
-
+        seq.InitializeRuntime(new List<DialogueNode> { nodes[0] });
         return seq;
     }
 

@@ -109,6 +109,17 @@ public class AudioController : MonoBehaviour
         }
     }
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+    private void Update()
+    {
+        // Em navegadores WebGL, garante o desbloqueio do Web Audio Context no primeiro clique ou tecla do usuário
+        if (AudioListener.pause && (Input.anyKeyDown || Input.GetMouseButtonDown(0)))
+        {
+            AudioListener.pause = false;
+        }
+    }
+#endif
+
     #region Initialization
 
     private void InitializeAudioSources()
