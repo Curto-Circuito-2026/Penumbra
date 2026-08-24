@@ -42,6 +42,12 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private MultiRangeIndicator multiRangeIndicator;
     [SerializeField] private int circleSegments = 40;
 
+    [Header("Efeitos Sonoros de Ataque (SFX)")]
+    [Tooltip("Áudio para o ataque básico corpo a corpo (Botão Esquerdo).")]
+    [SerializeField] private AudioClip meleeAttackSFX;
+    [Tooltip("Áudio para o ataque à distância (Botão Direito).")]
+    [SerializeField] private AudioClip rangedAttackSFX;
+
     // Cores dos Indicadores de Alcance por Habilidade/Ataque
     private readonly Color meleeColor = new Color(0.9f, 0.96f, 1f, 0.8f);
     private readonly Color rangedColor = new Color(0.2f, 0.8f, 1f, 0.75f);
@@ -151,6 +157,18 @@ public class PlayerCombatController : MonoBehaviour
                 multiRangeIndicator = gameObject.AddComponent<MultiRangeIndicator>();
             }
         }
+
+#if UNITY_EDITOR
+        // Auto-carregamento padrão dos áudios de ataque caso não estejam atribuídos no Inspector
+        if (meleeAttackSFX == null)
+        {
+            meleeAttackSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/ataque basico.mp3");
+        }
+        if (rangedAttackSFX == null)
+        {
+            rangedAttackSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/lançando.mp3");
+        }
+#endif
 
         // Configuração dos Inputs via New Input System
         moveAction = new InputAction("MoveInput", expectedControlType: "Vector2");
@@ -327,25 +345,11 @@ public class PlayerCombatController : MonoBehaviour
     /// </summary>
     private void HandleMouseHoverAndVisuals()
     {
-        Vector3 mouseWorldPos = GetMouseWorldPosition();
-        RaycastHit2D[] hits = Physics2D.RaycastAll(mouseWorldPos, Vector2.zero, 0.1f, enemyLayerMask);
-        GameObject hoveredEnemy = null;
-        foreach (var h in hits)
-        {
-            if (IsValidEnemyTarget(h.collider, out _))
-            {
-                hoveredEnemy = h.collider.gameObject;
-                break;
-            }
-        }
-
-        // 1. Destaque Visual do Inimigo focado / atacado
-        GameObject hoveredOrTargeted = hoveredEnemy ?? currentTarget;
-
-        if (hoveredOrTargeted != null && targetSelectionRing != null)
+        // 1. Destaque Visual do Inimigo (Apenas se houver um alvo ativo travado, sem indicador no hover)
+        if (currentTarget != null && targetSelectionRing != null)
         {
             Color highlightColor = GetColorForAction(pendingAction);
-            targetSelectionRing.ShowOnTarget(hoveredOrTargeted.transform, highlightColor);
+            targetSelectionRing.ShowOnTarget(currentTarget.transform, highlightColor);
         }
         else if (targetSelectionRing != null)
         {
@@ -368,14 +372,8 @@ public class PlayerCombatController : MonoBehaviour
             return;
         }
 
-        // 4. Indicadores de Alcance Visual padrão
-        if (hoveredEnemy != null)
-        {
-            float displayRange = (pendingAction == PendingActionType.Ranged) ? rangedRange : (pendingAction != PendingActionType.None ? GetRequiredRange(pendingAction) : meleeRange);
-            Color rangeCol = GetColorForAction(pendingAction != PendingActionType.None ? pendingAction : PendingActionType.Melee);
-            ShowRangeIndicator(displayRange, rangeCol);
-        }
-        else if (pendingAction != PendingActionType.None)
+        // 3. Indicadores de Alcance Visual (apenas quando uma ação/habilidade estiver pendente para conjurar)
+        if (pendingAction != PendingActionType.None)
         {
             float displayRange = GetRequiredRange(pendingAction);
             Color rangeCol = GetColorForAction(pendingAction);
@@ -437,6 +435,12 @@ public class PlayerCombatController : MonoBehaviour
             characterController.TriggerMeleeAnimation(dir);
         }
 
+        // Toca o efeito sonoro de ataque básico (Botão Esquerdo)
+        if (meleeAttackSFX != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(meleeAttackSFX);
+        }
+
         // Raycast da posição do jogador em direção ao mouse até o alcance Melee
         RaycastHit2D[] meleeHits = Physics2D.RaycastAll(transform.position, dir, meleeRange, enemyLayerMask);
         GameObject targetEnemy = null;
@@ -495,6 +499,12 @@ public class PlayerCombatController : MonoBehaviour
         if (characterController != null)
         {
             characterController.TriggerRangedAnimation(dir);
+        }
+
+        // Toca o efeito sonoro de ataque à distância (Botão Direito)
+        if (rangedAttackSFX != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(rangedAttackSFX);
         }
 
         StartCoroutine(ExecuteDelayedRangedAttack(dir, mouseWorldPos, 0.28f));

@@ -23,6 +23,8 @@ public class CharacterController2D : MonoBehaviour
     [Header("Dash Settings")]
     [SerializeField] private float dashDistance = 3f;
     [SerializeField] private float dashSpeed = 18f;
+    [Tooltip("Tempo de espera (segundos) após o término de um Dash antes de permitir outro.")]
+    [SerializeField] private float dashCooldown = 0.15f;
 
     [Header("Visual Colors (Testing)")]
     [SerializeField] private Color normalColor = Color.white;
@@ -39,6 +41,7 @@ public class CharacterController2D : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 lastMoveDirection = Vector2.down;
     private bool isDashing;
+    private float dashCooldownTimer;
     private float speedBuffMultiplier = 1f;
     private Coroutine speedBuffCoroutine;
 
@@ -124,6 +127,11 @@ public class CharacterController2D : MonoBehaviour
     private void Update()
     {
         UpdateCharacterState();
+
+        if (dashCooldownTimer > 0f)
+        {
+            dashCooldownTimer -= Time.deltaTime;
+        }
 
         if (isDashing) return;
 
@@ -230,7 +238,7 @@ public class CharacterController2D : MonoBehaviour
             }
         }
 
-        if (dashAction.WasPressedThisFrame() && !isDashing)
+        if (dashAction.WasPressedThisFrame() && !isDashing && dashCooldownTimer <= 0f)
         {
             StartCoroutine(PerformDash(moveInput));
         }
@@ -304,6 +312,7 @@ public class CharacterController2D : MonoBehaviour
 
         rb.MovePosition(targetPos);
         isDashing = false;
+        dashCooldownTimer = dashCooldown;
         UpdateCharacterState();
     }
 
