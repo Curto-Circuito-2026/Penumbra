@@ -41,7 +41,9 @@ public class WhirlpoolAbility : Ability
         }
         else
         {
-            GameObject loaded = Resources.Load<GameObject>("Prefabs/WhirlpoolArea");
+            GameObject loaded = Resources.Load<GameObject>("Prefabs/Combat/WhirlpoolArea") 
+                             ?? Resources.Load<GameObject>("Prefabs/WhirlpoolArea")
+                             ?? Resources.Load<GameObject>("WhirlpoolArea");
             if (loaded == null)
             {
 #if UNITY_EDITOR

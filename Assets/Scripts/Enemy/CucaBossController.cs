@@ -106,8 +106,13 @@ public class CucaBossController : MonoBehaviour, IDamageable
         }
         if (animator.runtimeAnimatorController == null)
         {
+            animator.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Animations/Enemies/Cuca/Cuca")
+                                               ?? Resources.Load<RuntimeAnimatorController>("Cuca");
 #if UNITY_EDITOR
-            animator.runtimeAnimatorController = UnityEditor.AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Animations/Enemies/Cuca/Cuca.controller");
+            if (animator.runtimeAnimatorController == null)
+            {
+                animator.runtimeAnimatorController = UnityEditor.AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Animations/Enemies/Cuca/Cuca.controller");
+            }
 #endif
         }
 

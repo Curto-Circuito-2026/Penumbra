@@ -23,9 +23,14 @@ public class HuntingCompanionAbility : Ability
         GameObject prefabToUse = companionPrefab;
         if (prefabToUse == null)
         {
+            prefabToUse = Resources.Load<GameObject>("Prefabs/Enemy/Ally_BestaFera")
+                       ?? Resources.Load<GameObject>("Ally_BestaFera");
 #if UNITY_EDITOR
-            prefabToUse = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemy/Ally_BestaFera.prefab")
-                ?? UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemy/Enemy_BestaFera.prefab");
+            if (prefabToUse == null)
+            {
+                prefabToUse = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemy/Ally_BestaFera.prefab")
+                    ?? UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemy/Enemy_BestaFera.prefab");
+            }
 #endif
         }
 
