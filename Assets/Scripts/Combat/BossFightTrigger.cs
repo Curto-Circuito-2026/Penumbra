@@ -9,7 +9,7 @@ public class BossFightTrigger : MonoBehaviour
 {
     [Header("Identificação do Boss")]
     [Tooltip("Nome que será exibido na Barra de Vida Épica do Topo.")]
-    [SerializeField] private string bossDisplayName = "BOITATÁ - Serpente de Fogo";
+    [SerializeField] private string bossDisplayName = "BOITATA - Serpente de Fogo";
 
     [Tooltip("Referência ao BoitataBossController na cena (opcional - se nulo, busca automaticamente).")]
     [SerializeField] private BoitataBossController bossController;
