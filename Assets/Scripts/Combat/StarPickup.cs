@@ -46,6 +46,15 @@ public class StarPickup : MonoBehaviour
     [SerializeField] private float bobbingSpeed = 4f;
     [SerializeField] private float bobbingHeight = 0.15f;
 
+    [Header("Animação de Piscar/Troca")]
+    [SerializeField] private bool enableTwinkle = true;
+    [SerializeField] private float twinkleInterval = 0.4f;
+    [SerializeField] private Color twinkleColor = new Color(0.35f, 0.35f, 0.35f, 1f);
+
+    [Header("Áudio de Coleta")]
+    [SerializeField] private AudioClip collectSFX;
+    [SerializeField] private float collectVolume = 0.35f;
+
     public static int ActiveStarsCount { get; private set; } = 0;
     public static event System.Action OnAllStarsCollected;
 
@@ -92,6 +101,25 @@ public class StarPickup : MonoBehaviour
     {
         FindPlayer();
         StartCoroutine(SeekSequenceRoutine());
+        if (enableTwinkle)
+        {
+            StartCoroutine(TwinkleRoutine());
+        }
+    }
+
+    private IEnumerator TwinkleRoutine()
+    {
+        while (!isCollected)
+        {
+            yield return new WaitForSeconds(twinkleInterval);
+            if (isCollected) yield break;
+
+            if (spriteRenderer != null)
+            {
+                // Alterna entre a cor original (branco) e a cor escura
+                spriteRenderer.color = spriteRenderer.color == Color.white ? twinkleColor : Color.white;
+            }
+        }
     }
 
     private void FindPlayer()
@@ -223,12 +251,30 @@ public class StarPickup : MonoBehaviour
             pickupCollider.enabled = false;
         }
 
+        // Restaura cor normal antes de animar
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.white;
+        }
+
+        // Toca áudio de coleta
+        AudioClip sfx = collectSFX != null ? collectSFX : Resources.Load<AudioClip>("Audio/PegandoEstrela");
+        if (sfx != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(sfx, collectVolume);
+        }
+        else
+        {
+            Debug.LogWarning($"[StarPickup] Falha ao tocar áudio. Clip: {(sfx != null ? sfx.name : "null")}, AudioController: {(AudioController.Instance != null ? "ok" : "null")}");
+        }
+
         currency.AddStars(starValue);
 
         // Feedback Visual e Efeitos
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 0.8f, $"+{starValue} Estrela!", starGlowColor, 4.5f);
+            string label = starValue > 1 ? $"+{starValue} Estrelas!" : "+1 Estrela!";
+            CombatVisualEffects.Instance.SpawnFloatingText(transform.position + Vector3.up * 0.8f, label, starGlowColor, 4.5f);
             CombatVisualEffects.Instance.PlayImpactBurst(transform.position, starGlowColor, 1.8f);
         }
 
@@ -271,6 +317,13 @@ public class StarPickup : MonoBehaviour
         if (prefab != null)
         {
             return Instantiate(prefab, position, Quaternion.identity);
+        }
+
+        // Tenta carregar o prefab das estrelas de Resources como fallback seguro
+        GameObject loadedPrefab = Resources.Load<GameObject>("Items/Star_Forged_Pickup");
+        if (loadedPrefab != null)
+        {
+            return Instantiate(loadedPrefab, position, Quaternion.identity);
         }
 
         GameObject starObj = new GameObject("Star_Forged_Pickup");
