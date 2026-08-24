@@ -134,26 +134,41 @@ public class CombatVisualEffects : MonoBehaviour
     {
         if (projectileSprite != null) return projectileSprite;
 
-#if UNITY_EDITOR
-        string[] guids = UnityEditor.AssetDatabase.FindAssets("naia_projectile t:Texture2D");
-        if (guids.Length > 0)
+        projectileSprite = Resources.Load<Sprite>("Sprites/Naia/naia_projectile")
+                        ?? Resources.Load<Sprite>("naia_projectile");
+
+        if (projectileSprite == null)
         {
-            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
-            Sprite[] sprites = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().ToArray();
-            if (sprites.Length > 0)
+            Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Naia/naia_projectile");
+            if (sprites != null && sprites.Length > 0) projectileSprite = sprites[0];
+        }
+
+#if UNITY_EDITOR
+        if (projectileSprite == null)
+        {
+            string[] guids = UnityEditor.AssetDatabase.FindAssets("naia_projectile t:Texture2D");
+            if (guids.Length > 0)
             {
-                projectileSprite = sprites[0];
-                return projectileSprite;
+                string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                Sprite[] sprites = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().ToArray();
+                if (sprites.Length > 0)
+                {
+                    projectileSprite = sprites[0];
+                    return projectileSprite;
+                }
             }
         }
 #endif
-        var loadedSprites = Resources.FindObjectsOfTypeAll<Sprite>();
-        foreach (var s in loadedSprites)
+        if (projectileSprite == null)
         {
-            if (s.name.Contains("naia_projectile"))
+            var loadedSprites = Resources.FindObjectsOfTypeAll<Sprite>();
+            foreach (var s in loadedSprites)
             {
-                projectileSprite = s;
-                break;
+                if (s.name.Contains("naia_projectile"))
+                {
+                    projectileSprite = s;
+                    break;
+                }
             }
         }
 
