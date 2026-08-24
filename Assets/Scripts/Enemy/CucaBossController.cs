@@ -780,15 +780,7 @@ public class CucaBossController : MonoBehaviour, IDamageable
 
         if (spriteRenderer != null) spriteRenderer.enabled = false;
 
-        // Drop de Estrelas (6 a 8 estrelas)
-        int drops = Random.Range(6, 9);
-        for (int i = 0; i < drops; i++)
-        {
-            Vector3 dropPos = ClampToArena(transform.position + (Vector3)(Random.insideUnitCircle * 1.8f));
-            StarPickup.SpawnStar(dropPos, starPickupPrefab);
-        }
-
-        // Mãe do Ouro surge onde o boss foi derrotado
+        // Mãe do Ouro surge onde o boss foi derrotado (ela cuidará do drop e da cura)
         MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Cuca);
 
         yield return new WaitForSeconds(0.4f);

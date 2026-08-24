@@ -716,15 +716,7 @@ public class MatintaBossController : MonoBehaviour, IDamageable
 
         AudioController.Instance.PlaySFX(deathSFX);
 
-        // Drop de Estrelas (4 a 6 estrelas)
-        int drops = Random.Range(4, 7);
-        for (int i = 0; i < drops; i++)
-        {
-            Vector3 dropPos = ClampToArena(transform.position + (Vector3)(Random.insideUnitCircle * 1.5f));
-            StarPickup.SpawnStar(dropPos, starPickupPrefab);
-        }
-
-        // Mãe do Ouro surge onde o boss foi derrotado
+        // Mãe do Ouro surge onde o boss foi derrotado (ela cuidará do drop e da cura)
         MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Matinta);
 
         yield return new WaitForSeconds(0.25f);

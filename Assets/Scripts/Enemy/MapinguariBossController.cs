@@ -640,21 +640,7 @@ public class MapinguariBossController : MonoBehaviour, IDamageable
             BossHealthBarUI.Instance.HideBoss(true);
         }
 
-        // Drop de Estrelas / Loot (3 a 5 estrelas)
-        int drops = UnityEngine.Random.Range(3, 6);
-        for (int i = 0; i < drops; i++)
-        {
-            Vector3 dropPos = transform.position + (Vector3)(UnityEngine.Random.insideUnitCircle * 1.5f);
-            StarPickup.SpawnStar(dropPos, starPickupPrefab);
-        }
-
-        // Efeito de Morte
-        if (CombatVisualEffects.Instance != null)
-        {
-            CombatVisualEffects.Instance.PlayImpactBurst(transform.position, new Color(1f, 0.7f, 0.2f), 2.5f);
-        }
-
-        // Mãe do Ouro surge onde o boss foi derrotado
+        // Mãe do Ouro surge onde o boss foi derrotado (ela cuidará do drop e da cura)
         MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Mapinguari);
 
         Destroy(gameObject, 2.5f);

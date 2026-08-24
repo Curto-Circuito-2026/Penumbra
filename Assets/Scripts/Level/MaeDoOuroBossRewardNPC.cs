@@ -51,6 +51,9 @@ public class MaeDoOuroBossRewardNPC : MonoBehaviour
     /// </summary>
     public static void SpawnAfterBoss(Vector3 position, BossDefeatedType defeatedBoss)
     {
+        // Drop de Recompensas e Cura de Vida
+        DropBossLootAndHeal(position);
+
         GameObject maePrefab = Resources.Load<GameObject>("NPC_MaeDoOuro") 
                                ?? Resources.Load<GameObject>("NPCs/NPC_MaeDoOuro")
                                ?? Resources.Load<GameObject>("Prefabs/NPCs/NPC_MaeDoOuro");
@@ -85,6 +88,66 @@ public class MaeDoOuroBossRewardNPC : MonoBehaviour
         }
 
         rewardComp.InitAndAppear(defeatedBoss);
+    }
+
+    private static void DropBossLootAndHeal(Vector3 position)
+    {
+        // 1. Spawna 3 Estrelas Forjadas de Boss (seekPlayer = true)
+        GameObject starPrefab = Resources.Load<GameObject>("Items/Star_Forged_Pickup");
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3 dropPos = position + (Vector3)Random.insideUnitCircle * Random.Range(1.2f, 2.5f);
+            if (starPrefab != null)
+            {
+                Instantiate(starPrefab, dropPos, Quaternion.identity);
+            }
+            else
+            {
+                StarPickup.SpawnStar(dropPos); // Fallback
+            }
+        }
+
+        // 2. Spawna entre 5 e 8 Fragmentos de Estrela de Boss (seekPlayer = true)
+        GameObject fragmentPrefab = Resources.Load<GameObject>("Items/StarFragment_Boss_Pickup");
+        int fragmentCount = Random.Range(5, 9); // Random.Range(int minInclusive, int maxExclusive) -> 5, 6, 7, 8
+        for (int i = 0; i < fragmentCount; i++)
+        {
+            Vector3 dropPos = position + (Vector3)Random.insideUnitCircle * Random.Range(1.2f, 2.5f);
+            if (fragmentPrefab != null)
+            {
+                Instantiate(fragmentPrefab, dropPos, Quaternion.identity);
+            }
+            else
+            {
+                // Fallback procedural do fragmento caso o prefab não carregue
+                GameObject fragObj = new GameObject("StarFragment_Pickup");
+                fragObj.transform.position = dropPos;
+                SpriteRenderer sr = fragObj.AddComponent<SpriteRenderer>();
+                sr.sprite = Resources.Load<Sprite>("star_fragment") ?? Resources.Load<Sprite>("Sprites/ui_pack/star_fragment");
+                CircleCollider2D col = fragObj.AddComponent<CircleCollider2D>();
+                col.isTrigger = true;
+                fragObj.AddComponent<StarFragmentPickup>();
+            }
+        }
+
+        // 3. Cura o jogador em 15% da vida máxima
+        PlayerStats stats = Object.FindAnyObjectByType<PlayerStats>();
+        if (stats != null)
+        {
+            float healAmount = stats.MaxHealth * 0.15f;
+            stats.Heal(healAmount);
+
+            // Spawn de texto flutuante verde indicando a cura
+            if (CombatVisualEffects.Instance != null)
+            {
+                CombatVisualEffects.Instance.SpawnFloatingText(
+                    stats.transform.position + Vector3.up * 1.2f, 
+                    $"+15% Vida (+{healAmount:F0} HP)", 
+                    new Color(0.2f, 1f, 0.4f), 
+                    4.5f
+                );
+            }
+        }
     }
 
     public void InitAndAppear(BossDefeatedType defeatedBoss)

@@ -882,15 +882,7 @@ public class BoitataBossController : MonoBehaviour, IDamageable
             CombatVisualEffects.Instance.TriggerCameraShake(0.5f, 0.35f);
         }
 
-        // Drop de 3 a 5 Estrelas Forjadas completas
-        int starsToDrop = UnityEngine.Random.Range(minStarDrop, maxStarDrop + 1);
-        for (int i = 0; i < starsToDrop; i++)
-        {
-            Vector3 dropPos = transform.position + (Vector3)UnityEngine.Random.insideUnitCircle * UnityEngine.Random.Range(1.2f, 2.5f);
-            SpawnStarDrop(dropPos);
-        }
-
-        // Mãe do Ouro surge onde o boss foi derrotado
+        // Mãe do Ouro surge onde o boss foi derrotado (ela cuidará do drop e da cura)
         MaeDoOuroBossRewardNPC.SpawnAfterBoss(transform.position, BossDefeatedType.Boitata);
 
         yield return new WaitForSeconds(2.0f);
