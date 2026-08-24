@@ -10,18 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
-  m_Name: Boon_Iara_InvestidaNaval
+  m_Name: Boon_Iara_Gusparada
   m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
-  boonName: Investida Naval
-  rarity: 3
-  icon: {fileID: -361151072, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
-  description: "Dash aqu\xE1tico ofensivo que atravessa e fere m\xFAltiplos inimigos
-    com a f\xFAria das mar\xE9s."
-  statDetail: "\u25B8 Dano de Atravessamento: 40 Dano"
-  effectType: 4
-  effectValue: 40
+  boonName: Gusparada
+  rarity: 0
+  icon: {fileID: 1741493235, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "Proj\xE9til veloz de \xE1gua que causa dano a um inimigo"
+  statDetail: 0.8s de cooldown
+  effectType: 6
+  effectValue: 80
   debuffEffectType: 1
   debuffValue: 0
   debuffDetail: 
-  starCost: 10
-  grantedAbility: {fileID: 11400000, guid: 8fd906e0d4f94314fa02a754f901057f, type: 2}
+  starCost: 4
+  grantedAbility: {fileID: 11400000, guid: f351c643c2441124b882c1721def30ea, type: 2}

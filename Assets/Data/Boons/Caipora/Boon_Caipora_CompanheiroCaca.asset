@@ -23,5 +23,5 @@ MonoBehaviour:
   debuffEffectType: 1
   debuffValue: 0
   debuffDetail: 
-  starCost: 2
+  starCost: 10
   grantedAbility: {fileID: 11400000, guid: b32ed2be2475ae64891c4cf7abedafae, type: 2}

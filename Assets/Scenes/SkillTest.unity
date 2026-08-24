@@ -751,11 +751,11 @@ PrefabInstance:
     - target: {fileID: 7216750349317481606, guid: 214706b974ba72242921431c63c8d1eb, type: 3}
       propertyPath: slotQ
       value: 
-      objectReference: {fileID: 11400000, guid: f67479948ed848141a93876485154a12, type: 2}
+      objectReference: {fileID: 11400000, guid: f351c643c2441124b882c1721def30ea, type: 2}
     - target: {fileID: 7216750349317481606, guid: 214706b974ba72242921431c63c8d1eb, type: 3}
       propertyPath: slotR
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 3ceee982d53751f479d73a5f8ae5b5b6, type: 2}
     - target: {fileID: 7216750349317481606, guid: 214706b974ba72242921431c63c8d1eb, type: 3}
       propertyPath: isSlotEUnlocked
       value: 1

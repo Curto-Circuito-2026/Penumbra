@@ -6,7 +6,7 @@ using static Unity.Collections.Unicode;
 [CreateAssetMenu(fileName = "NewDamageAbility", menuName = "Combat/Abilities/Damage Ability")]
 public class DamageAbility : Ability
 {
-    public enum AbilityType { SingleTarget, AoE, Projectile, ScatterShot }
+    public enum AbilityType { SingleTarget, AoE, Projectile, Scattershot, Grenade }
 
     [Header("Efeitos da Habilidade")]
     [Tooltip("Tipo da habilidade: Alvo único, Área de Efeito (AoE) ou Projétil.")]
@@ -30,6 +30,12 @@ public class DamageAbility : Ability
     [SerializeField] private float spreadAngle = 45f;
     [Tooltip("Alcance máximo do tiro de espingarda.")]
     [SerializeField] private float scatterRange = 8f;
+
+    [Header("Configurações da Granada")]
+    [Tooltip("Altura máxima do arco da granada (falso 3D).")]
+    [SerializeField] private float grenadeArcHeight = 2.5f;
+    [Tooltip("Tempo em segundos que a granada leva para cair no chão.")]
+    [SerializeField] private float grenadeFlightTime = 0.8f;
 
     private Vector3 GetCastSpawnPosition(GameObject caster, Vector3 direction)
     {
@@ -67,10 +73,14 @@ public class DamageAbility : Ability
         Vector3 direction = (targetPosition - casterPos).normalized;
         if (direction.sqrMagnitude < 0.001f) direction = rawDirection;
 
-        if (type == AbilityType.ScatterShot)
+        if (type == AbilityType.Scattershot)
         {
-            //
             ApplyScatterDamage(caster, casterPos, direction);
+            return true;
+        }
+        else if (type == AbilityType.Grenade) 
+        {
+            ApplyGrenadeDamage(caster, casterPos, targetPosition);
             return true;
         }
 
@@ -114,6 +124,31 @@ public class DamageAbility : Ability
             ApplyDamage(caster, targetPosition, targetEntity, direction);
             return true;
         }
+    }
+
+    private void ApplyGrenadeDamage(GameObject caster, Vector3 startPos, Vector3 targetPosition)
+    {
+        if (projectilePrefab == null)
+        {
+            Debug.LogWarning("Grenade precisa de um Projectile Prefab assinalado no Inspector!");
+            return;
+        }
+
+        Vector3 direction = targetPosition - startPos;
+        if (direction.magnitude > range)
+        {
+            targetPosition = startPos + (direction.normalized * range);
+        }
+
+        GameObject grenadeObj = Instantiate(projectilePrefab, startPos, Quaternion.identity);
+
+        if (!grenadeObj.TryGetComponent<ProjectileThrow>(out var grenadeScript))
+        {
+            grenadeScript = grenadeObj.AddComponent<ProjectileThrow>();
+        }
+
+        // Initialize it with the arc parameters and the AoE radius!
+        grenadeScript.Initialize(caster, startPos, targetPosition, damage, aoeRadius, vfxPrefab, grenadeArcHeight, grenadeFlightTime, projectileSprite);
     }
 
     private void ApplyScatterDamage(GameObject caster, Vector3 startPos, Vector3 baseDirection)
