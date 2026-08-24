@@ -16,9 +16,52 @@ public class AudioVolumeSliderUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI label;
     [SerializeField] private AudioChannelType channelType;
 
+    private bool isInitializing = false;
+
+    private void Awake()
+    {
+        if (slider == null) slider = GetComponent<Slider>();
+    }
+
+    private void OnEnable()
+    {
+        if (slider != null)
+        {
+            slider.onValueChanged.RemoveListener(OnVolumeChanged);
+            slider.onValueChanged.AddListener(OnVolumeChanged);
+        }
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.OnAudioVolumesChanged += HandleVolumesChanged;
+        }
+
+        RefreshUI();
+    }
+
+    private void OnDisable()
+    {
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.OnAudioVolumesChanged -= HandleVolumesChanged;
+        }
+    }
 
     private void Start()
     {
+        RefreshUI();
+    }
+
+    private void HandleVolumesChanged(float master, float music, float sfx, float voice)
+    {
+        RefreshUI();
+    }
+
+    public void RefreshUI()
+    {
+        if (slider == null) slider = GetComponent<Slider>();
+        if (slider == null) return;
+
         float currentVolume = 1f;
 
         if (AudioController.Instance != null)
@@ -39,14 +82,19 @@ public class AudioVolumeSliderUI : MonoBehaviour
                     break;
             }
         }
+
+        isInitializing = true;
         slider.minValue = 0f;
         slider.maxValue = 1f;
-        slider.value = currentVolume;
-        slider.onValueChanged.AddListener(OnVolumeChanged);
+        slider.SetValueWithoutNotify(currentVolume);
+        UpdateLabel(currentVolume);
+        isInitializing = false;
     }
 
     private void OnVolumeChanged(float newValue)
     {
+        if (isInitializing) return;
+
         if (AudioController.Instance != null)
         {
             switch (channelType)
@@ -67,7 +115,6 @@ public class AudioVolumeSliderUI : MonoBehaviour
         }
 
         UpdateLabel(newValue);
-    
     }
 
     private void UpdateLabel(float volume)
@@ -77,5 +124,5 @@ public class AudioVolumeSliderUI : MonoBehaviour
             int percentage = Mathf.RoundToInt(volume * 100f);
             label.text = percentage.ToString();
         }
-}
+    }
 }
