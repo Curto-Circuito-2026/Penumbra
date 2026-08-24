@@ -10895,8 +10895,8 @@ Camera:
   m_GameObject: {fileID: 182093815}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -63401,6 +63401,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: CinematicManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3762159741971312960, guid: 12b00562c227fa14fa88dcbadb65ff65, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 182093817}
+    - target: {fileID: 3762159741971312960, guid: 12b00562c227fa14fa88dcbadb65ff65, type: 3}
+      propertyPath: camManager
+      value: 
+      objectReference: {fileID: 182093820}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -66292,6 +66300,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 980674633}
     m_Modifications:
+    - target: {fileID: 1397588559561247959, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
+      propertyPath: RoarSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 35b59650cb6716945aee757c9da77a64, type: 3}
+    - target: {fileID: 1397588559561247959, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
+      propertyPath: MeleeSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 331af2bef7f721f4dba77a1bb41a8a7a, type: 3}
+    - target: {fileID: 1397588559561247959, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
+      propertyPath: LandingSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: f2d0e81377f5d364d891336f09e87d65, type: 3}
+    - target: {fileID: 1397588559561247959, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
+      propertyPath: magicBallSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: a22887533cf57c544a1c659f63d885fd, type: 3}
+    - target: {fileID: 1397588559561247959, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
+      propertyPath: magicCastSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 3458869c9068afb4da79c46d3fec2e89, type: 3}
+    - target: {fileID: 1397588559561247959, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
+      propertyPath: arrastandoSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 5f3cc2eac05b46d4e9828cbd09c19367, type: 3}
     - target: {fileID: 2152442489992458088, guid: c4d86b56f36c2b340ac714e3585791da, type: 3}
       propertyPath: m_Radius
       value: 0.38570353

@@ -49,6 +49,16 @@ public class CucaBossController : MonoBehaviour, IDamageable
     [Header("Ativação de Combate")]
     [SerializeField] private bool autoStartCombat = false;
     [SerializeField] private float playerDetectionRadius = 9.0f;
+    //Audio SFX
+    [Header("SFX do Personagem")]
+    [SerializeField] private AudioClip magicBallSFX;
+    [SerializeField] private AudioClip magicCastSFX;
+    [SerializeField] private AudioClip LandingSFX;
+    [SerializeField] private AudioClip MeleeSFX;
+    [SerializeField] private AudioClip RoarSFX;
+    [SerializeField] private AudioClip arrastandoSFX;
+    [Tooltip("AudioSource dedicado a esse som. Se deixado vazio, um é criado automaticamente.")]
+    [SerializeField] private AudioSource draggingAudioSource;
 
     // Componentes
     private SpriteRenderer spriteRenderer;
@@ -281,6 +291,11 @@ public class CucaBossController : MonoBehaviour, IDamageable
     {
         if (purpleOrbPrefab == null) return;
 
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(magicBallSFX);
+        }
+
         Vector3 centerPos = GetBodyCenterPosition();
         float angleStep = 360f / count;
         for (int i = 0; i < count; i++)
@@ -398,6 +413,11 @@ public class CucaBossController : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(0.22f);
 
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(MeleeSFX);
+        }
+
         // Dano Melee em cone/arco frontal
         Vector3 bodyCenter = GetBodyCenterPosition();
         Vector3 forward = (playerTransform.position - bodyCenter).normalized;
@@ -461,6 +481,11 @@ public class CucaBossController : MonoBehaviour, IDamageable
         Debug.Log("[CucaBoss] Poder Cuca: Salva Dupla em Espiral de Esferas!");
         if (animator != null) animator.SetTrigger(MagicP2Hash);
 
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(magicBallSFX);
+        }
+
         yield return new WaitForSeconds(0.25f);
         SpawnRadialOrbs(16, phase1OrbDamage * 1.15f, 8.5f, 0f);
 
@@ -479,6 +504,11 @@ public class CucaBossController : MonoBehaviour, IDamageable
         if (animator != null) animator.SetTrigger(MagicP2Hash);
 
         yield return new WaitForSeconds(0.28f);
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(magicCastSFX);
+        }
 
         if (corpoSecoPrefab != null)
         {
@@ -512,6 +542,11 @@ public class CucaBossController : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(0.25f);
 
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(LandingSFX);
+        }
+
         if (mapinguariGhostPrefab != null && playerTransform != null)
         {
             Vector3 targetPos = ClampToArena(playerTransform.position);
@@ -528,12 +563,38 @@ public class CucaBossController : MonoBehaviour, IDamageable
     }
 
     // Poder 4: Boitatá Dash Modular (Sombra telegrafada + corpo modular da serpente passando sobre ela)
+
+    private void PlayDraggingSFX()
+    {
+        if (draggingAudioSource == null || arrastandoSFX == null) return;
+
+        float sfxVolume = AudioController.Instance != null ? AudioController.Instance.SFXVolume : 1f;
+        float masterVolume = AudioController.Instance != null ? AudioController.Instance.MasterVolume : 1f;
+
+        draggingAudioSource.clip = arrastandoSFX;
+        draggingAudioSource.volume = masterVolume * sfxVolume;
+        draggingAudioSource.Play();
+    }
+
+    private void StopDraggingSFX()
+    {
+        if (draggingAudioSource != null && draggingAudioSource.isPlaying)
+        {
+            draggingAudioSource.Stop();
+        }
+    }
+
     private IEnumerator PerformBoitataDashRoutine()
     {
         Debug.Log("[CucaBoss] Poder Boitatá: Investida de Fogo Modular!");
         if (animator != null) animator.SetTrigger(MagicP2Hash);
-
+        PlayDraggingSFX();
         yield return new WaitForSeconds(0.25f);
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(RoarSFX);
+        }
 
         if (playerTransform != null && BossTelegraphVisuals.Instance != null)
         {
@@ -557,6 +618,7 @@ public class CucaBossController : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(0.5f);
         attackTimer = spellCooldown;
         isExecutingAction = false;
+        StopDraggingSFX();
     }
     #endregion
 

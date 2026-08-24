@@ -416610,9 +416610,29 @@ PrefabInstance:
       value: 5.1911106
       objectReference: {fileID: 0}
     - target: {fileID: 6801628627941128727, guid: e3f6b7c3e2d1c20449aed22ece3d948d, type: 3}
+      propertyPath: RoarSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 8ecaa90d5b9333747a12893e4c3cbada, type: 3}
+    - target: {fileID: 6801628627941128727, guid: e3f6b7c3e2d1c20449aed22ece3d948d, type: 3}
       propertyPath: bossIntro
       value: 
       objectReference: {fileID: 92152257}
+    - target: {fileID: 6801628627941128727, guid: e3f6b7c3e2d1c20449aed22ece3d948d, type: 3}
+      propertyPath: FireRainSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 60a8aa2043eb28e4db7625d1cdd090a3, type: 3}
+    - target: {fileID: 6801628627941128727, guid: e3f6b7c3e2d1c20449aed22ece3d948d, type: 3}
+      propertyPath: arrastandoSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 02bd3f1d3421dcd41b74bf90dcfe5e56, type: 3}
+    - target: {fileID: 6801628627941128727, guid: e3f6b7c3e2d1c20449aed22ece3d948d, type: 3}
+      propertyPath: FireWindMillSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 9e1a46445616db846afdf4714477cab3, type: 3}
+    - target: {fileID: 6801628627941128727, guid: e3f6b7c3e2d1c20449aed22ece3d948d, type: 3}
+      propertyPath: FireBallCircleSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: bdffce86757027142bfbec603e2ec141, type: 3}
     - target: {fileID: 6801628627941128727, guid: e3f6b7c3e2d1c20449aed22ece3d948d, type: 3}
       propertyPath: fightZoneCollider
       value: 
