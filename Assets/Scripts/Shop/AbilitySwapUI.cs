@@ -370,36 +370,39 @@ public class AbilitySwapUI : MonoBehaviour
     {
         if (chosenBoon == null) return;
 
-        SkillEquipModalUI equipModal = SkillEquipModalUI.Instance ?? Object.FindAnyObjectByType<SkillEquipModalUI>(FindObjectsInactive.Include);
-        if (equipModal != null)
+        // Se a bênção concede uma Habilidade Ativa (Q, E, R), abre o modal de seleção de slot
+        if (chosenBoon.GrantedAbility != null)
         {
-            equipModal.OpenModal(chosenBoon, this);
-            return;
+            SkillEquipModalUI equipModal = SkillEquipModalUI.Instance ?? Object.FindAnyObjectByType<SkillEquipModalUI>(FindObjectsInactive.Include);
+            if (equipModal != null)
+            {
+                equipModal.OpenModal(chosenBoon, this);
+                return;
+            }
         }
 
-        // Fallback caso o modal não esteja na cena
+        // Se for uma Bênção Passiva ou Acordo (GrantedAbility == null), compra diretamente sem abrir modal de slot
         PlayerCurrency currency = PlayerCurrency.Instance ?? Object.FindAnyObjectByType<PlayerCurrency>();
-        if (currency == null || currency.StarFragments < chosenBoon.StarCost) return;
+        if (currency == null || currency.StarFragments < chosenBoon.StarCost)
+        {
+            Debug.LogWarning($"[AbilitySwapUI] Fragmentos insuficientes para adquirir '{chosenBoon.BoonName}'! Custo: {chosenBoon.StarCost}");
+            return;
+        }
 
         if (currency.SpendStarFragments(chosenBoon.StarCost))
         {
             GameObject player = GameObject.FindWithTag("Player");
             PlayerCombatController combat = Object.FindAnyObjectByType<PlayerCombatController>();
-            if (chosenBoon.GrantedAbility != null)
-            {
-                if (combat != null) combat.EquipAbility(0, chosenBoon.GrantedAbility);
-            }
-            else
-            {
-                chosenBoon.ApplyBoon(player);
-            }
+
+            chosenBoon.ApplyBoon(player);
 
             if (combat != null)
             {
-                combat.RecordStageBoonAcquisition(chosenBoon, 0);
+                combat.RecordStageBoonAcquisition(chosenBoon, -1);
             }
 
             OnBoonPurchased(chosenBoon);
+            Debug.Log($"[AbilitySwapUI] Acordo/Bênção passiva '{chosenBoon.BoonName}' comprada com sucesso sem necessidade de slot!");
         }
     }
 
