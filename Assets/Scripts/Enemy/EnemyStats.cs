@@ -51,13 +51,13 @@ public class EnemyStats : MonoBehaviour, IDamageable
 
     [Tooltip("Chance de drop (0 a 1). Ex: 0.7 = 70% de chance.")]
     [Range(0f, 1f)]
-    [SerializeField] private float dropChance = 0.7f;
+    [SerializeField] private float dropChance = 1f;
 
     [Tooltip("Quantidade mínima de itens a dropar.")]
-    [SerializeField] private int minDropCount = 1;
+    [SerializeField] private int minDropCount = 2;
 
     [Tooltip("Quantidade máxima de itens a dropar.")]
-    [SerializeField] private int maxDropCount = 2;
+    [SerializeField] private int maxDropCount = 7;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
@@ -269,7 +269,16 @@ public class EnemyStats : MonoBehaviour, IDamageable
 
     private void TryDropLoot()
     {
-        if (!dropsItem || itemToDropPrefab == null) return;
+        if (!dropsItem) return;
+
+        GameObject prefabToDrop = itemToDropPrefab;
+        if (prefabToDrop == null)
+        {
+            // Fallback seguro carregando o fragmento de estrela comum
+            prefabToDrop = Resources.Load<GameObject>("Items/StarFragment_Pickup");
+        }
+
+        if (prefabToDrop == null) return;
 
         float roll = UnityEngine.Random.value;
         if (roll <= dropChance)
@@ -278,7 +287,7 @@ public class EnemyStats : MonoBehaviour, IDamageable
             for (int i = 0; i < count; i++)
             {
                 Vector3 spawnOffset = (Vector3)(UnityEngine.Random.insideUnitCircle * 0.3f);
-                GameObject dropped = Instantiate(itemToDropPrefab, transform.position + spawnOffset, Quaternion.identity);
+                GameObject dropped = Instantiate(prefabToDrop, transform.position + spawnOffset, Quaternion.identity);
 
                 Rigidbody2D rb = dropped.GetComponent<Rigidbody2D>();
                 if (rb != null)
