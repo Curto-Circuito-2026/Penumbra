@@ -1430,6 +1430,10 @@ PrefabInstance:
       propertyPath: regions.Array.data[3].scene
       value: 
       objectReference: {fileID: 102900000, guid: 68ae5a12ab0aae14182704bbec0385ba, type: 3}
+    - target: {fileID: 7756134320421910855, guid: eabb2bdf8d0474546828a3c745233fad, type: 3}
+      propertyPath: regions.Array.data[3].sceneName
+      value: CucasLair
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
