@@ -161098,6 +161098,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 1.2315292
       objectReference: {fileID: 0}
+    - target: {fileID: 8584108228379070775, guid: 38999e65add3cb94db8d72ffba02c966, type: 3}
+      propertyPath: swapTitle
+      value: TESOUROS DA SEREIA IARA
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
