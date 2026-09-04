@@ -27,8 +27,30 @@ public class EnemyConfigSO : ScriptableObject
     [Tooltip("Alcance do tiro Ranged / Distância segura do inimigo.")]
     public float rangedRange = 7.5f;
 
+    [Header("Comportamento Creeper / Explosão Suicide")]
+    [Tooltip("Permite o inimigo agir como Creeper: corre até o player e explode causando dano massivo em área.")]
+    public bool canExplode = false;
+
+    [Tooltip("Distância do player em que inicia a contagem do pavio/animação de explosão.")]
+    public float explosionTriggerDistance = 1.8f;
+
+    [Tooltip("Raio da explosão em área.")]
+    public float explosionRadius = 2.8f;
+
+    [Tooltip("Dano causado pela explosão no centro.")]
+    public float explosionDamage = 40f;
+
+    [Tooltip("Tempo de pavio/animação de preparação antes da detonação em segundos.")]
+    public float explosionFuseTime = 0.55f;
+
     [Tooltip("Tempo de recarga entre ataques em segundos.")]
     public float attackCooldown = 1.5f;
+
+    [Tooltip("Tempo de espera (windup) na animação até instanciar o projétil em segundos.")]
+    public float rangedAttackWindupDelay = 0.28f;
+
+    [Tooltip("Duração total da animação de ataque ranged em segundos.")]
+    public float rangedAttackDuration = 0.45f;
 
     [Header("IA e Visão")]
     [Tooltip("Raio de detecção do Player em unidades.")]

@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
-using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using UnityEngine;
 
 /// <summary>
 /// Gerenciador de Efeitos Visuais (VFX) e Retorno Visual para o sistema de combate 2D.
@@ -35,6 +37,7 @@ public class CombatVisualEffects : MonoBehaviour
         }
     }
 
+    [SerializeField] private Sprite projectileSprite;
     private Camera mainCamera;
 
     private void Awake()
@@ -78,8 +81,8 @@ public class CombatVisualEffects : MonoBehaviour
         line.endWidth = 0.02f;
         line.material = new Material(Shader.Find("Sprites/Default"));
 
-        Color startCol = new Color(1f, 0.3f, 0.2f, 1f);
-        Color endCol = new Color(1f, 0.9f, 0.4f, 0.2f);
+        Color startCol = new Color(1f, 1f, 1f, 0.95f);
+        Color endCol = new Color(0.88f, 0.96f, 1f, 0.35f);
         line.startColor = startCol;
         line.endColor = endCol;
 
@@ -107,9 +110,9 @@ public class CombatVisualEffects : MonoBehaviour
                 line.SetPosition(i, pos);
             }
 
-            Color c = Color.Lerp(startCol, new Color(1f, 0.2f, 0.1f, 0f), t);
+            Color c = Color.Lerp(startCol, new Color(1f, 1f, 1f, 0f), t);
             line.startColor = c;
-            line.endColor = new Color(c.r, c.g, c.b, 0f);
+            line.endColor = new Color(0.88f, 0.96f, 1f, (1f - t) * 0.35f);
 
             yield return null;
         }
@@ -118,13 +121,58 @@ public class CombatVisualEffects : MonoBehaviour
     }
     #endregion
 
-    #region 2. RMB - Ataque Ranged (Projétil de Energia)
+    #region 2. RMB - Ataque Ranged (Projétil Naia)
     /// <summary>
-    /// Spawna um projétil de energia voando até o alvo e gerando explosão de impacto.
+    /// Spawna um projétil voando até o alvo e gerando impacto ao colidir.
     /// </summary>
     public void PlayRangedProjectile(Vector3 origin, Vector3 targetPos, Action onImpact = null)
     {
         StartCoroutine(AnimateRangedBolt(origin, targetPos, onImpact));
+    }
+
+    private Sprite GetProjectileSprite()
+    {
+        if (projectileSprite != null) return projectileSprite;
+
+        projectileSprite = Resources.Load<Sprite>("Sprites/Naia/naia_projectile")
+                        ?? Resources.Load<Sprite>("naia_projectile");
+
+        if (projectileSprite == null)
+        {
+            Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Naia/naia_projectile");
+            if (sprites != null && sprites.Length > 0) projectileSprite = sprites[0];
+        }
+
+#if UNITY_EDITOR
+        if (projectileSprite == null)
+        {
+            string[] guids = UnityEditor.AssetDatabase.FindAssets("naia_projectile t:Texture2D");
+            if (guids.Length > 0)
+            {
+                string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                Sprite[] sprites = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().ToArray();
+                if (sprites.Length > 0)
+                {
+                    projectileSprite = sprites[0];
+                    return projectileSprite;
+                }
+            }
+        }
+#endif
+        if (projectileSprite == null)
+        {
+            var loadedSprites = Resources.FindObjectsOfTypeAll<Sprite>();
+            foreach (var s in loadedSprites)
+            {
+                if (s.name.Contains("naia_projectile"))
+                {
+                    projectileSprite = s;
+                    break;
+                }
+            }
+        }
+
+        return projectileSprite ?? CreateCircleSprite();
     }
 
     private IEnumerator AnimateRangedBolt(Vector3 origin, Vector3 targetPos, Action onImpact)
@@ -132,22 +180,30 @@ public class CombatVisualEffects : MonoBehaviour
         GameObject bolt = new GameObject("VFX_RangedBolt");
         bolt.transform.position = origin;
 
+        Vector3 flightDir = (targetPos - origin).normalized;
+        if (flightDir.sqrMagnitude > 0.001f)
+        {
+            float angle = Mathf.Atan2(flightDir.y, flightDir.x) * Mathf.Rad2Deg;
+            bolt.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
         SpriteRenderer sr = bolt.AddComponent<SpriteRenderer>();
-        sr.sprite = CreateCircleSprite();
-        sr.color = new Color(0.2f, 0.8f, 1f, 1f);
-        bolt.transform.localScale = new Vector3(0.4f, 0.4f, 1f);
+        sr.sprite = GetProjectileSprite();
+        sr.color = Color.white;
+        sr.sortingOrder = 10;
+        bolt.transform.localScale = new Vector3(1f, 1f, 1f);
 
         TrailRenderer trail = bolt.AddComponent<TrailRenderer>();
         trail.time = 0.15f;
-        trail.startWidth = 0.25f;
+        trail.startWidth = 0.18f;
         trail.endWidth = 0.0f;
         trail.material = new Material(Shader.Find("Sprites/Default"));
-        trail.startColor = new Color(0.3f, 0.85f, 1f, 0.9f);
-        trail.endColor = new Color(0.1f, 0.4f, 1f, 0f);
+        trail.startColor = new Color(0.7f, 0.95f, 1f, 0.8f);
+        trail.endColor = new Color(0.3f, 0.7f, 1f, 0f);
 
-        float speed = 18f;
+        float speed = 20f;
         float dist = Vector3.Distance(origin, targetPos);
-        float duration = dist / speed;
+        float duration = Mathf.Max(0.05f, dist / speed);
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
@@ -159,10 +215,56 @@ public class CombatVisualEffects : MonoBehaviour
         }
 
         onImpact?.Invoke();
-        PlayImpactBurst(targetPos, new Color(0.2f, 0.8f, 1f, 1f), 1.2f);
+        PlayImpactBurst(targetPos, new Color(0.4f, 0.85f, 1f, 1f), 1.2f);
         Destroy(bolt, 0.1f);
     }
     #endregion
+
+    public struct VfxProjectile
+    {
+        public Vector3 origin;
+        public Vector3 target;
+        public Action onImpact;
+        public GameObject sprite;
+    }
+    public void spawnProjectile(Vector3 origin, Vector3 target, Action onImpact, GameObject sprite)
+    {
+        
+         StartCoroutine(AnimateProjectile(origin, target, sprite, onImpact));
+
+    }
+
+    public IEnumerator AnimateProjectile(Vector3 origin, Vector3 target, GameObject sprite, Action onImpact)
+    {
+        Vector3 direction = target - origin;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+
+        var projectile = Instantiate(sprite, origin, rotation);
+
+        float speed = 15f;
+        float dist = Vector3.Distance(origin, target);
+        float duration = dist > 0 ? dist / speed : 0.01f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            if (projectile == null) yield break;
+
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            projectile.transform.position = Vector3.Lerp(origin, target, t);
+            yield return null;
+        }
+
+        onImpact?.Invoke();
+        //PlayExplosionVFX(target, new Color(1f, 0.4f, 0.1f, 1f), new Color(1f, 0.8f, 0.2f, 1f), 2.2f);
+        //TriggerCameraShake(0.18f, 0.15f);
+        if (projectile != null)
+        {
+            Destroy(projectile, 0.15f);
+        }
+    }
 
     #region 3. Q - Habilidade Q (Bola de Fogo / Fireball)
     /// <summary>
@@ -261,6 +363,58 @@ public class CombatVisualEffects : MonoBehaviour
         }
 
         Destroy(nova);
+    }
+    #endregion
+
+    #region Efeito Aquático (Water Burst)
+    /// <summary>
+    /// Gera uma onda/explosão de água azul e espirros translúcidos.
+    /// </summary>
+    public void PlayWaterBurst(Vector3 position, float radius = 2.0f)
+    {
+        StartCoroutine(AnimateWaterBurst(position, radius));
+    }
+
+    private IEnumerator AnimateWaterBurst(Vector3 position, float maxRadius)
+    {
+        GameObject waterObj = new GameObject("VFX_WaterBurst");
+        waterObj.transform.position = position;
+
+        LineRenderer line = waterObj.AddComponent<LineRenderer>();
+        line.useWorldSpace = true;
+        line.positionCount = 36;
+        line.startWidth = 0.22f;
+        line.endWidth = 0.05f;
+        line.material = new Material(Shader.Find("Sprites/Default"));
+
+        Color startColor = new Color(0.2f, 0.7f, 1f, 0.95f);
+        line.startColor = startColor;
+        line.endColor = new Color(0.1f, 0.4f, 0.9f, 0.2f);
+
+        float duration = 0.35f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            float currentRadius = Mathf.Lerp(0.1f, maxRadius, Mathf.Sin(t * Mathf.PI * 0.5f));
+
+            for (int i = 0; i <= 35; i++)
+            {
+                float angle = (i / 35f) * Mathf.PI * 2f;
+                Vector3 p = position + new Vector3(Mathf.Cos(angle) * currentRadius, Mathf.Sin(angle) * currentRadius, 0f);
+                line.SetPosition(i, p);
+            }
+
+            Color alphaCol = Color.Lerp(startColor, new Color(0.1f, 0.5f, 1f, 0f), t * t);
+            line.startColor = alphaCol;
+            line.endColor = alphaCol;
+
+            yield return null;
+        }
+
+        Destroy(waterObj);
     }
     #endregion
 
@@ -395,7 +549,13 @@ public class CombatVisualEffects : MonoBehaviour
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.sortingOrder = 100;
 
-        if (TMP_Settings.defaultFontAsset != null)
+        // Tenta carregar a fonte do jogo "Basic" que está na pasta Resources
+        TMP_FontAsset gameFont = Resources.Load<TMP_FontAsset>("Fonts/Basic");
+        if (gameFont != null)
+        {
+            tmp.font = gameFont;
+        }
+        else if (TMP_Settings.defaultFontAsset != null)
         {
             tmp.font = TMP_Settings.defaultFontAsset;
         }

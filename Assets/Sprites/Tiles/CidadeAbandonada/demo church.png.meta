@@ -1,0 +1,1536 @@
+fileFormatVersion: 2
+guid: 3e751e3ecdfe32c44b1ad5e3e2636ba6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2183430481554931689
+    second: demo church_0
+  - first:
+      213: -7140700734068989297
+    second: demo church_1
+  - first:
+      213: 3723579514243295584
+    second: demo church_2
+  - first:
+      213: 8849328604761399209
+    second: demo church_3
+  - first:
+      213: 6085483623225556031
+    second: demo church_4
+  - first:
+      213: 2667575981165692420
+    second: demo church_5
+  - first:
+      213: 238055547601244073
+    second: demo church_6
+  - first:
+      213: 5795256421828069313
+    second: demo church_7
+  - first:
+      213: 4574251133117436644
+    second: demo church_8
+  - first:
+      213: -845639692443182643
+    second: demo church_9
+  - first:
+      213: -2507900279469706503
+    second: demo church_10
+  - first:
+      213: -6907026413338832126
+    second: demo church_11
+  - first:
+      213: -6615845455668841425
+    second: demo church_12
+  - first:
+      213: 3871801228427963187
+    second: demo church_13
+  - first:
+      213: 2684231105862117202
+    second: demo church_14
+  - first:
+      213: -5061163400412160324
+    second: demo church_15
+  - first:
+      213: 1462431414867103448
+    second: demo church_16
+  - first:
+      213: -400488864072290466
+    second: demo church_17
+  - first:
+      213: -2737460752753893807
+    second: demo church_18
+  - first:
+      213: 3788630365440001374
+    second: demo church_19
+  - first:
+      213: -916633444414113804
+    second: demo church_20
+  - first:
+      213: -4861442197559901861
+    second: demo church_21
+  - first:
+      213: 8234473363575027028
+    second: demo church_22
+  - first:
+      213: -4710731713923993628
+    second: demo church_23
+  - first:
+      213: 2549918246564858772
+    second: demo church_24
+  - first:
+      213: 7112414308710659939
+    second: demo church_25
+  - first:
+      213: 2501916098516950509
+    second: demo church_26
+  - first:
+      213: -8700640632800887073
+    second: demo church_27
+  - first:
+      213: -7022831790346259152
+    second: demo church_28
+  - first:
+      213: -3538159513568823590
+    second: demo church_29
+  - first:
+      213: 6822149093316075938
+    second: demo church_30
+  - first:
+      213: 3854703782020197885
+    second: demo church_31
+  - first:
+      213: -537734762832564274
+    second: demo church_32
+  - first:
+      213: -4934167492430304398
+    second: demo church_33
+  - first:
+      213: 5147865088357476097
+    second: demo church_34
+  - first:
+      213: -3773215649860579
+    second: demo church_35
+  - first:
+      213: -797259611537871313
+    second: demo church_36
+  - first:
+      213: -7318610645377930280
+    second: demo church_37
+  - first:
+      213: -3495909823327703034
+    second: demo church_38
+  - first:
+      213: -379259319628537790
+    second: demo church_39
+  - first:
+      213: -3322111304582036935
+    second: demo church_40
+  - first:
+      213: 6549659369118980985
+    second: demo church_41
+  - first:
+      213: -7921935307511815083
+    second: demo church_42
+  - first:
+      213: -578511564661063360
+    second: demo church_43
+  - first:
+      213: -3488463025016158068
+    second: demo church_44
+  - first:
+      213: 6868929407733153003
+    second: demo church_45
+  - first:
+      213: 6115759395555325797
+    second: demo church_46
+  - first:
+      213: 458785969568185775
+    second: demo church_47
+  - first:
+      213: 8755563561288538314
+    second: demo church_48
+  - first:
+      213: -2958469508076938181
+    second: demo church_49
+  - first:
+      213: 8783171666615195058
+    second: demo church_50
+  - first:
+      213: 5111997223601899727
+    second: demo church_51
+  - first:
+      213: -3457796521384964620
+    second: demo church_52
+  - first:
+      213: 8724792674625545781
+    second: demo church_53
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: demo church_0
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 634
+        width: 103
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 710882b9b85e2b1e0800000000000000
+      internalID: -2183430481554931689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_1
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 632
+        width: 103
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f826272f38227ec90800000000000000
+      internalID: -7140700734068989297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_2
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 633
+        width: 150
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 069a46ff6dfcca330800000000000000
+      internalID: 3723579514243295584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_3
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 633
+        width: 138
+        height: 115
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9af9183fa712fca70800000000000000
+      internalID: 8849328604761399209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_4
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 507
+        width: 109
+        height: 241
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3cf0d0fc1bf37450800000000000000
+      internalID: 6085483623225556031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_5
+      rect:
+        serializedVersion: 2
+        x: 746
+        y: 504
+        width: 263
+        height: 245
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 406ceb0b832250520800000000000000
+      internalID: 2667575981165692420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_6
+      rect:
+        serializedVersion: 2
+        x: 1055
+        y: 642
+        width: 66
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9af459f524ebd4300800000000000000
+      internalID: 238055547601244073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_7
+      rect:
+        serializedVersion: 2
+        x: 1172
+        y: 639
+        width: 64
+        height: 100
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c70d55d203ec6050800000000000000
+      internalID: 5795256421828069313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_8
+      rect:
+        serializedVersion: 2
+        x: 1279
+        y: 639
+        width: 62
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e294ee8b210b7f30800000000000000
+      internalID: 4574251133117436644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_9
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 508
+        width: 103
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc914fb1e2fa344f0800000000000000
+      internalID: -845639692443182643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_10
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 508
+        width: 100
+        height: 117
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f2fa16bbf5223dd0800000000000000
+      internalID: -2507900279469706503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_11
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 506
+        width: 95
+        height: 119
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 203d2b272105520a0800000000000000
+      internalID: -6907026413338832126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_12
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 508
+        width: 85
+        height: 56
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f24f9fd3c9bcf24a0800000000000000
+      internalID: -6615845455668841425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_13
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 507
+        width: 81
+        height: 117
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33bae5d14b66bb530800000000000000
+      internalID: 3871801228427963187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_14
+      rect:
+        serializedVersion: 2
+        x: 1049
+        y: 501
+        width: 77
+        height: 112
+      alignment: 9
+      pivot: {x: 0.49721774, y: 0.10234233}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25727f718fd404520800000000000000
+      internalID: 2684231105862117202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_15
+      rect:
+        serializedVersion: 2
+        x: 1180
+        y: 495
+        width: 49
+        height: 126
+      alignment: 9
+      pivot: {x: 0.5, y: 0.087024994}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbe9938d3b223c9b0800000000000000
+      internalID: -5061163400412160324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_16
+      rect:
+        serializedVersion: 2
+        x: 1282
+        y: 495
+        width: 60
+        height: 124
+      alignment: 9
+      pivot: {x: 0.47486165, y: 0.092527576}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8de868f9f999b4410800000000000000
+      internalID: 1462431414867103448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_17
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 387
+        width: 99
+        height: 108
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5fa870008d217af0800000000000000
+      internalID: -400488864072290466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_18
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 387
+        width: 94
+        height: 109
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15ed785f2f5920ad0800000000000000
+      internalID: -2737460752753893807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_19
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 386
+        width: 98
+        height: 109
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e554f4d8e3be39430800000000000000
+      internalID: 3788630365440001374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_20
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 387
+        width: 81
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f734742db67743f0800000000000000
+      internalID: -916633444414113804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_21
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 386
+        width: 81
+        height: 107
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b51095e0410b88cb0800000000000000
+      internalID: -4861442197559901861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_22
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 398
+        width: 144
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4553e4465e9b64270800000000000000
+      internalID: 8234473363575027028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_23
+      rect:
+        serializedVersion: 2
+        x: 1052
+        y: 392
+        width: 72
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4efa467f67e10aeb0800000000000000
+      internalID: -4710731713923993628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_24
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 255
+        width: 69
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49b09cc9221236320800000000000000
+      internalID: 2549918246564858772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_25
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 255
+        width: 68
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 367ba1e612f54b260800000000000000
+      internalID: 7112414308710659939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_26
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 255
+        width: 70
+        height: 121
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ded1fe59f6798b220800000000000000
+      internalID: 2501916098516950509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_27
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 267
+        width: 85
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdeb293417d114780800000000000000
+      internalID: -8700640632800887073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_28
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 266
+        width: 81
+        height: 107
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 035371bf1b3e98e90800000000000000
+      internalID: -7022831790346259152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_29
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 303
+        width: 193
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad6bf0b1baee5eec0800000000000000
+      internalID: -3538159513568823590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_30
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 208
+        width: 138
+        height: 170
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a1abdf74742dae50800000000000000
+      internalID: 6822149093316075938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_31
+      rect:
+        serializedVersion: 2
+        x: 1032
+        y: 266
+        width: 109
+        height: 98
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfd2ba9aaa8ae7530800000000000000
+      internalID: 3854703782020197885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_32
+      rect:
+        serializedVersion: 2
+        x: 1146
+        y: 267
+        width: 54
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecf6cfd05159988f0800000000000000
+      internalID: -537734762832564274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_33
+      rect:
+        serializedVersion: 2
+        x: 1202
+        y: 266
+        width: 53
+        height: 98
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27b6967dec0568bb0800000000000000
+      internalID: -4934167492430304398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_34
+      rect:
+        serializedVersion: 2
+        x: 1272
+        y: 278
+        width: 78
+        height: 63
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 107ae27f504e07740800000000000000
+      internalID: 5147865088357476097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_35
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 142
+        width: 65
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d147785c74892fff0800000000000000
+      internalID: -3773215649860579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_36
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 142
+        width: 65
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2ee48c7b909fe4f0800000000000000
+      internalID: -797259611537871313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_37
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 142
+        width: 70
+        height: 102
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8db2bd8c4621f6a90800000000000000
+      internalID: -7318610645377930280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_38
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 151
+        width: 84
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 600f0cda9880c7fc0800000000000000
+      internalID: -3495909823327703034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_39
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 152
+        width: 80
+        height: 94
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 240e8cf78a99cbaf0800000000000000
+      internalID: -379259319628537790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_40
+      rect:
+        serializedVersion: 2
+        x: 597
+        y: 211
+        width: 192
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 932041aae5d75e1d0800000000000000
+      internalID: -3322111304582036935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_41
+      rect:
+        serializedVersion: 2
+        x: 1032
+        y: 131
+        width: 104
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97b5520ae7015ea50800000000000000
+      internalID: 6549659369118980985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_42
+      rect:
+        serializedVersion: 2
+        x: 1142
+        y: 131
+        width: 108
+        height: 101
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 554222e5fc1af0290800000000000000
+      internalID: -7921935307511815083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_43
+      rect:
+        serializedVersion: 2
+        x: 1261
+        y: 131
+        width: 115
+        height: 102
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0410ce90cc6b8f7f0800000000000000
+      internalID: -578511564661063360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_44
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 23
+        width: 66
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c88c3d58c5d769fc0800000000000000
+      internalID: -3488463025016158068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_45
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 22
+        width: 73
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bec3b2737e6535f50800000000000000
+      internalID: 6868929407733153003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_46
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 22
+        width: 69
+        height: 113
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56735df74ca8fd450800000000000000
+      internalID: 6115759395555325797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_47
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 120
+        width: 193
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fad7b08986fed5600800000000000000
+      internalID: 458785969568185775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_48
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 20
+        width: 164
+        height: 158
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac815f68ba2028970800000000000000
+      internalID: 8755563561288538314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_49
+      rect:
+        serializedVersion: 2
+        x: 1032
+        y: 19
+        width: 104
+        height: 102
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3cdf3438a761f6d0800000000000000
+      internalID: -2958469508076938181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_50
+      rect:
+        serializedVersion: 2
+        x: 597
+        y: 28
+        width: 192
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b5dfd5781814e970800000000000000
+      internalID: 8783171666615195058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_51
+      rect:
+        serializedVersion: 2
+        x: 1144
+        y: 75
+        width: 107
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc8039de36671f640800000000000000
+      internalID: 5111997223601899727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_52
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 72
+        width: 92
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fd844d42607300d0800000000000000
+      internalID: -3457796521384964620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: demo church_53
+      rect:
+        serializedVersion: 2
+        x: 1145
+        y: 20
+        width: 106
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5366cfd26b0b41970800000000000000
+      internalID: 8724792674625545781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 0047dca96b27a064aaaeb14afbd258d0
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      demo church_0: -2183430481554931689
+      demo church_1: -7140700734068989297
+      demo church_10: -2507900279469706503
+      demo church_11: -6907026413338832126
+      demo church_12: -6615845455668841425
+      demo church_13: 3871801228427963187
+      demo church_14: 2684231105862117202
+      demo church_15: -5061163400412160324
+      demo church_16: 1462431414867103448
+      demo church_17: -400488864072290466
+      demo church_18: -2737460752753893807
+      demo church_19: 3788630365440001374
+      demo church_2: 3723579514243295584
+      demo church_20: -916633444414113804
+      demo church_21: -4861442197559901861
+      demo church_22: 8234473363575027028
+      demo church_23: -4710731713923993628
+      demo church_24: 2549918246564858772
+      demo church_25: 7112414308710659939
+      demo church_26: 2501916098516950509
+      demo church_27: -8700640632800887073
+      demo church_28: -7022831790346259152
+      demo church_29: -3538159513568823590
+      demo church_3: 8849328604761399209
+      demo church_30: 6822149093316075938
+      demo church_31: 3854703782020197885
+      demo church_32: -537734762832564274
+      demo church_33: -4934167492430304398
+      demo church_34: 5147865088357476097
+      demo church_35: -3773215649860579
+      demo church_36: -797259611537871313
+      demo church_37: -7318610645377930280
+      demo church_38: -3495909823327703034
+      demo church_39: -379259319628537790
+      demo church_4: 6085483623225556031
+      demo church_40: -3322111304582036935
+      demo church_41: 6549659369118980985
+      demo church_42: -7921935307511815083
+      demo church_43: -578511564661063360
+      demo church_44: -3488463025016158068
+      demo church_45: 6868929407733153003
+      demo church_46: 6115759395555325797
+      demo church_47: 458785969568185775
+      demo church_48: 8755563561288538314
+      demo church_49: -2958469508076938181
+      demo church_5: 2667575981165692420
+      demo church_50: 8783171666615195058
+      demo church_51: 5111997223601899727
+      demo church_52: -3457796521384964620
+      demo church_53: 8724792674625545781
+      demo church_6: 238055547601244073
+      demo church_7: 5795256421828069313
+      demo church_8: 4574251133117436644
+      demo church_9: -845639692443182643
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

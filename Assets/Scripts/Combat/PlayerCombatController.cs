@@ -34,12 +34,7 @@ public class PlayerCombatController : MonoBehaviour
     [Header("Habilidades Equipadas (ScriptableObjects)")]
     [SerializeField] private Ability slotQ;
     [SerializeField] private Ability slotE;
-    [SerializeField] private Ability slotR; // Ultimate
-
-    [Header("Carga da Ultimate")]
-    [SerializeField] private float ultimateCharge = 0f;
-    [SerializeField] private float maxUltimateCharge = 100f;
-    [SerializeField] private float chargePerHit = 20f;
+    [SerializeField] private Ability slotR;
 
     [Header("Retorno Visual & Indicadores")]
     [SerializeField] private LineRenderer rangeIndicator;
@@ -47,12 +42,28 @@ public class PlayerCombatController : MonoBehaviour
     [SerializeField] private MultiRangeIndicator multiRangeIndicator;
     [SerializeField] private int circleSegments = 40;
 
+    [Header("Efeitos Sonoros de Ataque (SFX)")]
+    [Tooltip("Áudio para o ataque básico corpo a corpo (Botão Esquerdo).")]
+    [SerializeField] private AudioClip meleeAttackSFX;
+    [Tooltip("Áudio para o ataque à distância (Botão Direito).")]
+    [SerializeField] private AudioClip rangedAttackSFX;
+
     // Cores dos Indicadores de Alcance por Habilidade/Ataque
-    private readonly Color meleeColor = new Color(1f, 0.3f, 0.3f, 0.75f);
+    private readonly Color meleeColor = new Color(0.9f, 0.96f, 1f, 0.8f);
     private readonly Color rangedColor = new Color(0.2f, 0.8f, 1f, 0.75f);
     private readonly Color qColor = new Color(0.2f, 1f, 0.5f, 0.75f);
     private readonly Color eColor = new Color(1f, 0.5f, 0.2f, 0.75f);
     private readonly Color rColor = new Color(1f, 0.85f, 0.2f, 0.9f);
+
+    [Header("Desbloqueio Progressivo de Slots de Habilidade")]
+    [Tooltip("Slot Q sempre começa desbloqueado.")]
+    [SerializeField] private bool isSlotEUnlocked = false;
+    [SerializeField] private bool isSlotRUnlocked = false;
+
+    // Checkpoint de Habilidades e Bênçãos por Fase
+    private Ability[] checkpointEquippedAbilities = new Ability[3];
+    private readonly List<AbilityBoonSO> confirmedBoons = new List<AbilityBoonSO>();
+    private readonly List<AbilityBoonSO> stageSessionBoons = new List<AbilityBoonSO>();
 
     // Timers de Cooldown
     private float meleeCooldownTimer;
@@ -80,17 +91,14 @@ public class PlayerCombatController : MonoBehaviour
     private InputAction keyQAction;
     private InputAction keyEAction;
     private InputAction keyRAction;
-    private InputAction showAllRangesAction;
 
     // Eventos para atualização dinâmica da HUD
     public event Action<float, float, float, float> OnBasicCooldownsUpdated; // (meleeRem, meleeMax, rangedRem, rangedMax)
     public event Action<int, float, float> OnAbilityCooldownUpdated;          // (slotIndex, remaining, max)
     public event Action<float, float> OnUltimateChargeUpdated;               // (current, max)
     public event Action<Ability, Ability, Ability> OnEquippedAbilitiesChanged; // (Q, E, R)
+    public event Action<int, bool> OnSlotUnlockStateChanged;                 // (slotIndex, isUnlocked)
 
-    public float UltimateCharge => ultimateCharge;
-    public float MaxUltimateCharge => maxUltimateCharge;
-    public bool IsUltimateReady => ultimateCharge >= maxUltimateCharge;
 
     /// <summary>
     /// Propriedade que indica se o jogador está em modo de perseguição de combate ativo.
@@ -105,18 +113,16 @@ public class PlayerCombatController : MonoBehaviour
         characterController = GetComponent<CharacterController2D>();
         mainCamera = Camera.main;
         calculatedPath = new NavMeshPath();
+        checkpointEquippedAbilities = new Ability[] { slotQ, slotE, slotR };
 
-        if (enemyLayerMask == 0)
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (enemyLayer != -1)
         {
-            int enemyLayer = LayerMask.NameToLayer("Enemy");
-            if (enemyLayer != -1)
-            {
-                enemyLayerMask = 1 << enemyLayer;
-            }
-            else
-            {
-                enemyLayerMask = ~0; // Fallback
-            }
+            enemyLayerMask = (1 << enemyLayer) | LayerMask.GetMask("Default");
+        }
+        else
+        {
+            enemyLayerMask = ~0; // Fallback
         }
 
         // Setup do LineRenderer para o indicador de alcance
@@ -152,6 +158,31 @@ public class PlayerCombatController : MonoBehaviour
             }
         }
 
+        // Auto-carregamento dos áudios de ataque (suporta Editor e WebGL via Resources)
+        if (meleeAttackSFX == null)
+        {
+            meleeAttackSFX = Resources.Load<AudioClip>("Audio/ataque basico")
+                          ?? Resources.Load<AudioClip>("ataque basico");
+#if UNITY_EDITOR
+            if (meleeAttackSFX == null)
+            {
+                meleeAttackSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/ataque basico.mp3");
+            }
+#endif
+        }
+
+        if (rangedAttackSFX == null)
+        {
+            rangedAttackSFX = Resources.Load<AudioClip>("Audio/lançando")
+                          ?? Resources.Load<AudioClip>("lançando");
+#if UNITY_EDITOR
+            if (rangedAttackSFX == null)
+            {
+                rangedAttackSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/lançando.mp3");
+            }
+#endif
+        }
+
         // Configuração dos Inputs via New Input System
         moveAction = new InputAction("MoveInput", expectedControlType: "Vector2");
         moveAction.AddCompositeBinding("2DVector")
@@ -163,11 +194,6 @@ public class PlayerCombatController : MonoBehaviour
         keyQAction = new InputAction("KeyQ", binding: "<Keyboard>/q");
         keyEAction = new InputAction("KeyE", binding: "<Keyboard>/e");
         keyRAction = new InputAction("KeyR", binding: "<Keyboard>/r");
-
-        // Tecla Shift / Tab / C para exibir todos os alcances
-        showAllRangesAction = new InputAction("ShowAllRanges", binding: "<Keyboard>/leftShift");
-        showAllRangesAction.AddBinding("<Keyboard>/tab");
-        showAllRangesAction.AddBinding("<Keyboard>/c");
     }
 
     private void OnEnable()
@@ -178,7 +204,6 @@ public class PlayerCombatController : MonoBehaviour
         keyQAction.Enable();
         keyEAction.Enable();
         keyRAction.Enable();
-        showAllRangesAction.Enable();
     }
 
     private void OnDisable()
@@ -189,13 +214,11 @@ public class PlayerCombatController : MonoBehaviour
         keyQAction.Disable();
         keyEAction.Disable();
         keyRAction.Disable();
-        showAllRangesAction.Disable();
     }
 
     private void Start()
     {
         OnEquippedAbilitiesChanged?.Invoke(slotQ, slotE, slotR);
-        OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
     }
 
     private void Update()
@@ -297,22 +320,36 @@ public class PlayerCombatController : MonoBehaviour
             PerformRangedAttack(mouseWorldPos);
         }
 
-        // Tecla Q - Habilidade 1 Direcional
+        // Tecla Q - Habilidade 1 Direcional (Sempre Desbloqueado)
         if (keyQAction.WasPressedThisFrame())
         {
             TryTargetOrCastAbility(0, slotQ, ref cooldownQ, mouseWorldPos);
         }
 
-        // Tecla E - Habilidade 2 Direcional
+        // Tecla E - Habilidade 2 Direcional (Requer Slot E Desbloqueado)
         if (keyEAction.WasPressedThisFrame())
         {
-            TryTargetOrCastAbility(1, slotE, ref cooldownE, mouseWorldPos);
+            if (IsSlotUnlocked(1))
+            {
+                TryTargetOrCastAbility(1, slotE, ref cooldownE, mouseWorldPos);
+            }
+            else
+            {
+                Debug.Log("[PlayerCombatController] Slot [E] bloqueado! Desbloqueie com o Curupira.");
+            }
         }
 
-        // Tecla R - Ultimate Direcional
+        // Tecla R - Habilidade 3 Direcional (Requer Slot R Desbloqueado)
         if (keyRAction.WasPressedThisFrame())
         {
-            TryCastUltimate(mouseWorldPos);
+            if (IsSlotUnlocked(2))
+            {
+                TryTargetOrCastAbility(2, slotR, ref cooldownR, mouseWorldPos);
+            }
+            else
+            {
+                Debug.Log("[PlayerCombatController] Slot [R] bloqueado! Desbloqueie com o Curupira.");
+            }
         }
     }
 
@@ -321,35 +358,18 @@ public class PlayerCombatController : MonoBehaviour
     /// </summary>
     private void HandleMouseHoverAndVisuals()
     {
-        Vector3 mouseWorldPos = GetMouseWorldPosition();
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero, 0f, enemyLayerMask);
-
-        // 1. Destaque Visual do Inimigo focado / atacado
-        GameObject hoveredOrTargeted = hit.collider != null ? hit.collider.gameObject : currentTarget;
-
-        if (hoveredOrTargeted != null && targetSelectionRing != null)
+        // 1. Destaque Visual do Inimigo (Apenas se houver um alvo ativo travado, sem indicador no hover)
+        if (currentTarget != null && targetSelectionRing != null)
         {
             Color highlightColor = GetColorForAction(pendingAction);
-            targetSelectionRing.ShowOnTarget(hoveredOrTargeted.transform, highlightColor);
+            targetSelectionRing.ShowOnTarget(currentTarget.transform, highlightColor);
         }
         else if (targetSelectionRing != null)
         {
             targetSelectionRing.Hide();
         }
 
-        // 2. Se a tecla Shift / Tab / C estiver pressionada, exibe TODOS os alcances simultaneamente
-        if (showAllRangesAction != null && showAllRangesAction.IsPressed())
-        {
-            ShowAllRanges();
-            HideRangeIndicator();
-            return;
-        }
-        else if (multiRangeIndicator != null)
-        {
-            multiRangeIndicator.HideAll();
-        }
-
-        // 3. Se houver hover na HUD sobre um slot de habilidade específico
+        // 2. Se houver hover na HUD sobre um slot de habilidade específico
         if (hudHoverAction != PendingActionType.None)
         {
             float range = GetRequiredRange(hudHoverAction);
@@ -365,14 +385,8 @@ public class PlayerCombatController : MonoBehaviour
             return;
         }
 
-        // 4. Indicadores de Alcance Visual padrão
-        if (hit.collider != null)
-        {
-            float displayRange = (pendingAction == PendingActionType.Ranged) ? rangedRange : (pendingAction != PendingActionType.None ? GetRequiredRange(pendingAction) : meleeRange);
-            Color rangeCol = GetColorForAction(pendingAction != PendingActionType.None ? pendingAction : PendingActionType.Melee);
-            ShowRangeIndicator(displayRange, rangeCol);
-        }
-        else if (pendingAction != PendingActionType.None)
+        // 3. Indicadores de Alcance Visual (apenas quando uma ação/habilidade estiver pendente para conjurar)
+        if (pendingAction != PendingActionType.None)
         {
             float displayRange = GetRequiredRange(pendingAction);
             Color rangeCol = GetColorForAction(pendingAction);
@@ -420,14 +434,40 @@ public class PlayerCombatController : MonoBehaviour
 
     private void PerformMeleeAttack(Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (meleeCooldownTimer > 0f) return;
 
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
+        // Dispara a animação de ataque Melee virando para a direção do golpe (4 direções)
+        if (characterController != null)
+        {
+            characterController.TriggerMeleeAnimation(dir);
+        }
+
+        // Toca o efeito sonoro de ataque básico (Botão Esquerdo)
+        if (meleeAttackSFX != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(meleeAttackSFX);
+        }
+
         // Raycast da posição do jogador em direção ao mouse até o alcance Melee
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, meleeRange, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
+        RaycastHit2D[] meleeHits = Physics2D.RaycastAll(transform.position, dir, meleeRange, enemyLayerMask);
+        GameObject targetEnemy = null;
+        IDamageable targetDmg = null;
+
+        foreach (var h in meleeHits)
+        {
+            if (IsValidEnemyTarget(h.collider, out IDamageable dmg))
+            {
+                targetEnemy = h.collider.gameObject;
+                targetDmg = dmg;
+                break;
+            }
+        }
 
         Debug.Log($"[PlayerCombatController] Ataque Melee Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
 
@@ -437,19 +477,21 @@ public class PlayerCombatController : MonoBehaviour
             CombatVisualEffects.Instance.PlayMeleeSlash(transform.position, dir);
         }
 
-        if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+        if (targetDmg != null)
         {
-            damageable.TakeDamage(meleeDamage, dir);
-            AddUltimateCharge(chargePerHit);
+            targetDmg.TakeDamage(meleeDamage, dir);
         }
         else
         {
             // Procura inimigos por OverlapCircle no arco curto em frente
-            Collider2D hitCol = Physics2D.OverlapCircle(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.6f, enemyLayerMask);
-            if (hitCol != null && hitCol.TryGetComponent(out IDamageable hitDmg))
+            Collider2D[] hitCols = Physics2D.OverlapCircleAll(transform.position + dir * (meleeRange * 0.5f), meleeRange * 0.7f, enemyLayerMask);
+            foreach (var col in hitCols)
             {
-                hitDmg.TakeDamage(meleeDamage, dir);
-                AddUltimateCharge(chargePerHit);
+                if (IsValidEnemyTarget(col, out IDamageable hitDmg))
+                {
+                    hitDmg.TakeDamage(meleeDamage, dir);
+                    break;
+                }
             }
         }
 
@@ -458,150 +500,284 @@ public class PlayerCombatController : MonoBehaviour
 
     private void PerformRangedAttack(Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (rangedCooldownTimer > 0f) return;
 
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
-        float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
+        // Dispara a animação de ataque à distância virando para a direção do disparo (4 direções)
+        if (characterController != null)
+        {
+            characterController.TriggerRangedAnimation(dir);
+        }
+
+        // Toca o efeito sonoro de ataque à distância (Botão Direito)
+        if (rangedAttackSFX != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.PlaySFX(rangedAttackSFX);
+        }
+
+        StartCoroutine(ExecuteDelayedRangedAttack(dir, mouseWorldPos, 0.28f));
+        rangedCooldownTimer = rangedCooldown;
+    }
+
+    private IEnumerator ExecuteDelayedRangedAttack(Vector3 dir, Vector3 mouseWorldPos, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        Vector3 spawnPos = GetRangedSpawnPosition(dir);
+        float mouseDist = Vector3.Distance(spawnPos, mouseWorldPos);
         float castDist = Mathf.Min(mouseDist, rangedRange);
         if (castDist < 0.5f) castDist = rangedRange;
 
-        // Raycast da posição do jogador na direção do mouse até o alcance máximo
-        // Encontra o PRIMEIRO inimigo que estiver na frente entre o jogador e a mira!
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, rangedRange, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 impactPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+        // Raycast da posição da mão na direção do mouse até o alcance máximo
+        RaycastHit2D[] rangedHits = Physics2D.RaycastAll(spawnPos, dir, rangedRange, enemyLayerMask);
+        GameObject targetEnemy = null;
+        IDamageable targetDmg = null;
+        Vector3 impactPos = spawnPos + dir * castDist;
 
-        Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional. Primeiro inimigo no caminho: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
+        foreach (var h in rangedHits)
+        {
+            if (IsValidEnemyTarget(h.collider, out IDamageable dmg))
+            {
+                targetEnemy = h.collider.gameObject;
+                targetDmg = dmg;
+                impactPos = h.point;
+                break;
+            }
+        }
+
+        Debug.Log($"[PlayerCombatController] Disparo Ranged Direcional (Lança arremessada). Primeiro inimigo: {(targetEnemy != null ? targetEnemy.name : "Nenhum")}");
 
         if (CombatVisualEffects.Instance != null)
         {
-            CombatVisualEffects.Instance.PlayRangedProjectile(transform.position, impactPos, () =>
+            CombatVisualEffects.Instance.PlayRangedProjectile(spawnPos, impactPos, () =>
             {
-                if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
+                if (targetDmg != null)
                 {
-                    damageable.TakeDamage(rangedDamage, dir);
-                    AddUltimateCharge(chargePerHit);
+                    targetDmg.TakeDamage(rangedDamage, dir);
                 }
                 else
                 {
-                    Collider2D hitCol = Physics2D.OverlapCircle(impactPos, 0.8f, enemyLayerMask);
-                    if (hitCol != null && hitCol.TryGetComponent(out IDamageable hitDmg))
+                    Collider2D[] hitCols = Physics2D.OverlapCircleAll(impactPos, 1.2f, enemyLayerMask);
+                    foreach (var col in hitCols)
                     {
-                        hitDmg.TakeDamage(rangedDamage, dir);
-                        AddUltimateCharge(chargePerHit);
+                        if (IsValidEnemyTarget(col, out IDamageable hitDmg))
+                        {
+                            hitDmg.TakeDamage(rangedDamage, dir);
+                            break;
+                        }
                     }
                 }
             });
         }
-        else
+        else if (targetDmg != null)
         {
-            if (targetEnemy != null && targetEnemy.TryGetComponent(out IDamageable damageable))
-            {
-                damageable.TakeDamage(rangedDamage, dir);
-                AddUltimateCharge(chargePerHit);
-            }
+            targetDmg.TakeDamage(rangedDamage, dir);
+        }
+    }
+
+    /// <summary>
+    /// Valida se o colisor atingido pertence a um inimigo ou entidade com IDamageable, ignorando explicitamente zonas, delimitadores e triggers sem vida.
+    /// </summary>
+    private bool IsValidEnemyTarget(Collider2D col, out IDamageable damageable)
+    {
+        damageable = null;
+        if (col == null) return false;
+
+        // Ignora o próprio player e seus filhos/pais
+        if (col.gameObject == gameObject || col.transform.IsChildOf(transform) || col.transform.root == transform.root) return false;
+        if (col.CompareTag("Player") || col.GetComponentInParent<CharacterController2D>() != null || col.GetComponentInParent<PlayerStats>() != null) return false;
+
+        // Ignora explicitamente Fightzone, triggers de arena, boundaries e áreas de transição
+        string colName = col.gameObject.name;
+        if (colName.IndexOf("Fightzone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Fighzone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Trigger", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Zone", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Bounds", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            damageable = col.GetComponent<IDamageable>();
+            return damageable != null && !(damageable is CharacterController2D) && !(damageable is PlayerStats);
         }
 
-        rangedCooldownTimer = rangedCooldown;
+        // Tenta obter IDamageable no próprio objeto ou no pai (ex: partes de Boss ou inimigos compostos)
+        damageable = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+
+        // Se for um Trigger e não tiver IDamageable, ignora
+        if (col.isTrigger && damageable == null)
+        {
+            return false;
+        }
+
+        // Se não tiver IDamageable e não estiver na layer Enemy, ignora
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (damageable == null && (enemyLayer == -1 || col.gameObject.layer != enemyLayer))
+        {
+            return false;
+        }
+
+        // Não aplica dano ao Player
+        if (damageable is CharacterController2D || damageable is PlayerStats)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private Vector3 GetRangedSpawnPosition(Vector3 dir)
+    {
+        // Elevação do tronco/ombro da Naia a partir dos pés
+        Vector3 baseOffset = new Vector3(0f, 0.55f, 0f);
+
+        // Deslocamento da mão conforme a direção do arremesso
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            // Lateral (Direita ou Esquerda)
+            baseOffset += new Vector3(Mathf.Sign(dir.x) * 0.35f, 0f, 0f);
+        }
+        else if (dir.y > 0)
+        {
+            // Cima
+            baseOffset += new Vector3(0.12f, 0.15f, 0f);
+        }
+        else
+        {
+            // Baixo
+            baseOffset += new Vector3(-0.1f, -0.1f, 0f);
+        }
+
+        return transform.position + baseOffset;
     }
 
     private void TryTargetOrCastAbility(int slotIndex, Ability ability, ref float cooldownTimer, Vector3 mouseWorldPos)
     {
+        if (characterController == null) characterController = GetComponent<CharacterController2D>();
+        if (characterController != null && characterController.IsDashing) return;
+
         if (ability == null) return;
         if (cooldownTimer > 0f)
         {
             Debug.Log($"[PlayerCombatController] Habilidade {ability.AbilityName} em recarga ({cooldownTimer:F1}s restante)!");
             return;
         }
-
-        if (playerStats == null) playerStats = GetComponent<PlayerStats>();
-        if (playerStats != null && !playerStats.HasEnoughMana(ability.ManaCost))
-        {
-            Debug.Log($"[PlayerCombatController] Mana insuficiente para usar {ability.AbilityName}! Custo: {ability.ManaCost}, Atual: {playerStats.CurrentMana:F0}");
-            return;
-        }
-
         Vector3 dir = (mouseWorldPos - transform.position).normalized;
         if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
 
         float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
         float castDist = Mathf.Min(mouseDist, ability.Range);
-        if (castDist < 0.5f) castDist = ability.Range;
 
-        // Raycast da posição do jogador na direção do mouse até o alcance máximo da habilidade
-        // Se houver um inimigo na frente entre o jogador e o ponto mirado, o Raycast acerta o primeiro!
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, ability.Range, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 targetPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
+        // A habilidade é lançada exatamente no ponto do mouse (limitado pelo alcance máximo)
+        Vector3 targetPos = transform.position + dir * castDist;
 
-        bool success = ability.Cast(gameObject, targetPos, targetEnemy);
-        if (success)
+        // Dispara a animação de Casting na direção do feitiço (4 direções)
+        if (characterController != null)
         {
-            if (playerStats != null) playerStats.UseMana(ability.ManaCost);
-            cooldownTimer = ability.Cooldown;
-            OnAbilityCooldownUpdated?.Invoke(slotIndex, cooldownTimer, ability.Cooldown);
+            characterController.TriggerCastAnimation(dir);
         }
+
+        cooldownTimer = ability.Cooldown;
+        OnAbilityCooldownUpdated?.Invoke(slotIndex, cooldownTimer, ability.Cooldown);
+
+        StartCoroutine(ExecuteDelayedAbilityCast(ability, targetPos, 0.22f));
     }
 
-    private void TryCastUltimate(Vector3 mouseWorldPos)
+    private IEnumerator ExecuteDelayedAbilityCast(Ability ability, Vector3 targetPos, float delay)
     {
-        if (slotR == null) return;
-        if (cooldownR > 0f)
+        yield return new WaitForSeconds(delay);
+        if (ability != null)
         {
-            Debug.Log($"[PlayerCombatController] Ultimate {slotR.AbilityName} em recarga ({cooldownR:F1}s restante)!");
-            return;
-        }
-        if (!IsUltimateReady)
-        {
-            Debug.Log($"[PlayerCombatController] Ultimate não está carregada! Carga atual: {ultimateCharge}/{maxUltimateCharge}");
-            return;
-        }
-
-        if (playerStats == null) playerStats = GetComponent<PlayerStats>();
-        if (playerStats != null && !playerStats.HasEnoughMana(slotR.ManaCost))
-        {
-            Debug.Log($"[PlayerCombatController] Mana insuficiente para usar Ultimate {slotR.AbilityName}! Custo: {slotR.ManaCost}, Atual: {playerStats.CurrentMana:F0}");
-            return;
-        }
-
-        Vector3 dir = (mouseWorldPos - transform.position).normalized;
-        if (dir.sqrMagnitude < 0.001f) dir = Vector3.right;
-
-        float mouseDist = Vector3.Distance(transform.position, mouseWorldPos);
-        float castDist = Mathf.Min(mouseDist, slotR.Range);
-        if (castDist < 0.5f) castDist = slotR.Range;
-
-        // Raycast na direção do mouse até o alcance da Ultimate
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, slotR.Range, enemyLayerMask);
-        GameObject targetEnemy = hit.collider != null ? hit.collider.gameObject : null;
-        Vector3 targetPos = hit.collider != null ? (Vector3)hit.point : transform.position + dir * castDist;
-
-        bool success = slotR.Cast(gameObject, targetPos, targetEnemy);
-        if (success)
-        {
-            if (playerStats != null) playerStats.UseMana(slotR.ManaCost);
-            ultimateCharge = 0f;
-            cooldownR = slotR.Cooldown;
-            OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
-            OnAbilityCooldownUpdated?.Invoke(2, cooldownR, slotR.Cooldown);
+            ability.Cast(gameObject, targetPos, null);
         }
     }
 
-    public void AddUltimateCharge(float amount)
+
+    private IEnumerator ExecuteDelayedUltimateCast(Vector3 targetPos, float delay)
     {
-        ultimateCharge = Mathf.Clamp(ultimateCharge + amount, 0f, maxUltimateCharge);
-        OnUltimateChargeUpdated?.Invoke(ultimateCharge, maxUltimateCharge);
+        yield return new WaitForSeconds(delay);
+        if (slotR != null)
+        {
+            slotR.Cast(gameObject, targetPos, null);
+        }
     }
+
+
 
     #region Dynamic Ability Loadout API
+    /// <summary>
+    /// Retorna se o slot de habilidade especificado está desbloqueado (0 = Q [sempre true], 1 = E, 2 = R).
+    /// </summary>
+    public bool IsSlotUnlocked(int slotIndex)
+    {
+        switch (slotIndex)
+        {
+            case 0: return true; // Slot Q sempre começa desbloqueado
+            case 1: return isSlotEUnlocked;
+            case 2: return isSlotRUnlocked;
+            default: return false;
+        }
+    }
+
+    /// <summary>
+    /// Desbloqueia o próximo slot de habilidade disponível na ordem: Slot [E] (1ª compra) e depois Slot [R] (2ª compra).
+    /// Retorna true se um slot foi desbloqueado com sucesso; false se todos os slots já foram liberados.
+    /// </summary>
+    public bool UnlockNextAbilitySlot(out string unlockedSlotName)
+    {
+        if (!isSlotEUnlocked)
+        {
+            isSlotEUnlocked = true;
+            unlockedSlotName = "Slot [E]";
+            OnSlotUnlockStateChanged?.Invoke(1, true);
+            Debug.Log("[PlayerCombatController] Slot [E] de habilidade foi DESBLOQUEADO com sucesso!");
+            return true;
+        }
+        else if (!isSlotRUnlocked)
+        {
+            isSlotRUnlocked = true;
+            unlockedSlotName = "Slot [R]";
+            OnSlotUnlockStateChanged?.Invoke(2, true);
+            Debug.Log("[PlayerCombatController] Slot [R] de habilidade foi DESBLOQUEADO com sucesso!");
+            return true;
+        }
+
+        unlockedSlotName = "";
+        return false;
+    }
+
+    /// <summary>
+    /// Desbloqueia diretamente um slot específico (1 = E, 2 = R).
+    /// </summary>
+    public void UnlockAbilitySlot(int slotIndex)
+    {
+        if (slotIndex == 1 && !isSlotEUnlocked)
+        {
+            isSlotEUnlocked = true;
+            OnSlotUnlockStateChanged?.Invoke(1, true);
+        }
+        else if (slotIndex == 2 && !isSlotRUnlocked)
+        {
+            isSlotRUnlocked = true;
+            OnSlotUnlockStateChanged?.Invoke(2, true);
+        }
+    }
+
     /// <summary>
     /// Equipa uma nova habilidade no slot especificado (0 = Q, 1 = E, 2 = R/Ultimate).
     /// Dispara atualização automática da HUD de combate.
     /// </summary>
     public void EquipAbility(int slotIndex, Ability newAbility)
     {
+        if (!IsSlotUnlocked(slotIndex))
+        {
+            Debug.LogWarning($"[PlayerCombatController] Não é possível equipar no Slot {slotIndex} porque ele está bloqueado!");
+            return;
+        }
+
         switch (slotIndex)
         {
             case 0:
@@ -648,6 +824,148 @@ public class PlayerCombatController : MonoBehaviour
     }
     #endregion
 
+    #region Checkpoint e Rastreamento de Habilidades / Bênçãos de Fase
+    /// <summary>
+    /// Verifica se a habilidade já está equipada em qualquer um dos slots Q, E ou R.
+    /// </summary>
+    public bool HasAbilityEquipped(Ability ability)
+    {
+        if (ability == null) return false;
+        return (slotQ == ability || slotE == ability || slotR == ability);
+    }
+
+    /// <summary>
+    /// Verifica se a bênção (ou habilidade vinculada) já foi adquirida/está ativa.
+    /// </summary>
+    public bool HasBoonActive(AbilityBoonSO boon)
+    {
+        if (boon == null) return false;
+        if (boon.GrantedAbility != null && HasAbilityEquipped(boon.GrantedAbility)) return true;
+        return confirmedBoons.Contains(boon) || stageSessionBoons.Contains(boon);
+    }
+
+    /// <summary>
+    /// Registra uma bênção/habilidade comprada na fase atual.
+    /// Se o jogador morrer nesta mesma fase, ela será revertida.
+    /// </summary>
+    public void RecordStageBoonAcquisition(AbilityBoonSO boon, int slotIndex = -1)
+    {
+        if (boon == null) return;
+
+        if (!stageSessionBoons.Contains(boon))
+        {
+            stageSessionBoons.Add(boon);
+        }
+
+        Debug.Log($"[PlayerCombatController] Bênção de Fase '{boon.BoonName}' registrada na sessão temporária da fase.");
+    }
+
+    /// <summary>
+    /// Salva o Checkpoint da Fase (chamado ao passar de fase ou ao iniciar a run).
+    /// Torna permanentes para a run todas as habilidades e bênçãos compradas até agora.
+    /// </summary>
+    public void SaveStageCheckpoint()
+    {
+        foreach (var b in stageSessionBoons)
+        {
+            if (b != null && !confirmedBoons.Contains(b))
+            {
+                confirmedBoons.Add(b);
+            }
+        }
+        stageSessionBoons.Clear();
+
+        checkpointEquippedAbilities[0] = slotQ;
+        checkpointEquippedAbilities[1] = slotE;
+        checkpointEquippedAbilities[2] = slotR;
+
+        Debug.Log($"[PlayerCombatController] Checkpoint de Fase Salvo com Sucesso! Q: {(slotQ != null ? slotQ.AbilityName : "null")}, E: {(slotE != null ? slotE.AbilityName : "null")}, R: {(slotR != null ? slotR.AbilityName : "null")}, Bênçãos Confirmadas: {confirmedBoons.Count}");
+    }
+
+    /// <summary>
+    /// Reverte todas as habilidades e bênçãos compradas na fase atual (chamado ao morrer na fase).
+    /// As estrelas e moedas gastas NÃO são recuperadas.
+    /// </summary>
+    public void RevertStageSessionPurchases()
+    {
+        if (stageSessionBoons.Count > 0)
+        {
+            Debug.Log($"[PlayerCombatController] Revertendo {stageSessionBoons.Count} bênçãos adquiridas nesta fase após a morte...");
+            foreach (var boon in stageSessionBoons)
+            {
+                if (boon != null)
+                {
+                    boon.RemoveBoon(gameObject);
+                }
+            }
+            stageSessionBoons.Clear();
+        }
+
+        // Restaura as habilidades equipadas para o estado do início da fase
+        slotQ = checkpointEquippedAbilities[0];
+        slotE = checkpointEquippedAbilities[1];
+        slotR = checkpointEquippedAbilities[2];
+
+        cooldownQ = 0f;
+        cooldownE = 0f;
+        cooldownR = 0f;
+
+        OnEquippedAbilitiesChanged?.Invoke(slotQ, slotE, slotR);
+        Debug.Log("[PlayerCombatController] Habilidades e buffs da fase revertidos. Habilidades salvas no checkpoint mantidas.");
+    }
+
+    /// <summary>
+    /// Limpa todas as habilidades e bênçãos acumuladas ao encerrar/reiniciar uma nova Run a partir do Hub.
+    /// Garante que o jogador renasça com os slots de habilidades zerados/iniciais.
+    /// </summary>
+    public void ResetAllRunBoonsAndAbilities()
+    {
+        Debug.Log("[PlayerCombatController] Resetando todas as habilidades e bênçãos para uma nova Run...");
+
+        // Remove efeitos de todas as bênçãos acumuladas
+        if (stageSessionBoons != null)
+        {
+            foreach (var boon in stageSessionBoons)
+            {
+                if (boon != null) boon.RemoveBoon(gameObject);
+            }
+            stageSessionBoons.Clear();
+        }
+
+        if (confirmedBoons != null)
+        {
+            foreach (var boon in confirmedBoons)
+            {
+                if (boon != null) boon.RemoveBoon(gameObject);
+            }
+            confirmedBoons.Clear();
+        }
+
+        // Destrói invocação de companheiro aliado (Besta-Fera) se ainda existir na cena
+        AllyCompanionAI[] allies = UnityEngine.Object.FindObjectsByType<AllyCompanionAI>(FindObjectsSortMode.None);
+        foreach (var ally in allies)
+        {
+            if (ally != null) UnityEngine.Object.Destroy(ally.gameObject);
+        }
+
+        // Reseta os slots Q, E, R
+        slotQ = null;
+        slotE = null;
+        slotR = null;
+
+        cooldownQ = 0f;
+        cooldownE = 0f;
+        cooldownR = 0f;
+
+        checkpointEquippedAbilities = new Ability[3];
+
+        OnEquippedAbilitiesChanged?.Invoke(null, null, null);
+        OnAbilityCooldownUpdated?.Invoke(0, 0f, 1f);
+        OnAbilityCooldownUpdated?.Invoke(1, 0f, 1f);
+        OnAbilityCooldownUpdated?.Invoke(2, 0f, 1f);
+    }
+    #endregion
+
     /// <summary>
     /// Retorna as informações de Tooltip (Nome, Descrição, Recarga, Custo de Mana e Ícone) da habilidade ou ataque básico correspondente.
     /// </summary>
@@ -657,7 +975,7 @@ public class PlayerCombatController : MonoBehaviour
         {
             case PendingActionType.Melee:
                 name = "Ataque Corpo a Corpo (Botão Esquerdo)";
-                description = $"Golpe físico rápido de curto alcance. Causa {meleeDamage:F0} de dano e gera +{chargePerHit:F0}% de carga para a Ultimate.";
+                description = $"Golpe físico rápido de curto alcance. Causa {meleeDamage:F0} de dano";
                 cooldown = meleeCooldown;
                 manaCost = 0f;
                 icon = null;
@@ -665,7 +983,7 @@ public class PlayerCombatController : MonoBehaviour
 
             case PendingActionType.Ranged:
                 name = "Ataque à Distância (Botão Direito)";
-                description = $"Disparo de projétil à distância. Causa {rangedDamage:F0} de dano e gera +{chargePerHit:F0}% de carga para a Ultimate.";
+                description = $"Disparo de projétil à distância. Causa {rangedDamage:F0} de dano";
                 cooldown = rangedCooldown;
                 manaCost = 0f;
                 icon = null;
@@ -680,7 +998,7 @@ public class PlayerCombatController : MonoBehaviour
                 break;
 
             case PendingActionType.AbilityR:
-                GetAbilityInfo(slotR, "R - Ultimate", out name, out description, out cooldown, out manaCost, out icon);
+                GetAbilityInfo(slotR, "R", out name, out description, out cooldown, out manaCost, out icon);
                 break;
 
             default:
@@ -834,6 +1152,17 @@ public class PlayerCombatController : MonoBehaviour
         {
             rangeIndicator.enabled = false;
         }
+    }
+
+    /// <summary>
+    /// Aumenta o dano de ataque corpo a corpo e à distância.
+    /// </summary>
+    public void IncreaseDamage(float amount)
+    {
+        if (amount <= 0f) return;
+        meleeDamage += amount;
+        rangedDamage += amount;
+        Debug.Log($"[PlayerCombatController] Dano aumentado em +{amount}! (Melee: {meleeDamage}, Ranged: {rangedDamage})");
     }
     #endregion
 }

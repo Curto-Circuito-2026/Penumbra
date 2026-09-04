@@ -1,0 +1,468 @@
+fileFormatVersion: 2
+guid: 0015701d0af35ae43a84e13d102b1474
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1693418235326127651
+    second: caboclo_spritesheet_0
+  - first:
+      213: -6774664129065358438
+    second: caboclo_spritesheet_1
+  - first:
+      213: 3294969364591686858
+    second: caboclo_spritesheet_2
+  - first:
+      213: -8660206782083955899
+    second: caboclo_spritesheet_3
+  - first:
+      213: -2098253849364638610
+    second: caboclo_spritesheet_4
+  - first:
+      213: -1459242396422204099
+    second: caboclo_spritesheet_5
+  - first:
+      213: 6135125913458620065
+    second: caboclo_spritesheet_6
+  - first:
+      213: 4278305251553615300
+    second: caboclo_spritesheet_7
+  - first:
+      213: -4450314817259080888
+    second: caboclo_spritesheet_8
+  - first:
+      213: 1088670420173394317
+    second: caboclo_spritesheet_9
+  - first:
+      213: 7387859360874508756
+    second: caboclo_spritesheet_10
+  - first:
+      213: -3518431258609324492
+    second: caboclo_spritesheet_11
+  - first:
+      213: 5714989944037711793
+    second: caboclo_spritesheet_12
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: caboclo_spritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 61
+        width: 20
+        height: 29
+      alignment: 9
+      pivot: {x: 0.45890936, y: 0.10949365}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd1a73b4615cf78e0800000000000000
+      internalID: -1693418235326127651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 90
+        width: 20
+        height: 30
+      alignment: 9
+      pivot: {x: 0.42288026, y: 0.104514316}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9b6a7a4ede8bf1a0800000000000000
+      internalID: -6774664129065358438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 87
+        width: 20
+        height: 29
+      alignment: 9
+      pivot: {x: 0.44622287, y: 0.16091156}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac4384afd251abd20800000000000000
+      internalID: 3294969364591686858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_3
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 87
+        width: 25
+        height: 30
+      alignment: 9
+      pivot: {x: 0.50614625, y: 0.14148483}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5430570c0d3c0d780800000000000000
+      internalID: -8660206782083955899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_4
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 88
+        width: 25
+        height: 27
+      alignment: 9
+      pivot: {x: 0.5086758, y: 0.13048553}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e645604bd3181e2e0800000000000000
+      internalID: -2098253849364638610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_5
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 32
+        width: 20
+        height: 30
+      alignment: 9
+      pivot: {x: 0.46750322, y: 0.09559529}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d35901895cabfbbe0800000000000000
+      internalID: -1459242396422204099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_6
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 57
+        width: 23
+        height: 29
+      alignment: 9
+      pivot: {x: 0.52224517, y: 0.16125843}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a6bef35388542550800000000000000
+      internalID: 6135125913458620065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_7
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 60
+        width: 25
+        height: 28
+      alignment: 9
+      pivot: {x: 0.5184381, y: 0.13233893}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cd9a8775f79f5b30800000000000000
+      internalID: 4278305251553615300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_8
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 61
+        width: 25
+        height: 23
+      alignment: 9
+      pivot: {x: 0.5086758, y: 0.22653131}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8437d92a04e4d32c0800000000000000
+      internalID: -4450314817259080888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_9
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 26
+        width: 20
+        height: 30
+      alignment: 9
+      pivot: {x: 0.4101246, y: 0.10388216}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8119e7aafbbb1f00800000000000000
+      internalID: 1088670420173394317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_10
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 31
+        width: 25
+        height: 29
+      alignment: 9
+      pivot: {x: 0.5146042, y: 0.16637224}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d1387732f2f68660800000000000000
+      internalID: 7387859360874508756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_11
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 44
+        width: 25
+        height: 15
+      alignment: 9
+      pivot: {x: 0.5260269, y: 0.34094748}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43ee5f769650c2fc0800000000000000
+      internalID: -3518431258609324492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: caboclo_spritesheet_12
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 3
+        width: 20
+        height: 29
+      alignment: 9
+      pivot: {x: 0.4700415, y: 0.12810154}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bf1c452319bf4f40800000000000000
+      internalID: 5714989944037711793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: ccf3c2b7b3802734aa854c00b77d098a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      caboclo_spritesheet_0: -1693418235326127651
+      caboclo_spritesheet_1: -6774664129065358438
+      caboclo_spritesheet_10: 7387859360874508756
+      caboclo_spritesheet_11: -3518431258609324492
+      caboclo_spritesheet_12: 5714989944037711793
+      caboclo_spritesheet_2: 3294969364591686858
+      caboclo_spritesheet_3: -8660206782083955899
+      caboclo_spritesheet_4: -2098253849364638610
+      caboclo_spritesheet_5: -1459242396422204099
+      caboclo_spritesheet_6: 6135125913458620065
+      caboclo_spritesheet_7: 4278305251553615300
+      caboclo_spritesheet_8: -4450314817259080888
+      caboclo_spritesheet_9: 1088670420173394317
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

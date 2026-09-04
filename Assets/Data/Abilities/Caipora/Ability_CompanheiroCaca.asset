@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6549257c89166894487670e731e0c642, type: 3}
+  m_Name: Ability_CompanheiroCaca
+  m_EditorClassIdentifier: Assembly-CSharp::HuntingCompanionAbility
+  abilityName: "Companheiro de Ca\xE7a"
+  description: Invoca um Besta-Fera espectral aliado com pouca vida que persegue
+    e ataca inimigos e chefes por 15 segundos ao seu lado.
+  icon: {fileID: -6207298038394112916, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  cooldown: 20
+  range: 5
+  damage: 22
+  manaCost: 35
+  cost: 0
+  companionPrefab: {fileID: 1313459222959409895, guid: 53a1dc867ebe82046a1911ec0e4d5da0, type: 3}
+  duration: 15

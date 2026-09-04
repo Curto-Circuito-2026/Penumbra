@@ -16,10 +16,10 @@ MonoBehaviour:
   description: "Dispara uma esfera flamejante em dire\xE7\xE3o ao alvo, queimando
     o inimigo e causando 40 de dano m\xE1gico."
   icon: {fileID: 0}
-  cooldown: 4
+  cooldown: 0
   range: 5
   damage: 40
-  manaCost: 25
+  manaCost: 0
   cost: 0
   type: 0
   aoeRadius: 3

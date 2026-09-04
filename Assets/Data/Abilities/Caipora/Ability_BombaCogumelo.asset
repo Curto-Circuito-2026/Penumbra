@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8998fec7cbd82546bb52159700acd70, type: 3}
+  m_Name: Ability_BombaCogumelo
+  m_EditorClassIdentifier: Assembly-CSharp::DamageAbility
+  abilityName: Bomba Cogumelo
+  description: "Dispara uma granada que explode ao cair no ch\xE3o"
+  icon: {fileID: -20548571, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  cooldown: 30
+  range: 5
+  damage: 20
+  manaCost: 0
+  cost: 0
+  type: 4
+  aoeRadius: 3.5
+  projectilePrefab: {fileID: 6024085167482078835, guid: 075308d1a87032648b8ccc38f249e577, type: 3}
+  projectileSprite: {fileID: 0}
+  vfxPrefab: {fileID: 0}
+  pelletCount: 5
+  spreadAngle: 45
+  scatterRange: 8
+  grenadeArcHeight: 2.5
+  grenadeFlightTime: 0.8

@@ -49,6 +49,69 @@ public class SkillTooltipUI : MonoBehaviour
 
     private RectTransform rectTransform;
     private Canvas parentCanvas;
+    private TMP_FontAsset basicFont;
+
+    private void EnsureBasicFont()
+    {
+        if (basicFont == null)
+        {
+            basicFont = Resources.Load<TMP_FontAsset>("Fonts/Basic");
+        }
+
+        if (basicFont != null)
+        {
+            if (titleText != null)
+            {
+                titleText.font = basicFont;
+                titleText.fontSize = 24f;
+                titleText.fontStyle = FontStyles.Bold;
+            }
+            if (descriptionText != null)
+            {
+                descriptionText.font = basicFont;
+                descriptionText.fontSize = 18f;
+            }
+            if (cooldownText != null)
+            {
+                cooldownText.font = basicFont;
+                cooldownText.fontSize = 17f;
+            }
+            if (manaCostText != null)
+            {
+                manaCostText.font = basicFont;
+                manaCostText.fontSize = 17f;
+            }
+
+            TMP_Text[] childTexts = GetComponentsInChildren<TMP_Text>(true);
+            foreach (var txt in childTexts)
+            {
+                if (txt != null) txt.font = basicFont;
+            }
+        }
+
+        // Desativa qualquer Image filha (ícone/moldura/quadrado) para deixar apenas os textos visíveis
+        if (tooltipPanel != null)
+        {
+            Image[] images = tooltipPanel.GetComponentsInChildren<Image>(true);
+            foreach (var img in images)
+            {
+                if (img.gameObject != tooltipPanel && img.gameObject != gameObject)
+                {
+                    img.gameObject.SetActive(false);
+                }
+                else
+                {
+                    // Fundo escuro semi-transparente elegante (sem azul)
+                    img.color = new Color(0.08f, 0.08f, 0.12f, 0.92f);
+                }
+            }
+        }
+
+        if (skillIcon != null)
+        {
+            skillIcon.gameObject.SetActive(false);
+        }
+    }
 
     private void Awake()
     {
@@ -75,6 +138,8 @@ public class SkillTooltipUI : MonoBehaviour
 
         parentCanvas = GetComponentInParent<Canvas>();
 
+        EnsureBasicFont();
+
         // Oculta a janela de conteúdo do tooltip no início
         HideTooltip();
     }
@@ -99,30 +164,35 @@ public class SkillTooltipUI : MonoBehaviour
     /// </summary>
     public void ShowTooltip(string title, string description, float cooldown, float manaCost, Sprite icon = null)
     {
-        if (titleText != null) titleText.text = title;
-        if (descriptionText != null) descriptionText.text = description;
+        EnsureBasicFont();
+
+        if (titleText != null)
+        {
+            titleText.text = title;
+            titleText.fontSize = 24f;
+            titleText.fontStyle = FontStyles.Bold;
+        }
+
+        if (descriptionText != null)
+        {
+            descriptionText.text = description;
+            descriptionText.fontSize = 18f;
+        }
 
         if (cooldownText != null)
         {
-            cooldownText.text = cooldown > 0f ? $"<color=#00CCFF>Recarga:</color> {cooldown:F1}s" : "<color=#00CCFF>Recarga:</color> Instantânea";
+            cooldownText.text = cooldown > 0f ? $"<color=#FFCC00>Recarga:</color> {cooldown:F1}s" : "<color=#FFCC00>Recarga:</color> Instantânea";
+            cooldownText.fontSize = 17f;
         }
 
         if (manaCostText != null)
         {
-            manaCostText.text = manaCost > 0f ? $"<color=#FFCC00>Mana:</color> {manaCost:F0}" : "<color=#FFCC00>Mana:</color> 0";
+            manaCostText.gameObject.SetActive(false);
         }
 
         if (skillIcon != null)
         {
-            if (icon != null)
-            {
-                skillIcon.sprite = icon;
-                skillIcon.gameObject.SetActive(true);
-            }
-            else
-            {
-                skillIcon.gameObject.SetActive(false);
-            }
+            skillIcon.gameObject.SetActive(false);
         }
 
         if (tooltipPanel != null)

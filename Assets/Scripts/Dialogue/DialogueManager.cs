@@ -46,6 +46,7 @@ public class DialogueManager : MonoBehaviour
     // Sobrescritas opcionais vindas do NPC / DialogueTrigger
     private string currentOverrideName;
     private Sprite currentOverridePortrait;
+    private System.Action currentOnCompleteCallback;
 
     // Propriedade para verificar se o diálogo está ativo (útil para bloquear movimento do jogador)
     public bool IsDialogueActive => isDialogueActive;
@@ -69,6 +70,14 @@ public class DialogueManager : MonoBehaviour
         {
             dialoguePanel.SetActive(false);
         }
+
+        // Carrega e força o uso da fonte "Basic" do jogo nos textos do diálogo
+        TMP_FontAsset gameFont = Resources.Load<TMP_FontAsset>("Fonts/Basic");
+        if (gameFont != null)
+        {
+            if (nameText != null) nameText.font = gameFont;
+            if (dialogueText != null) dialogueText.font = gameFont;
+        }
     }
 
     private void Update()
@@ -83,9 +92,20 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        // Entrada do Jogador: Avança o diálogo ao pressionar Espaço, Enter, E ou Botão A do controle
+        // Entrada do Jogador: Pular diálogo inteiro com ESC ou F
+        bool skipAllPressed = (Keyboard.current != null && (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.fKey.wasPressedThisFrame)) ||
+                              (Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame);
+
+        if (skipAllPressed)
+        {
+            SkipEntireDialogue();
+            return;
+        }
+
+        // Entrada do Jogador: Avança o diálogo ao pressionar Espaço, Enter, E, Clique do Mouse ou Botão A do controle
         bool confirmPressed = (Keyboard.current != null && (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.eKey.wasPressedThisFrame)) ||
-                             (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
+                              (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame) ||
+                              (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
 
         if (confirmPressed)
         {
@@ -94,13 +114,45 @@ public class DialogueManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Pula a sequência inteira de diálogo e finaliza imediatamente.
+    /// </summary>
+    public void SkipEntireDialogue()
+    {
+        if (!isDialogueActive) return;
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+
+        DialogueNode nodeEnding = currentNode;
+        var callback = currentOnCompleteCallback;
+        currentOnCompleteCallback = null;
+
+        EndDialogue();
+
+        if (nodeEnding != null && nodeEnding.onEnd != null)
+        {
+            nodeEnding.onEnd.Raise();
+        }
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopVoice();
+        }
+
+        callback?.Invoke();
+    }
+
+    /// <summary>
     /// Ativa a UI, reseta o estado e começa a digitar o nó inicial da sequência.
-    /// Permite passar opcionalmente o nome e retrato do NPC para a UI.
+    /// Permite passar opcionalmente o nome e retrato do NPC para a UI e um callback de término.
     /// </summary>
     /// <param name="sequence">A sequência de diálogo a ser exibida.</param>
     /// <param name="overrideName">Nome do NPC (opcional).</param>
     /// <param name="overridePortrait">Retrato do NPC (opcional).</param>
-    public void StartDialogue(DialogueSequence sequence, string overrideName = null, Sprite overridePortrait = null)
+    /// <param name="onComplete">Ação disparada ao encerrar este diálogo (opcional).</param>
+    public void StartDialogue(DialogueSequence sequence, string overrideName = null, Sprite overridePortrait = null, System.Action onComplete = null)
     {
         if (sequence == null || sequence.StartingNode == null)
         {
@@ -112,6 +164,7 @@ public class DialogueManager : MonoBehaviour
         justStartedThisFrame = true;
         currentOverrideName = overrideName;
         currentOverridePortrait = overridePortrait;
+        currentOnCompleteCallback = onComplete;
 
         // Atualiza o estado do jogo para Dialogue
         if (GameStateManager.Instance != null)
@@ -130,7 +183,7 @@ public class DialogueManager : MonoBehaviour
             StopCoroutine(typingCoroutine);
         }
 
-        typingCoroutine = StartCoroutine(TypeText(sequence.StartingNode));
+        typingCoroutine = StartCoroutine(TypeText(sequence.getNode()));
     }
 
     /// <summary>
@@ -141,52 +194,76 @@ public class DialogueManager : MonoBehaviour
         currentNode = node;
         isTyping = true;
 
-        // Determina o nome a exibir: prioriza o nome definido no NPC (currentOverrideName); se vazio, usa o do nó
-        string displayName = !string.IsNullOrEmpty(currentOverrideName) ? currentOverrideName : node.SpeakerName;
-
-        // Atribui o nome do palestrante
-        if (nameText != null)
+        if (dialogueText != null)
         {
-            nameText.text = displayName;
-            // Exibe a caixa de nome apenas se houver um nome preenchido
-            nameText.gameObject.SetActive(!string.IsNullOrEmpty(displayName));
+            dialogueText.text = "";
         }
 
-        // Lógica de Retratos Opcionais:
-        // Determina o retrato a exibir: prioriza o do NPC; se nulo, usa o do nó.
-        Sprite displayPortrait = currentOverridePortrait != null ? currentOverridePortrait : node.SpeakerPortrait;
+        // Toca o áudio de dublagem se atribuído no nó e pega o silêncio pulado
+        float silenceDuration = 0f;
+        if (node != null && node.VoiceClip != null && AudioController.Instance != null)
+        {
+            silenceDuration = AudioController.Instance.PlayVoice(node.VoiceClip);
+        }
 
+        // Configura o nome do personagem: dá preferência à sobrescrita se definida, senão usa o nome do nó
+        if (nameText != null)
+        {
+            string finalSpeakerName = !string.IsNullOrEmpty(currentOverrideName) ? currentOverrideName : node.SpeakerName;
+            nameText.text = finalSpeakerName;
+            nameText.gameObject.SetActive(!string.IsNullOrEmpty(finalSpeakerName));
+        }
+
+        // Configura o retrato: dá preferência à sobrescrita se definida, senão usa o do nó
         if (portraitImage != null)
         {
-            if (displayPortrait != null)
+            Sprite finalPortrait = currentOverridePortrait != null ? currentOverridePortrait : node.SpeakerPortrait;
+            if (finalPortrait != null)
             {
-                portraitImage.sprite = displayPortrait;
+                portraitImage.sprite = finalPortrait;
                 portraitImage.gameObject.SetActive(true);
             }
             else
             {
-                portraitImage.sprite = null;
                 portraitImage.gameObject.SetActive(false);
             }
         }
 
-        // Reseta o texto e inicia a digitação caractere por caractere
-        if (dialogueText != null)
+        // Dispara o evento de início do nó se configurado
+        if (node.onStart != null)
         {
-            dialogueText.text = "";
+            node.onStart.Raise();
+        }
 
-            foreach (char letter in node.DialogueText)
+        // Efeito Typewriter com velocidade sincronizada com o áudio (se houver dublagem)
+        string fullText = node.DialogueText;
+        float speedToUse = typingSpeed;
+
+        if (node != null && node.VoiceClip != null && fullText.Length > 0)
+        {
+            float audioDuration = node.VoiceClip.length - silenceDuration;
+            if (audioDuration > 0.1f)
+            {
+                speedToUse = audioDuration / fullText.Length;
+                // Evita que o texto digite rápido ou devagar demais
+                speedToUse = Mathf.Clamp(speedToUse, 0.005f, 0.18f);
+            }
+        }
+
+        foreach (char letter in fullText)
+        {
+            if (dialogueText != null)
             {
                 dialogueText.text += letter;
-
-                // Esqueleto para tocar som por letra (ignora espaços em branco)
-                if (audioSource != null && typingSound != null && !char.IsWhiteSpace(letter))
-                {
-                    audioSource.PlayOneShot(typingSound);
-                }
-
-                yield return new WaitForSeconds(typingSpeed);
             }
+
+            // Toca o efeito sonoro de digitação se atribuído
+            if (audioSource != null && typingSound != null && !char.IsWhiteSpace(letter))
+            {
+                audioSource.PlayOneShot(typingSound);
+            }
+
+            yield return new WaitForSeconds(speedToUse);
         }
 
         isTyping = false;
@@ -218,14 +295,31 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
+            DialogueNode nodeEnding = currentNode;
+
+            // Para a voz anterior antes de trocar de nó
+            if (AudioController.Instance != null)
+            {
+                AudioController.Instance.StopVoice();
+            }
+
             // Avança para a próxima fala se existir
             if (currentNode.NextNode != null)
             {
+                if (nodeEnding.onEnd != null) { Debug.Log("raising onEnd"); nodeEnding.onEnd.Raise(); }
                 typingCoroutine = StartCoroutine(TypeText(currentNode.NextNode));
             }
             else
             {
+                var callback = currentOnCompleteCallback;
+                currentOnCompleteCallback = null;
                 EndDialogue();
+                if (nodeEnding != null && nodeEnding.onEnd != null)
+                {
+                    Debug.Log("raising onEnd on dialogue completion");
+                    nodeEnding.onEnd.Raise();
+                }
+                callback?.Invoke();
             }
         }
     }
@@ -238,6 +332,11 @@ public class DialogueManager : MonoBehaviour
         isDialogueActive = false;
         currentNode = null;
         isTyping = false;
+
+        if (AudioController.Instance != null)
+        {
+            AudioController.Instance.StopVoice();
+        }
 
         if (dialoguePanel != null)
         {

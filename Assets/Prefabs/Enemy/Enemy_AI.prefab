@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3077585312428363946}
   - component: {fileID: 1899662370288369688}
   - component: {fileID: 7114010485678801893}
+  - component: {fileID: 7114010485678801894}
   - component: {fileID: 3084376152914269509}
   - component: {fileID: 5078421915168168914}
   - component: {fileID: 332817723644236831}
@@ -125,7 +126,44 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!58 &7114010485678801893
+--- !u!70 &7114010485678801893
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849825301688804441}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.5}
+  m_Size: {x: 0.8, y: 1.2}
+  m_Direction: 0
+--- !u!58 &7114010485678801894
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -159,8 +197,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: 0, y: 0.1}
+  m_Radius: 0.35
 --- !u!195 &3084376152914269509
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -175,7 +213,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 1.3499999
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -201,6 +239,16 @@ MonoBehaviour:
   animator: {fileID: 0}
   damageFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   flashDuration: 0.12
+  useWorldHealthBar: 1
+  healthBarYOffset: 0.85
+  hideHealthBarWhenFull: 1
+  worldHealthBar: {fileID: 0}
+  dropsItem: 1
+  itemToDropPrefab: {fileID: 3323540727013714034, guid: 868e9599329aca749935015874b4b4c3, type: 3}
+  dropChance: 0.75
+  minDropCount: 1
+  maxDropCount: 2
+  deathDespawnDelay: 0.55
 --- !u!114 &332817723644236831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,18 +283,28 @@ MonoBehaviour:
   enemyConfig: {fileID: 0}
   canUseMelee: 1
   canUseRanged: 1
+  canExplode: 0
+  explosionTriggerDistance: 1.8
+  explosionRadius: 2.8
+  explosionDamage: 40
+  explosionFuseTime: 0.55
   detectionRadius: 10
   meleeRange: 1.8
   rangedRange: 7
   attackCooldown: 1.5
+  rangedAttackWindupDelay: 0.28
+  rangedAttackDuration: 0.45
   movementSpeed: 3.5
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 513
   projectilePrefab: {fileID: 7019116218804259763, guid: e0105c711d4b9b249bb691be13b26ad0, type: 3}
-  agent: {fileID: 0}
+  showGizmos: 1
+  showGizmoLabels: 1
+  agent: {fileID: 3084376152914269509}
   rb: {fileID: 0}
   enemyStats: {fileID: 0}
   combatController: {fileID: 0}
   animator: {fileID: 0}
   spriteRenderer: {fileID: 0}
+  spriteFacesRightByDefault: 0

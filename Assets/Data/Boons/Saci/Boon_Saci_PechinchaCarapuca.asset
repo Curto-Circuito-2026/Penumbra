@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Saci_PechinchaCarapuca
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: "Pechincha da Carapu\xE7a"
+  rarity: 0
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: O Saci remenda suas feridas na hora com travessuras da mata, mas suas
+    pernas ficam pesadas com o encanto.
+  statDetail: "\u25B8 Cura Instant\xE2nea: +30 HP"
+  effectType: 0
+  effectValue: 30
+  debuffEffectType: 5
+  debuffValue: 1
+  debuffDetail: '- Velocidade de Movimento: -1.0'
+  starCost: 1
+  grantedAbility: {fileID: 0}

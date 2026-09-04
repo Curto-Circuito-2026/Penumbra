@@ -16,7 +16,7 @@ MonoBehaviour:
   description: "Libera uma onda de frio congelante em \xE1rea (AoE) que reduz o movimento
     dos inimigos e causa 30 de dano f\xEDsico."
   icon: {fileID: 0}
-  cooldown: 6
+  cooldown: 0
   range: 5
   damage: 30
   manaCost: 35

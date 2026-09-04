@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_PoderAncestral
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: "Poder do Trai\xE7oeiro"
+  rarity: 2
+  icon: {fileID: 0}
+  description: "As artimanhas ancestrais do Saci ampliam permanentemente sua reserva
+    total de feiti\xE7os."
+  statDetail: "\u25B8 Mana M\xE1xima: +50"
+  effectType: 2
+  effectValue: 50

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float maxLifetime = 5f;
     [SerializeField] private LayerMask targetHitLayers;
 
+    [SerializeField] private Sprite image;
+
     [Header("Efeitos Visuais")]
     [SerializeField] private Color impactColor = new Color(0.2f, 0.8f, 1f, 1f);
 
@@ -26,13 +29,24 @@ public class Projectile : MonoBehaviour
     /// <summary>
     /// Inicializa o projétil com a direção travada no instante do disparo, o conjurador e as layers alvo.
     /// </summary>
-    public void Initialize(Vector3 direction, GameObject casterObject, float projectileDamage = -1f, LayerMask targetLayers = default)
+    public void Initialize(Vector3 direction, GameObject casterObject, float projectileDamage = -1f, LayerMask targetLayers = default, Sprite image = null)
     {
         moveDirection = direction.normalized;
         if (moveDirection.sqrMagnitude < 0.001f) moveDirection = Vector3.right;
 
         caster = casterObject;
         if (projectileDamage > 0f) damage = projectileDamage;
+
+        if (image != null)
+        {
+            SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+            if (sr == null)
+            {
+                sr = this.AddComponent<SpriteRenderer>();
+            }
+
+            sr.sprite = image;
+        }
 
         // Garante que targetHitLayers nunca fique vazio (0)
         if (targetLayers != 0)
@@ -44,6 +58,20 @@ public class Projectile : MonoBehaviour
             int defaultLayer = LayerMask.NameToLayer("Default");
             int obstacleLayer = LayerMask.NameToLayer("Obstacle");
             targetHitLayers = (1 << defaultLayer) | (1 << obstacleLayer);
+        }
+
+        // Ignora colisão física direta com o próprio conjurador e suas partes/filhos
+        if (caster != null)
+        {
+            Collider2D myCol = GetComponent<Collider2D>();
+            Collider2D[] casterCols = caster.GetComponentsInChildren<Collider2D>(true);
+            if (myCol != null)
+            {
+                foreach (var c in casterCols)
+                {
+                    if (c != null) Physics2D.IgnoreCollision(myCol, c, true);
+                }
+            }
         }
 
         isInitialized = true;
@@ -58,6 +86,45 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    private bool IsInvalidTarget(Collider2D col)
+    {
+        if (col == null) return true;
+        if (col.gameObject == gameObject || col.transform.IsChildOf(transform)) return true;
+
+        // Ignora o próprio conjurador, seus filhos e sua raiz
+        if (caster != null)
+        {
+            if (col.gameObject == caster || col.transform.IsChildOf(caster.transform) || col.transform.root == caster.transform.root) return true;
+
+            // Jogador não acerta a si mesmo
+            if (caster.CompareTag("Player") && (col.CompareTag("Player") || col.GetComponentInParent<CharacterController2D>() != null || col.GetComponentInParent<PlayerStats>() != null)) return true;
+
+            // Inimigos não acertam outros inimigos
+            if (caster.CompareTag("Enemy") && (col.CompareTag("Enemy") || col.GetComponentInParent<EnemyStats>() != null)) return true;
+        }
+
+        // Ignora explicitamente Fightzone, triggers de arena, boundaries e áreas de transição sem IDamageable
+        string colName = col.gameObject.name;
+        if (colName.IndexOf("Fightzone", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Fighzone", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Trigger", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Zone", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+            colName.IndexOf("Bounds", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            IDamageable d = col.GetComponent<IDamageable>();
+            if (d == null) return true;
+        }
+
+        // Ignora triggers que não possuem IDamageable
+        if (col.isTrigger)
+        {
+            IDamageable dmg = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+            if (dmg == null) return true;
+        }
+
+        return false;
+    }
+
     private void Update()
     {
         if (!isInitialized) return;
@@ -65,25 +132,21 @@ public class Projectile : MonoBehaviour
         Vector3 deltaMove = moveDirection * (speed * Time.deltaTime);
         float moveDistance = deltaMove.magnitude;
 
-        // 1. RaycastAll na direção do movimento do frame (ignora triggers sem IDamageable)
+        // 1. RaycastAll na direção do movimento do frame
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, moveDirection, moveDistance + 0.2f, targetHitLayers);
         foreach (var hit in hits)
         {
-            if (hit.collider == null) continue;
-            if (hit.collider.isTrigger && !hit.collider.TryGetComponent<IDamageable>(out _)) continue;
-            if (caster != null && (hit.collider.gameObject == caster || hit.collider.transform.IsChildOf(caster.transform))) continue;
+            if (IsInvalidTarget(hit.collider)) continue;
 
             HandleHit(hit.collider.gameObject, hit.point);
             return;
         }
 
-        // 2. OverlapCircleAll no centro atual do projétil (ignora triggers sem IDamageable)
+        // 2. OverlapCircleAll no centro atual do projétil
         Collider2D[] overlaps = Physics2D.OverlapCircleAll(transform.position, 0.35f, targetHitLayers);
         foreach (var overlap in overlaps)
         {
-            if (overlap == null) continue;
-            if (overlap.isTrigger && !overlap.TryGetComponent<IDamageable>(out _)) continue;
-            if (caster != null && (overlap.gameObject == caster || overlap.transform.IsChildOf(caster.transform))) continue;
+            if (IsInvalidTarget(overlap)) continue;
 
             HandleHit(overlap.gameObject, transform.position);
             return;
@@ -95,9 +158,7 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!isInitialized) return;
-        if (collision == null) return;
-        if (collision.isTrigger && !collision.TryGetComponent<IDamageable>(out _)) return;
-        if (caster != null && (collision.gameObject == caster || collision.transform.IsChildOf(caster.transform))) return;
+        if (IsInvalidTarget(collision)) return;
 
         if (((1 << collision.gameObject.layer) & targetHitLayers) != 0)
         {
@@ -107,8 +168,9 @@ public class Projectile : MonoBehaviour
 
     private void HandleHit(GameObject hitObject, Vector3 impactPoint)
     {
-        // Aplica dano ao Player ou Obstáculo Destrutível que implementa IDamageable
-        if (hitObject.TryGetComponent(out IDamageable damageable))
+        // Aplica dano ao Player, Inimigo ou Obstáculo Destrutível que implementa IDamageable
+        IDamageable damageable = hitObject.GetComponent<IDamageable>() ?? hitObject.GetComponentInParent<IDamageable>();
+        if (damageable != null)
         {
             damageable.TakeDamage(damage, moveDirection);
             Debug.Log($"[Projectile] Projétil de '{caster?.name}' atingiu '{hitObject.name}' e causou {damage} de dano!");

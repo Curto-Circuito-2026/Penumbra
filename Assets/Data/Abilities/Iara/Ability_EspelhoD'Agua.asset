@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2eb5a9d8f549344197b27152478d300, type: 3}
+  m_Name: Ability_EspelhoD'Agua
+  m_EditorClassIdentifier: Assembly-CSharp::WaterMirrorAbility
+  abilityName: Espelho D'Agua
+  description: "Atravessa um espelho d'\xE1gua e teleporta para a dire\xE7\xE3o desejada"
+  icon: {fileID: -1950312256, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  cooldown: 5
+  range: 15
+  damage: 0
+  manaCost: 0
+  cost: 0
+  particlePrefab: {fileID: 1753972158542383051, guid: a1e24b08337b1494491e2cbca8459fb3, type: 3}

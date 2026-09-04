@@ -23,6 +23,22 @@ public class EnemyAIController : MonoBehaviour
     [Tooltip("Permite o uso de tiros Ranged em linha reta.")]
     [SerializeField] private bool canUseRanged = true;
 
+    [Header("Comportamento Creeper / Explosão Suicide")]
+    [Tooltip("Permite o inimigo agir como Creeper: corre até o player e explode.")]
+    [SerializeField] private bool canExplode = false;
+
+    [Tooltip("Distância do player em que inicia a contagem do pavio/animação de explosão.")]
+    [SerializeField] private float explosionTriggerDistance = 1.8f;
+
+    [Tooltip("Raio da explosão em área.")]
+    [SerializeField] private float explosionRadius = 2.8f;
+
+    [Tooltip("Dano causado pela explosão no centro.")]
+    [SerializeField] private float explosionDamage = 40f;
+
+    [Tooltip("Tempo de pavio/animação de preparação antes da detonação em segundos.")]
+    [SerializeField] private float explosionFuseTime = 0.55f;
+
     [Header("Alcances e Detecção")]
     [Tooltip("Raio de detecção de visão do Player.")]
     [SerializeField] private float detectionRadius = 10f;
@@ -36,6 +52,12 @@ public class EnemyAIController : MonoBehaviour
     [Tooltip("Tempo de recarga entre ataques em segundos.")]
     [SerializeField] private float attackCooldown = 1.5f;
 
+    [Tooltip("Tempo de espera na animação de ataque ranged até instanciar o projétil em segundos.")]
+    [SerializeField] private float rangedAttackWindupDelay = 0.28f;
+
+    [Tooltip("Duração total da animação de ataque ranged em segundos.")]
+    [SerializeField] private float rangedAttackDuration = 0.45f;
+
     [Tooltip("Velocidade de movimentação no NavMesh.")]
     [SerializeField] private float movementSpeed = 3.5f;
 
@@ -46,6 +68,13 @@ public class EnemyAIController : MonoBehaviour
     [Header("Prefabs de Ataque")]
     [Tooltip("Prefab do Projétil em linha reta (mesmo do Player).")]
     [SerializeField] private GameObject projectilePrefab;
+
+    [Header("Debug e Gizmos")]
+    [Tooltip("Exibe os círculos de alcance (Visão, Melee, Ranged, Parada) na Scene View.")]
+    [SerializeField] private bool showGizmos = true;
+
+    [Tooltip("Exibe as legendas de texto com os valores exatos de metros de cada raio.")]
+    [SerializeField] private bool showGizmoLabels = true;
 
     [Header("Componentes")]
     [SerializeField] private NavMeshAgent agent;
@@ -61,6 +90,7 @@ public class EnemyAIController : MonoBehaviour
     public EnemyChaseState ChaseState { get; private set; }
     public EnemyMeleeAttackState MeleeAttackState { get; private set; }
     public EnemyRangedAttackState RangedAttackState { get; private set; }
+    public EnemyExplodeState ExplodeState { get; private set; }
     public EnemyDeadState DeadState { get; private set; }
 
     // Alvo do Player
@@ -74,13 +104,22 @@ public class EnemyAIController : MonoBehaviour
 
     public bool CanUseMelee => canUseMelee;
     public bool CanUseRanged => canUseRanged;
+    public bool CanExplode => canExplode;
+    public float ExplosionTriggerDistance => explosionTriggerDistance;
+    public float ExplosionRadius => explosionRadius;
+    public float ExplosionDamage => explosionDamage;
+    public float ExplosionFuseTime => explosionFuseTime;
     public float DetectionRadius => detectionRadius;
     public float MeleeRange => meleeRange;
     public float RangedRange => rangedRange;
     public float AttackCooldown => attackCooldown;
+    public float RangedAttackWindupDelay => rangedAttackWindupDelay;
+    public float RangedAttackDuration => rangedAttackDuration;
     public bool IsAttackOnCooldown => attackCooldownTimer > 0f;
     public GameObject ProjectilePrefab => projectilePrefab;
     public EnemyCombatController CombatController => combatController;
+    public EnemyStats EnemyStats => enemyStats;
+    public Animator Animator => animator;
 
     // Hashes do Animator idênticos ao do Player
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
@@ -115,13 +154,13 @@ public class EnemyAIController : MonoBehaviour
             agent.speed = movementSpeed;
 
             // Configura o stoppingDistance para o agente parar ANTES de colidir/empurrar o player
-            float stopDist = canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f;
-            agent.stoppingDistance = Mathf.Max(0.8f, stopDist);
+            float stopDist = canExplode ? Mathf.Max(0.2f, explosionTriggerDistance * 0.4f) : (canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f);
+            agent.stoppingDistance = Mathf.Max(0.2f, stopDist);
         }
 
         if (obstacleLayerMask == 0)
         {
-            obstacleLayerMask = LayerMask.GetMask("Obstacle", "Default");
+            obstacleLayerMask = LayerMask.GetMask("Obstacle");
         }
 
         // Aplica EnemyConfigSO se fornecido
@@ -129,6 +168,11 @@ public class EnemyAIController : MonoBehaviour
         {
             canUseMelee = enemyConfig.canUseMelee;
             canUseRanged = enemyConfig.canUseRanged;
+            canExplode = enemyConfig.canExplode;
+            explosionTriggerDistance = enemyConfig.explosionTriggerDistance;
+            explosionRadius = enemyConfig.explosionRadius;
+            explosionDamage = enemyConfig.explosionDamage;
+            explosionFuseTime = enemyConfig.explosionFuseTime;
             detectionRadius = enemyConfig.detectionRadius;
             meleeRange = enemyConfig.meleeRange;
             rangedRange = enemyConfig.rangedRange;
@@ -136,7 +180,12 @@ public class EnemyAIController : MonoBehaviour
             movementSpeed = enemyConfig.moveSpeed;
             if (enemyConfig.projectilePrefab != null) projectilePrefab = enemyConfig.projectilePrefab;
 
-            if (agent != null) agent.speed = movementSpeed;
+            if (agent != null)
+            {
+                agent.speed = movementSpeed;
+                float stopDist = canExplode ? Mathf.Max(0.2f, explosionTriggerDistance * 0.4f) : (canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f);
+                agent.stoppingDistance = Mathf.Max(0.2f, stopDist);
+            }
             if (combatController != null) combatController.Configure(enemyConfig);
         }
 
@@ -145,6 +194,7 @@ public class EnemyAIController : MonoBehaviour
         ChaseState = new EnemyChaseState(this);
         MeleeAttackState = new EnemyMeleeAttackState(this);
         RangedAttackState = new EnemyRangedAttackState(this);
+        ExplodeState = new EnemyExplodeState(this);
         DeadState = new EnemyDeadState(this);
     }
 
@@ -166,13 +216,15 @@ public class EnemyAIController : MonoBehaviour
 
     private void Start()
     {
+        // Garante que o inimigo e o NavMeshAgent estejam no plano Z = 0
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0f);
+
         if (baseMovementSpeed <= 0f) baseMovementSpeed = movementSpeed;
 
         // Garante o alinhamento com o NavMesh no início
         if (agent != null && agent.enabled && !agent.isOnNavMesh)
         {
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(transform.position, out hit, 3.0f, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
             {
                 agent.Warp(hit.position);
             }
@@ -221,7 +273,16 @@ public class EnemyAIController : MonoBehaviour
 
     private void Update()
     {
-        if (enemyStats != null && enemyStats.IsDead) return;
+        if (enemyStats != null && enemyStats.IsDead && CurrentState != ExplodeState) return;
+
+        // Bloqueia IA e perseguição de inimigos enquanto o jogo não estiver em Gameplay (ex: Menu/Loja, Diálogo, Pausa, Cutscene, Morte)
+        bool canAct = GameStateManager.Instance == null || GameStateManager.Instance.CurrentState == GameState.Playing;
+        if (!canAct)
+        {
+            StopMovement();
+            if (animator != null) animator.SetFloat(SpeedHash, 0f);
+            return;
+        }
 
         // Atualiza timer de cooldown de ataque
         if (attackCooldownTimer > 0f)
@@ -237,7 +298,10 @@ public class EnemyAIController : MonoBehaviour
         }
 
         // Atualiza virada do sprite (flip)
-        UpdateSpriteFacing();
+        if (CurrentState != ExplodeState)
+        {
+            UpdateSpriteFacing();
+        }
     }
 
     /// <summary>
@@ -257,7 +321,7 @@ public class EnemyAIController : MonoBehaviour
     }
 
     /// <summary>
-    /// Localiza o Transform do Player na cena.
+    /// Localiza o Transform do Player na cena por Tag ou pelo componente CharacterController2D.
     /// </summary>
     public void FindPlayerTarget()
     {
@@ -266,6 +330,15 @@ public class EnemyAIController : MonoBehaviour
         {
             TargetPlayer = playerObj.transform;
             playerStats = playerObj.GetComponent<PlayerStats>();
+            return;
+        }
+
+        // Fallback procurando pelo CharacterController2D do jogador
+        CharacterController2D playerCC = FindFirstObjectByType<CharacterController2D>();
+        if (playerCC != null)
+        {
+            TargetPlayer = playerCC.transform;
+            playerStats = playerCC.GetComponent<PlayerStats>();
         }
     }
 
@@ -278,8 +351,8 @@ public class EnemyAIController : MonoBehaviour
     {
         if (TargetPlayer == null) return false;
 
-        // 1. Checa estado global do jogo (GameState.Dead)
-        if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState == GameState.Dead)
+        // 1. Checa estado global do jogo (apenas considera o Player como alvo ativo em GameState.Playing)
+        if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState != GameState.Playing)
         {
             return false;
         }
@@ -302,21 +375,25 @@ public class EnemyAIController : MonoBehaviour
     {
         if (!IsTargetAlive()) return false;
 
-        Vector3 origin = transform.position;
-        Vector3 targetPos = TargetPlayer.position;
+        Vector3 origin = transform.position + Vector3.up * 0.35f;
+        Vector3 targetPos = TargetPlayer.position + Vector3.up * 0.35f;
         Vector3 direction = (targetPos - origin).normalized;
         float distance = Vector3.Distance(origin, targetPos);
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, distance, obstacleLayerMask);
+        LayerMask mask = obstacleLayerMask != 0 ? obstacleLayerMask : LayerMask.GetMask("Obstacle");
+        if (mask == 0) return true;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, distance, mask);
         foreach (var hit in hits)
         {
             if (hit.collider == null || hit.collider.isTrigger) continue;
 
-            // Ignora o próprio inimigo e o próprio Player
-            if (hit.collider.gameObject == gameObject || hit.collider.transform.IsChildOf(transform)) continue;
-            if (hit.collider.gameObject == TargetPlayer.gameObject || hit.collider.transform.IsChildOf(TargetPlayer)) continue;
+            // Ignora o próprio inimigo e o Player
+            if (hit.collider.gameObject == gameObject || hit.collider.transform.IsChildOf(transform) || hit.collider.transform.root == transform.root) continue;
+            if (hit.collider.gameObject == TargetPlayer.gameObject || hit.collider.transform.IsChildOf(TargetPlayer) || hit.collider.transform.root == TargetPlayer.root) continue;
+            if (hit.collider.CompareTag("Enemy") || hit.collider.GetComponentInParent<EnemyStats>() != null) continue;
 
-            // Se atingir qualquer outro colisor (parede/obstáculo):
+            // Se atingir um obstáculo sólido que bloqueia a visão
             return false;
         }
 
@@ -329,10 +406,10 @@ public class EnemyAIController : MonoBehaviour
     public void MoveToTarget(Vector3 targetPosition)
     {
         float dist = Vector3.Distance(transform.position, targetPosition);
-        float stopDist = agent != null ? agent.stoppingDistance : 1.2f;
+        float stopDist = canExplode ? Mathf.Max(0.2f, explosionTriggerDistance * 0.4f) : (agent != null ? agent.stoppingDistance : 1.2f);
 
-        // Se já estiver dentro da distância de parada, para o movimento para não empurrar o player
-        if (dist <= stopDist)
+        // Se já estiver dentro da distância de parada (para inimigos que não explodem), para o movimento
+        if (!canExplode && dist <= stopDist)
         {
             StopMovement();
             return;
@@ -398,6 +475,8 @@ public class EnemyAIController : MonoBehaviour
         ResetAttackCooldown();
     }
 
+    private bool hasExploded = false;
+
     public void ResetAttackCooldown()
     {
         attackCooldownTimer = attackCooldown;
@@ -405,8 +484,73 @@ public class EnemyAIController : MonoBehaviour
 
     private void HandleEnemyDied()
     {
+        if (canExplode)
+        {
+            if (CurrentState != ExplodeState && !hasExploded)
+            {
+                ChangeState(ExplodeState);
+            }
+            return;
+        }
+
         ChangeState(DeadState);
     }
+
+    /// <summary>
+    /// Executa a detonação da explosão no local atual (seja por pavio/ataque ou por morte/HP zerado).
+    /// </summary>
+    public void TriggerExplosionImmediate()
+    {
+        if (hasExploded) return;
+        hasExploded = true;
+
+        Vector3 center = transform.position;
+        float radius = explosionRadius;
+        float damage = explosionDamage;
+
+        Debug.Log($"[EnemyAIController] 💥 '{gameObject.name}' EXPLODIU! Raio: {radius}m, Dano: {damage}");
+
+        // 1. Oculta o sprite e elimina o inimigo no exato instante da explosão
+        if (enemyStats != null)
+        {
+            enemyStats.KillImmediate(true);
+        }
+        else
+        {
+            foreach (var r in GetComponentsInChildren<Renderer>(true)) r.enabled = false;
+            foreach (var c in GetComponentsInChildren<Collider2D>(true)) c.enabled = false;
+            Destroy(gameObject);
+        }
+
+        // 2. Dispara a explosão visual & Tremor de Câmera
+        if (CombatVisualEffects.Instance != null)
+        {
+            CombatVisualEffects.Instance.PlayExplosionVFX(center, new Color(1f, 0.3f, 0.05f, 1f), new Color(1f, 0.85f, 0.2f, 1f), radius);
+            CombatVisualEffects.Instance.TriggerCameraShake(0.25f, 0.22f);
+        }
+
+        // 3. Detecção e Dano em Área (AoE)
+        Collider2D[] hits = Physics2D.OverlapCircleAll(center, radius);
+        System.Collections.Generic.HashSet<GameObject> affectedObjects = new System.Collections.Generic.HashSet<GameObject>();
+
+        foreach (var col in hits)
+        {
+            if (col == null) continue;
+
+            GameObject rootTarget = col.transform.root.gameObject;
+            if (affectedObjects.Contains(rootTarget)) continue;
+
+            IDamageable damageable = col.GetComponent<IDamageable>() ?? col.GetComponentInParent<IDamageable>();
+            if (damageable != null && !(damageable is EnemyStats))
+            {
+                affectedObjects.Add(rootTarget);
+                Vector3 knockbackDir = (col.transform.position - center).normalized;
+                damageable.TakeDamage(damage, knockbackDir);
+            }
+        }
+    }
+
+    [SerializeField] private bool spriteFacesRightByDefault = false;
 
     private void UpdateSpriteFacing()
     {
@@ -415,54 +559,173 @@ public class EnemyAIController : MonoBehaviour
         Vector3 moveVelocity = (agent != null && agent.enabled && agent.isOnNavMesh) ? agent.velocity : Vector3.zero;
         if (moveVelocity.sqrMagnitude > 0.05f)
         {
-            spriteRenderer.flipX = moveVelocity.x < 0f;
+            spriteRenderer.flipX = spriteFacesRightByDefault ? (moveVelocity.x < 0f) : (moveVelocity.x > 0f);
         }
         else if (TargetPlayer != null)
         {
             float dx = TargetPlayer.position.x - transform.position.x;
             if (Mathf.Abs(dx) > 0.1f)
             {
-                spriteRenderer.flipX = dx < 0f;
+                spriteRenderer.flipX = spriteFacesRightByDefault ? (dx < 0f) : (dx > 0f);
             }
+        }
+    }
+
+    private void OnValidate()
+    {
+        if (enemyConfig != null)
+        {
+            canUseMelee = enemyConfig.canUseMelee;
+            canUseRanged = enemyConfig.canUseRanged;
+            canExplode = enemyConfig.canExplode;
+            explosionTriggerDistance = enemyConfig.explosionTriggerDistance;
+            explosionRadius = enemyConfig.explosionRadius;
+            explosionDamage = enemyConfig.explosionDamage;
+            explosionFuseTime = enemyConfig.explosionFuseTime;
+            detectionRadius = enemyConfig.detectionRadius;
+            meleeRange = enemyConfig.meleeRange;
+            rangedRange = enemyConfig.rangedRange;
+            attackCooldown = enemyConfig.attackCooldown;
+            movementSpeed = enemyConfig.moveSpeed;
+            if (enemyConfig.projectilePrefab != null) projectilePrefab = enemyConfig.projectilePrefab;
+        }
+
+        if (agent == null) agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.speed = movementSpeed;
+            float stopDist = canExplode ? Mathf.Max(0.5f, explosionTriggerDistance * 0.7f) : (canUseMelee ? meleeRange * 0.75f : rangedRange * 0.7f);
+            agent.stoppingDistance = Mathf.Max(0.5f, stopDist);
         }
     }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        // 1. Raio de Detecção (Círculo Amarelo)
-        Gizmos.color = new Color(1f, 0.9f, 0.2f, 0.6f);
-        UnityEditor.Handles.color = Gizmos.color;
-        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, detectionRadius);
+        if (!showGizmos) return;
 
-        // 2. Raio Melee (Círculo Vermelho)
-        if (canUseMelee)
+        // Se estiver selecionado no Editor, OnDrawGizmosSelected cuidará do desenho completo e destacado
+        if (UnityEditor.Selection.activeGameObject == gameObject || (UnityEditor.Selection.activeTransform != null && UnityEditor.Selection.activeTransform.IsChildOf(transform)))
         {
-            Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.8f);
-            UnityEditor.Handles.color = Gizmos.color;
-            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, meleeRange);
+            return;
         }
 
-        // 3. Raio Ranged (Círculo Azul Ciano)
-        if (canUseRanged)
+        // Desenho suave quando não selecionado (linhas sutis)
+        DrawGizmoRanges(false);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!showGizmos) return;
+
+        // Desenho destacado com preenchimento quando o inimigo estiver selecionado na Scene ou Hierarchy
+        DrawGizmoRanges(true);
+    }
+
+    private void DrawGizmoRanges(bool isSelected)
+    {
+        Vector3 pos = transform.position;
+
+        // 1. Raio de Detecção de Visão (Amarelo / Dourado)
+        if (detectionRadius > 0f)
         {
-            Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.8f);
-            UnityEditor.Handles.color = Gizmos.color;
-            UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.forward, rangedRange);
+            Color detectionColor = isSelected ? new Color(1f, 0.85f, 0.1f, 0.95f) : new Color(1f, 0.85f, 0.1f, 0.35f);
+            UnityEditor.Handles.color = detectionColor;
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, detectionRadius);
+
+            if (isSelected)
+            {
+                UnityEditor.Handles.color = new Color(1f, 0.85f, 0.1f, 0.05f);
+                UnityEditor.Handles.DrawSolidDisc(pos, Vector3.forward, detectionRadius);
+
+                if (showGizmoLabels)
+                {
+                    DrawGizmoLabel(pos + Vector3.up * detectionRadius, $"👁️ Visão ({detectionRadius:F1}m)", new Color(1f, 0.9f, 0.3f));
+                }
+            }
         }
 
-        // 4. Linha de Visão (Verde = Livre, Vermelho = Bloqueada)
-        if (TargetPlayer != null)
+        // 2. Raio Ranged / Distância de Tiro (Azul Ciano)
+        if (canUseRanged && rangedRange > 0f)
+        {
+            Color rangedColor = isSelected ? new Color(0f, 0.8f, 1f, 0.95f) : new Color(0f, 0.8f, 1f, 0.35f);
+            UnityEditor.Handles.color = rangedColor;
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, rangedRange);
+
+            if (isSelected)
+            {
+                UnityEditor.Handles.color = new Color(0f, 0.8f, 1f, 0.08f);
+                UnityEditor.Handles.DrawSolidDisc(pos, Vector3.forward, rangedRange);
+
+                if (showGizmoLabels)
+                {
+                    DrawGizmoLabel(pos + Vector3.right * rangedRange, $"🏹 Ranged ({rangedRange:F1}m)", new Color(0.3f, 0.9f, 1f));
+                }
+            }
+        }
+
+        // 3. Raio Melee / Faca (Vermelho Coral)
+        if (canUseMelee && meleeRange > 0f)
+        {
+            Color meleeColor = isSelected ? new Color(1f, 0.25f, 0.25f, 0.95f) : new Color(1f, 0.25f, 0.25f, 0.4f);
+            UnityEditor.Handles.color = meleeColor;
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, meleeRange);
+
+            if (isSelected)
+            {
+                UnityEditor.Handles.color = new Color(1f, 0.25f, 0.25f, 0.15f);
+                UnityEditor.Handles.DrawSolidDisc(pos, Vector3.forward, meleeRange);
+
+                if (showGizmoLabels)
+                {
+                    DrawGizmoLabel(pos + Vector3.left * meleeRange, $"🗡️ Melee ({meleeRange:F1}m)", new Color(1f, 0.4f, 0.4f));
+                }
+            }
+        }
+
+        // 3.5. Raio de Explosão / Creeper (Laranja Flamejante)
+        if (canExplode && explosionRadius > 0f)
+        {
+            Color explodeColor = isSelected ? new Color(1f, 0.4f, 0f, 0.95f) : new Color(1f, 0.4f, 0f, 0.45f);
+            UnityEditor.Handles.color = explodeColor;
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, explosionRadius);
+
+            if (isSelected)
+            {
+                UnityEditor.Handles.color = new Color(1f, 0.3f, 0f, 0.15f);
+                UnityEditor.Handles.DrawSolidDisc(pos, Vector3.forward, explosionRadius);
+
+                if (showGizmoLabels)
+                {
+                    DrawGizmoLabel(pos + Vector3.down * explosionRadius, $"💥 Explosão ({explosionRadius:F1}m)", new Color(1f, 0.5f, 0.1f));
+                }
+            }
+        }
+
+        // 4. Distância de Parada do Agente (Verde Claro)
+        if (isSelected && agent != null && agent.stoppingDistance > 0f)
+        {
+            UnityEditor.Handles.color = new Color(0.3f, 1f, 0.4f, 0.8f);
+            UnityEditor.Handles.DrawWireDisc(pos, Vector3.forward, agent.stoppingDistance);
+
+            if (showGizmoLabels)
+            {
+                DrawGizmoLabel(pos + Vector3.down * agent.stoppingDistance, $"🛑 Parada ({agent.stoppingDistance:F1}m)", new Color(0.4f, 1f, 0.5f));
+            }
+        }
+
+        // 5. Linha de Visão em Tempo de Execução (Verde = Livre, Vermelho = Bloqueada por parede)
+        if (TargetPlayer != null && Application.isPlaying)
         {
             bool hasLos = HasLineOfSightToTarget();
-            Gizmos.color = hasLos ? Color.green : Color.red;
-            Gizmos.DrawLine(transform.position, TargetPlayer.position);
+            Gizmos.color = hasLos ? new Color(0.2f, 1f, 0.2f, 0.9f) : new Color(1f, 0.2f, 0.2f, 0.9f);
+            Gizmos.DrawLine(pos, TargetPlayer.position);
         }
 
-        // 5. Caminho do NavMesh
+        // 6. Caminho do NavMesh
         if (agent != null && agent.enabled && agent.isOnNavMesh && agent.hasPath)
         {
-            Gizmos.color = Color.magenta;
+            Gizmos.color = new Color(1f, 0f, 1f, 0.9f);
             Vector3[] corners = agent.path.corners;
             for (int i = 0; i < corners.Length - 1; i++)
             {
@@ -470,15 +733,22 @@ public class EnemyAIController : MonoBehaviour
             }
         }
 
-        // 6. Texto com Nome do Estado Atual sobre a cabeça do Inimigo
-        string stateName = CurrentState != null ? CurrentState.GetType().Name.Replace("Enemy", "").Replace("State", "") : "NULL";
-        GUIStyle style = new GUIStyle();
-        style.normal.textColor = Color.yellow;
-        style.fontSize = 12;
-        style.fontStyle = FontStyle.Bold;
+        // 7. Nome do Estado Atual em Play Mode
+        if (Application.isPlaying && showGizmoLabels)
+        {
+            string stateName = CurrentState != null ? CurrentState.GetType().Name.Replace("Enemy", "").Replace("State", "") : "NULL";
+            DrawGizmoLabel(pos + Vector3.up * 1.5f, $"[IA: {stateName}]", Color.yellow);
+        }
+    }
+
+    private void DrawGizmoLabel(Vector3 position, string text, Color textColor)
+    {
+        GUIStyle style = new GUIStyle(UnityEditor.EditorStyles.boldLabel);
+        style.normal.textColor = textColor;
+        style.fontSize = 11;
         style.alignment = TextAnchor.MiddleCenter;
 
-        UnityEditor.Handles.Label(transform.position + Vector3.up * 1.2f, $"[IA: {stateName}]", style);
+        UnityEditor.Handles.Label(position, text, style);
     }
 #endif
 }

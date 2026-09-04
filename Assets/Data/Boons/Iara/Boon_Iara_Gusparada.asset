@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Iara_Gusparada
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: Gusparada
+  rarity: 0
+  icon: {fileID: 1741493235, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "Proj\xE9til veloz de \xE1gua que causa dano a um inimigo"
+  statDetail: 0.8s de cooldown
+  effectType: 6
+  effectValue: 80
+  debuffEffectType: 1
+  debuffValue: 0
+  debuffDetail: 
+  starCost: 4
+  grantedAbility: {fileID: 11400000, guid: f351c643c2441124b882c1721def30ea, type: 2}

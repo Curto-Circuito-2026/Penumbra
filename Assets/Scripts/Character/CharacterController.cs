@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public enum CharacterState
 {
@@ -14,29 +15,22 @@ public enum CharacterState
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterController2D : MonoBehaviour
 {
+    public static CharacterController2D Instance { get; private set; }
+
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float runSpeed = 8.5f;
 
     [Header("Dash Settings")]
     [SerializeField] private float dashDistance = 3f;
     [SerializeField] private float dashSpeed = 18f;
-
-    [Header("Stamina Settings")]
-    [SerializeField] private float maxStamina = 100f;
-    [SerializeField] private float currentStamina = 100f;
-    [SerializeField] private float runStaminaCostPerSecond = 20f;
-    [SerializeField] private float dashStaminaCost = 25f;
-    [SerializeField] private float staminaRegenRate = 15f;
-    [SerializeField] private float staminaRegenDelay = 1f;
+    [Tooltip("Tempo de espera (segundos) após o término de um Dash antes de permitir outro.")]
+    [SerializeField] private float dashCooldown = 0.15f;
 
     [Header("Visual Colors (Testing)")]
     [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color runColor = Color.yellow;
     [SerializeField] private Color dashColor = Color.cyan;
 
     private InputAction moveAction;
-    private InputAction runAction;
     private InputAction dashAction;
 
     private Rigidbody2D rb;
@@ -47,11 +41,13 @@ public class CharacterController2D : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 lastMoveDirection = Vector2.down;
     private bool isDashing;
-    private bool isRunning;
-    private float staminaRegenTimer;
+    private float dashCooldownTimer;
+    private float speedBuffMultiplier = 1f;
+    private Coroutine speedBuffCoroutine;
 
     public CharacterState CurrentState { get; private set; } = CharacterState.Idle;
     public bool IsDashing => isDashing || CurrentState == CharacterState.Dashing;
+    public float SpeedBuffMultiplier => speedBuffMultiplier;
 
     private static readonly int MoveX = Animator.StringToHash("MoveX");
     private static readonly int MoveY = Animator.StringToHash("MoveY");
@@ -59,12 +55,27 @@ public class CharacterController2D : MonoBehaviour
     private static readonly int LastMoveX = Animator.StringToHash("LastMoveX");
     private static readonly int LastMoveY = Animator.StringToHash("LastMoveY");
     private static readonly int DashTrigger = Animator.StringToHash("Dash");
+    private static readonly int MeleeTrigger = Animator.StringToHash("Melee");
+    private static readonly int RangedTrigger = Animator.StringToHash("Ranged");
+    private static readonly int CastTrigger = Animator.StringToHash("Cast");
 
-    public float CurrentStamina => currentStamina;
-    public float MaxStamina => maxStamina;
+    public float CurrentStamina => 100f;
+    public float MaxStamina => 100f;
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -92,37 +103,40 @@ public class CharacterController2D : MonoBehaviour
             .With("Up", "<Gamepad>/leftStick/up").With("Down", "<Gamepad>/leftStick/down")
             .With("Left", "<Gamepad>/leftStick/left").With("Right", "<Gamepad>/leftStick/right");
 
-        runAction = new InputAction("Run", binding: "<Keyboard>/leftShift");
-        runAction.AddBinding("<Gamepad>/buttonEast");
-
+        //dash
         dashAction = new InputAction("Dash", binding: "<Keyboard>/space");
         dashAction.AddBinding("<Gamepad>/buttonSouth");
     }
 
     private void OnEnable()
     {
-        moveAction.Enable();
-        runAction.Enable();
-        dashAction.Enable();
+        moveAction?.Enable();
+        dashAction?.Enable();
     }
 
     private void OnDisable()
     {
-        moveAction.Disable();
-        runAction.Disable();
-        dashAction.Disable();
+        moveAction?.Disable();
+        dashAction?.Disable();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
     }
 
     private void Update()
     {
         UpdateCharacterState();
 
+        if (dashCooldownTimer > 0f)
+        {
+            dashCooldownTimer -= Time.deltaTime;
+        }
+
         if (isDashing) return;
 
-        // Verifica se o jogador pode se movimentar de acordo com o estado do jogo (GameStateManager)
+        // Se o jogador não puder se mover (diálogo, pausa ou morte), cancela o movimento
         bool canMove = GameStateManager.Instance == null || GameStateManager.Instance.CanPlayerMove;
-
-        // Caso alternativo se o DialogueManager estiver ativo diretamente
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
         {
             canMove = false;
@@ -131,15 +145,12 @@ public class CharacterController2D : MonoBehaviour
         if (!canMove)
         {
             moveInput = Vector2.zero;
-            isRunning = false;
             if (rb != null) rb.linearVelocity = Vector2.zero;
             UpdateAnimator();
             return;
         }
 
         HandleInput();
-        HandleStamina();
-        UpdateVisuals();
         UpdateAnimator();
     }
 
@@ -154,10 +165,6 @@ public class CharacterController2D : MonoBehaviour
         else if (isDashing)
         {
             CurrentState = CharacterState.Dashing;
-        }
-        else if (isRunning)
-        {
-            CurrentState = CharacterState.Running;
         }
         else if (moveInput != Vector2.zero)
         {
@@ -185,21 +192,34 @@ public class CharacterController2D : MonoBehaviour
             return;
         }
 
-        // Se houver input manual WASD, aplica o movimento WASD
+        // Aplica o movimento com a velocidade de caminhada
         if (moveInput != Vector2.zero)
         {
-            float speed = isRunning ? runSpeed : walkSpeed;
+            float speed = walkSpeed * speedBuffMultiplier;
             rb.linearVelocity = moveInput * speed;
         }
         else
         {
-            // Se NÃO houver input WASD, só zera a velocidade se não houver perseguição/pathfinding de combate ativo
             PlayerCombatController combat = GetComponent<PlayerCombatController>();
             if (combat == null || !combat.IsPursuingTarget)
             {
                 rb.linearVelocity = Vector2.zero;
             }
         }
+    }
+
+    public void ApplySpeedBuff(float multiplier, float duration)
+    {
+        if (speedBuffCoroutine != null) StopCoroutine(speedBuffCoroutine);
+        speedBuffCoroutine = StartCoroutine(SpeedBuffRoutine(multiplier, duration));
+    }
+
+    private IEnumerator SpeedBuffRoutine(float multiplier, float duration)
+    {
+        speedBuffMultiplier = Mathf.Max(1f, multiplier);
+        yield return new WaitForSeconds(duration);
+        speedBuffMultiplier = 1f;
+        speedBuffCoroutine = null;
     }
 
     private void HandleInput()
@@ -218,10 +238,7 @@ public class CharacterController2D : MonoBehaviour
             }
         }
 
-        bool runPressed = runAction.IsPressed();
-        isRunning = runPressed && moveInput != Vector2.zero && currentStamina > 0f;
-
-        if (dashAction.WasPressedThisFrame() && currentStamina >= dashStaminaCost)
+        if (dashAction.WasPressedThisFrame() && !isDashing && dashCooldownTimer <= 0f)
         {
             StartCoroutine(PerformDash(moveInput));
         }
@@ -229,41 +246,17 @@ public class CharacterController2D : MonoBehaviour
 
     private void HandleStamina()
     {
-        if (isRunning && moveInput != Vector2.zero)
-        {
-            currentStamina -= runStaminaCostPerSecond * Time.deltaTime;
-            staminaRegenTimer = staminaRegenDelay;
-
-            if (currentStamina <= 0f)
-            {
-                currentStamina = 0f;
-                isRunning = false;
-            }
-        }
-        else if (!isDashing)
-        {
-            if (staminaRegenTimer > 0f)
-            {
-                staminaRegenTimer -= Time.deltaTime;
-            }
-            else if (currentStamina < maxStamina)
-            {
-                currentStamina += staminaRegenRate * Time.deltaTime;
-                if (currentStamina > maxStamina) currentStamina = maxStamina;
-            }
-        }
+        // Stamina removida do jogo
     }
 
     private IEnumerator PerformDash(Vector2 inputDirection)
     {
         isDashing = true;
         CurrentState = CharacterState.Dashing;
-        currentStamina -= dashStaminaCost;
-        staminaRegenTimer = staminaRegenDelay;
 
-        Vector2 dashDir = inputDirection != Vector2.zero ? inputDirection : lastMoveDirection;
+        Vector2 dashDir = (inputDirection != Vector2.zero ? inputDirection : lastMoveDirection).normalized;
+        if (dashDir == Vector2.zero) dashDir = Vector2.down;
 
-        // Dispara o Trigger e atualiza a direção do dash no Animator
         if (animator != null)
         {
             animator.SetFloat(LastMoveX, dashDir.x);
@@ -272,22 +265,54 @@ public class CharacterController2D : MonoBehaviour
         }
 
         Vector2 startPos = rb.position;
-        Vector2 targetPos = startPos + dashDir * dashDistance;
-        float travelDuration = dashDistance / dashSpeed;
+        float actualDashDistance = dashDistance;
+
+        // Validação física de obstáculos: detecta paredes, bordas do mapa e colliders sólidos
+        Collider2D playerCol = GetComponent<Collider2D>();
+        float skinWidth = 0.08f;
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = false; // Ignora triggers
+        filter.useLayerMask = true;
+        int playerLayer = gameObject.layer;
+        filter.layerMask = ~(1 << playerLayer); // Todas as camadas sólidas exceto o próprio player
+
+        RaycastHit2D[] hits = new RaycastHit2D[10];
+        int hitCount = playerCol != null ? playerCol.Cast(dashDir, filter, hits, dashDistance) : rb.Cast(dashDir, filter, hits, dashDistance);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit2D hit = hits[i];
+            if (hit.collider != null && !hit.collider.isTrigger && hit.collider.gameObject != gameObject)
+            {
+                // Se for um obstáculo sólido, limita a distância do dash antes do impacto
+                float safeDist = Mathf.Max(0f, hit.distance - skinWidth);
+                if (safeDist < actualDashDistance)
+                {
+                    actualDashDistance = safeDist;
+                }
+            }
+        }
+
+        Vector2 targetPos = startPos + dashDir * actualDashDistance;
+        float travelDuration = actualDashDistance > 0.01f ? (actualDashDistance / dashSpeed) : 0f;
         float elapsedTime = 0f;
 
         rb.linearVelocity = Vector2.zero;
 
-        while (elapsedTime < travelDuration)
+        if (travelDuration > 0f)
         {
-            elapsedTime += Time.fixedDeltaTime;
-            float t = Mathf.Clamp01(elapsedTime / travelDuration);
-            rb.MovePosition(Vector2.Lerp(startPos, targetPos, t));
-            yield return new WaitForFixedUpdate();
+            while (elapsedTime < travelDuration)
+            {
+                elapsedTime += Time.fixedDeltaTime;
+                float t = Mathf.Clamp01(elapsedTime / travelDuration);
+                rb.MovePosition(Vector2.Lerp(startPos, targetPos, t));
+                yield return new WaitForFixedUpdate();
+            }
         }
 
         rb.MovePosition(targetPos);
         isDashing = false;
+        dashCooldownTimer = dashCooldown;
         UpdateCharacterState();
     }
 
@@ -298,10 +323,6 @@ public class CharacterController2D : MonoBehaviour
         if (isDashing)
         {
             spriteRenderer.color = dashColor;
-        }
-        else if (isRunning)
-        {
-            spriteRenderer.color = runColor;
         }
         else
         {
@@ -316,5 +337,75 @@ public class CharacterController2D : MonoBehaviour
         animator.SetFloat(MoveX, moveInput.x);
         animator.SetFloat(MoveY, moveInput.y);
         animator.SetBool(IsMoving, moveInput != Vector2.zero);
+    }
+
+    /// <summary>
+    /// Aumenta permanentemente a velocidade de movimento.
+    /// </summary>
+    public void IncreaseMovementSpeed(float amount)
+    {
+        if (amount <= 0f) return;
+        walkSpeed += amount;
+    }
+
+    /// <summary>
+    /// Define a direção em que o personagem está olhando e sincroniza os parâmetros do Animator.
+    /// </summary>
+    public void SetFacingDirection(Vector2 direction)
+    {
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            lastMoveDirection = direction.normalized;
+            if (animator != null)
+            {
+                animator.SetFloat(LastMoveX, lastMoveDirection.x);
+                animator.SetFloat(LastMoveY, lastMoveDirection.y);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de ataque Melee virando a personagem para a direção do golpe.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerMeleeAnimation(Vector2 attackDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(attackDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(MeleeTrigger);
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de ataque à distância (Ranged) virando a personagem para a direção do disparo.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerRangedAnimation(Vector2 attackDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(attackDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(RangedTrigger);
+        }
+    }
+
+    /// <summary>
+    /// Dispara a animação de conjuração de magia (Cast) virando a personagem para a direção visada.
+    /// Bloqueia se o personagem estiver no meio de um Dash.
+    /// </summary>
+    public void TriggerCastAnimation(Vector2 castDirection)
+    {
+        if (IsDashing) return;
+
+        SetFacingDirection(castDirection);
+        if (animator != null)
+        {
+            animator.SetTrigger(CastTrigger);
+        }
     }
 }

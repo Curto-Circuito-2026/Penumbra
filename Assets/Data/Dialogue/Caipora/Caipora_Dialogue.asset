@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f03cf499bd150f84c94de7afa9e16fd8, type: 3}
+  m_Name: Caipora_Dialogue
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
+  startingNode:
+  - {fileID: 11400000, guid: 15b191b2ab373c847bf3f72574d58d57, type: 2}
+  - {fileID: 11400000, guid: 27a07827decb2a448b39ca49622ba8d5, type: 2}
+  - {fileID: 11400000, guid: 44af44dafb29d4441b87c0d254e70e49, type: 2}

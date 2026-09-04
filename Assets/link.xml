@@ -1,0 +1,14 @@
+<linker>
+  <!-- Preserva tipos do código C# do jogo contra o Managed Code Stripping do IL2CPP -->
+  <assembly fullname="Assembly-CSharp">
+    <type fullname="DialogueNode" preserve="all"/>
+    <type fullname="DialogueSequence" preserve="all"/>
+    <type fullname="ShopItemSO" preserve="all"/>
+    <type fullname="AbilityBoonSO" preserve="all"/>
+    <type fullname="EnemyConfigSO" preserve="all"/>
+  </assembly>
+
+  <!-- Preserva recursos essenciais do Engine e UI -->
+  <assembly fullname="UnityEngine.UI" preserve="all"/>
+  <assembly fullname="Unity.TextMeshPro" preserve="all"/>
+</linker>

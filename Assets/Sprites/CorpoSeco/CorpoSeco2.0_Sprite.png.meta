@@ -1,0 +1,494 @@
+fileFormatVersion: 2
+guid: ec490afac0f21f541a7972b72348cc2e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8647830201465105752
+    second: CorpoSeco2.0_Sprite_0
+  - first:
+      213: 5643689984677729148
+    second: CorpoSeco2.0_Sprite_1
+  - first:
+      213: 5087283819689374104
+    second: CorpoSeco2.0_Sprite_2
+  - first:
+      213: -857838260985083926
+    second: CorpoSeco2.0_Sprite_3
+  - first:
+      213: -1204214929593700729
+    second: CorpoSeco2.0_Sprite_4
+  - first:
+      213: -4669417865024914856
+    second: CorpoSeco2.0_Sprite_5
+  - first:
+      213: 1691511230976946797
+    second: CorpoSeco2.0_Sprite_6
+  - first:
+      213: 2784540598238201550
+    second: CorpoSeco2.0_Sprite_7
+  - first:
+      213: -1089986224614672668
+    second: CorpoSeco2.0_Sprite_8
+  - first:
+      213: -694714295161562121
+    second: CorpoSeco2.0_Sprite_9
+  - first:
+      213: -4449860143483092598
+    second: CorpoSeco2.0_Sprite_10
+  - first:
+      213: -3924091613700978046
+    second: CorpoSeco2.0_Sprite_11
+  - first:
+      213: -8848702094262043189
+    second: CorpoSeco2.0_Sprite_12
+  - first:
+      213: -255944860693011059
+    second: CorpoSeco2.0_Sprite_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_0
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 79
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.5097719, y: 0.13941701}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a217cbff3cbcf780800000000000000
+      internalID: -8647830201465105752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_1
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 79
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.49376544, y: 0.1388564}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c735527b32a625e40800000000000000
+      internalID: 5643689984677729148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_2
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 79
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.4812963, y: 0.12708}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8917d203ea9a99640800000000000000
+      internalID: 5087283819689374104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_3
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 79
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.47506174, y: 0.15063278}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae7ce3b85a85814f0800000000000000
+      internalID: -857838260985083926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_4
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 47
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.5, y: 0.14687644}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78e6858d6e4c94fe0800000000000000
+      internalID: -1204214929593700729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_5
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 47
+        width: 14
+        height: 27
+      alignment: 9
+      pivot: {x: 0.5449025, y: 0.13523497}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85ab35ff035e23fb0800000000000000
+      internalID: -4669417865024914856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_6
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 20
+        width: 16
+        height: 27
+      alignment: 9
+      pivot: {x: 0.4869032, y: 0.13135459}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d62f6f7a084797710800000000000000
+      internalID: 1691511230976946797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_7
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 47
+        width: 16
+        height: 27
+      alignment: 9
+      pivot: {x: 0.59167624, y: 0.12359351}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec644a4cbeca4a620800000000000000
+      internalID: 2784540598238201550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_8
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 20
+        width: 16
+        height: 27
+      alignment: 9
+      pivot: {x: 0.48035502, y: 0.16239844}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e6f5cfbd479fd0f0800000000000000
+      internalID: -1089986224614672668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_9
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 47
+        width: 14
+        height: 27
+      alignment: 9
+      pivot: {x: 0.50748336, y: 0.14299591}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fb52808701eb56f0800000000000000
+      internalID: -694714295161562121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_10
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 20
+        width: 16
+        height: 27
+      alignment: 9
+      pivot: {x: 0.4934516, y: 0.16627891}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a81858f96cbee32c0800000000000000
+      internalID: -4449860143483092598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_11
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 47
+        width: 16
+        height: 27
+      alignment: 9
+      pivot: {x: 0.5589347, y: 0.16627884}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28a8343d773da89c0800000000000000
+      internalID: -3924091613700978046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_12
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 20
+        width: 16
+        height: 27
+      alignment: 9
+      pivot: {x: 0.518487, y: 0.16038796}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcd7144e358133580800000000000000
+      internalID: -8848702094262043189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CorpoSeco2.0_Sprite_13
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 19
+        width: 15
+        height: 26
+      alignment: 9
+      pivot: {x: 0.50698483, y: 0.12926498}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d856e485183b27cf0800000000000000
+      internalID: -255944860693011059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6b839146cc0eb0d4199ebd98f9921d3d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      CorpoSeco2.0_Sprite_0: -8647830201465105752
+      CorpoSeco2.0_Sprite_1: 5643689984677729148
+      CorpoSeco2.0_Sprite_10: -4449860143483092598
+      CorpoSeco2.0_Sprite_11: -3924091613700978046
+      CorpoSeco2.0_Sprite_12: -8848702094262043189
+      CorpoSeco2.0_Sprite_13: -255944860693011059
+      CorpoSeco2.0_Sprite_2: 5087283819689374104
+      CorpoSeco2.0_Sprite_3: -857838260985083926
+      CorpoSeco2.0_Sprite_4: -1204214929593700729
+      CorpoSeco2.0_Sprite_5: -4669417865024914856
+      CorpoSeco2.0_Sprite_6: 1691511230976946797
+      CorpoSeco2.0_Sprite_7: 2784540598238201550
+      CorpoSeco2.0_Sprite_8: -1089986224614672668
+      CorpoSeco2.0_Sprite_9: -694714295161562121
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

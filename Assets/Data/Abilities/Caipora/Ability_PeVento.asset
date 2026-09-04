@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556b12a6eeaa3334198f859248a2cce7, type: 3}
+  m_Name: Ability_PeVento
+  m_EditorClassIdentifier: Assembly-CSharp::WindFootAbility
+  abilityName: "P\xE9 de Vento"
+  description: As brisas da mata envolvem seus passos, concedendo +60% de velocidade
+    de movimento por 5 segundos.
+  icon: {fileID: 1448489390, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  cooldown: 10
+  range: 5
+  damage: 0
+  manaCost: 15
+  cost: 0
+  speedMultiplier: 1.6
+  buffDuration: 5

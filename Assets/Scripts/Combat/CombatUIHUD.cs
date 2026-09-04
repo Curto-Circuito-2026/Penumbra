@@ -38,19 +38,16 @@ public class CombatUIHUD : MonoBehaviour
     [Tooltip("Texto numérico da contagem regressiva do Slot E.")]
     [SerializeField] private TextMeshProUGUI slotECooldownText;
 
-    [Header("Slot do Canto Inferior Esquerdo (Ultimate R)")]
-    [Tooltip("Ícone do Slot R (Ultimate).")]
+    [Header("Slot do Canto Inferior Esquerdo (R)")]
+    [Tooltip("Ícone do Slot R.")]
     [SerializeField] private Image slotRIcon;
     [Tooltip("Overlay de Cooldown do Slot R.")]
     [SerializeField] private Image slotRCooldownOverlay;
     [Tooltip("Texto numérico da contagem regressiva do Slot R.")]
+
     [SerializeField] private TextMeshProUGUI slotRCooldownText;
-    [Tooltip("Barra/Preenchimento de Carga da Ultimate (0 a 100%).")]
-    [SerializeField] private Image ultimateChargeBarFill;
-    [Tooltip("Efeito/Brilho visual exibido quando a Ultimate está 100% pronta.")]
-    [SerializeField] private GameObject ultimateReadyGlow;
-    [Tooltip("Texto com porcentagem de carga da Ultimate.")]
-    [SerializeField] private TextMeshProUGUI ultimateChargeText;
+
+    [SerializeField] Sprite emptySkillIcon;
 
     private void OnEnable()
     {
@@ -83,8 +80,6 @@ public class CombatUIHUD : MonoBehaviour
         if (playerCombat != null)
         {
             SubscribeEvents();
-            // Atualização inicial de carga da Ultimate
-            UpdateUltimateCharge(playerCombat.UltimateCharge, playerCombat.MaxUltimateCharge);
         }
 
         SetupHoverHandlers();
@@ -116,8 +111,8 @@ public class CombatUIHUD : MonoBehaviour
 
         playerCombat.OnBasicCooldownsUpdated += HandleBasicCooldowns;
         playerCombat.OnAbilityCooldownUpdated += HandleAbilityCooldown;
-        playerCombat.OnUltimateChargeUpdated += UpdateUltimateCharge;
         playerCombat.OnEquippedAbilitiesChanged += UpdateEquippedAbilities;
+        playerCombat.OnSlotUnlockStateChanged += HandleSlotUnlockStateChanged;
     }
 
     private void UnsubscribeEvents()
@@ -126,16 +121,29 @@ public class CombatUIHUD : MonoBehaviour
 
         playerCombat.OnBasicCooldownsUpdated -= HandleBasicCooldowns;
         playerCombat.OnAbilityCooldownUpdated -= HandleAbilityCooldown;
-        playerCombat.OnUltimateChargeUpdated -= UpdateUltimateCharge;
         playerCombat.OnEquippedAbilitiesChanged -= UpdateEquippedAbilities;
+        playerCombat.OnSlotUnlockStateChanged -= HandleSlotUnlockStateChanged;
+    }
+
+    private void HandleSlotUnlockStateChanged(int slotIndex, bool isUnlocked)
+    {
+        if (playerCombat == null) return;
+        UpdateEquippedAbilities(
+            playerCombat.GetEquippedAbility(0),
+            playerCombat.GetEquippedAbility(1),
+            playerCombat.GetEquippedAbility(2)
+        );
     }
 
     /// <summary>
     /// Atualiza os ícones e a exibição das habilidades equipadas nos slots Q, E e R.
-    /// Suporta habilidades trocadas dinamicamente ou slots vazios (null).
+    /// Suporta habilidades trocadas dinamicamente, slots vazios (null) e slots bloqueados.
     /// </summary>
     public void UpdateEquippedAbilities(Ability abilityQ, Ability abilityE, Ability abilityR)
     {
+        bool isEUnlocked = playerCombat == null || playerCombat.IsSlotUnlocked(1);
+        bool isRUnlocked = playerCombat == null || playerCombat.IsSlotUnlocked(2);
+
         if (slotQIcon != null)
         {
             slotQIcon.sprite = abilityQ != null ? abilityQ.Icon : null;
@@ -149,9 +157,9 @@ public class CombatUIHUD : MonoBehaviour
 
         if (slotEIcon != null)
         {
-            slotEIcon.sprite = abilityE != null ? abilityE.Icon : null;
-            slotEIcon.gameObject.SetActive(abilityE != null && abilityE.Icon != null);
-            if (abilityE == null)
+            slotEIcon.sprite = (isEUnlocked && abilityE != null) ? abilityE.Icon : null;
+            slotEIcon.gameObject.SetActive(isEUnlocked && abilityE != null && abilityE.Icon != null);
+            if (!isEUnlocked || abilityE == null)
             {
                 if (slotECooldownOverlay != null) slotECooldownOverlay.fillAmount = 0f;
                 if (slotECooldownText != null) slotECooldownText.gameObject.SetActive(false);
@@ -160,9 +168,9 @@ public class CombatUIHUD : MonoBehaviour
 
         if (slotRIcon != null)
         {
-            slotRIcon.sprite = abilityR != null ? abilityR.Icon : null;
-            slotRIcon.gameObject.SetActive(abilityR != null && abilityR.Icon != null);
-            if (abilityR == null)
+            slotRIcon.sprite = (isRUnlocked && abilityR != null) ? abilityR.Icon : null;
+            slotRIcon.gameObject.SetActive(isRUnlocked && abilityR != null && abilityR.Icon != null);
+            if (!isRUnlocked || abilityR == null)
             {
                 if (slotRCooldownOverlay != null) slotRCooldownOverlay.fillAmount = 0f;
                 if (slotRCooldownText != null) slotRCooldownText.gameObject.SetActive(false);
@@ -225,28 +233,5 @@ public class CombatUIHUD : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Atualiza a barra de carga da Ultimate, o efeito de brilho e a porcentagem.
-    /// </summary>
-    private void UpdateUltimateCharge(float current, float max)
-    {
-        float chargeRatio = max > 0f ? Mathf.Clamp01(current / max) : 0f;
-
-        if (ultimateChargeBarFill != null)
-        {
-            ultimateChargeBarFill.fillAmount = chargeRatio;
-        }
-
-        bool isReady = chargeRatio >= 0.999f;
-
-        if (ultimateReadyGlow != null)
-        {
-            ultimateReadyGlow.SetActive(isReady);
-        }
-
-        if (ultimateChargeText != null)
-        {
-            ultimateChargeText.text = isReady ? "<color=#FFD700>PRONTO!</color>" : $"{chargeRatio * 100f:F0}%";
-        }
-    }
+   
 }

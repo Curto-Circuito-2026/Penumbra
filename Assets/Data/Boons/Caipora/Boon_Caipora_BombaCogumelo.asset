@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Caipora_BombaCogumelo
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: Bomba Cogumelo
+  rarity: 1
+  icon: {fileID: -20548571, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "Arremessa uma bomba que explode em \xE1rea ao contato com o ch\xE3o"
+  statDetail: "20 de dano em \xE1rea"
+  effectType: 5
+  effectValue: 1.6
+  debuffEffectType: 1
+  debuffValue: 0
+  debuffDetail: 
+  starCost: 6
+  grantedAbility: {fileID: 11400000, guid: 3ceee982d53751f479d73a5f8ae5b5b6, type: 2}

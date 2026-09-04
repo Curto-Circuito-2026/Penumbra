@@ -1,0 +1,442 @@
+fileFormatVersion: 2
+guid: 02af2908828138f40a6b5e11d4a32b2d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5676964103175048788
+    second: bestafera_spritesheet_0
+  - first:
+      213: -3288277761487377169
+    second: bestafera_spritesheet_1
+  - first:
+      213: 5428111548643727763
+    second: bestafera_spritesheet_2
+  - first:
+      213: -7621034864749671249
+    second: bestafera_spritesheet_3
+  - first:
+      213: 2641763806773067649
+    second: bestafera_spritesheet_4
+  - first:
+      213: 5140676651161100592
+    second: bestafera_spritesheet_5
+  - first:
+      213: -6777244531234838899
+    second: bestafera_spritesheet_6
+  - first:
+      213: 8987343047160798897
+    second: bestafera_spritesheet_7
+  - first:
+      213: -7159238969039649302
+    second: bestafera_spritesheet_8
+  - first:
+      213: -6526291727930526668
+    second: bestafera_spritesheet_9
+  - first:
+      213: -3381639959376071020
+    second: bestafera_spritesheet_10
+  - first:
+      213: 7735466100706530433
+    second: bestafera_spritesheet_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: bestafera_spritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 47
+        width: 32
+        height: 20
+      alignment: 9
+      pivot: {x: 0.5328889, y: 0.13822213}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45e846426c0a8ce40800000000000000
+      internalID: 5676964103175048788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 47
+        width: 19
+        height: 18
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15649372}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fec6ab74cc0bd52d0800000000000000
+      internalID: -3288277761487377169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 47
+        width: 21
+        height: 20
+      alignment: 9
+      pivot: {x: 0.47494143, y: 0.12506656}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 399da12b1b6845b40800000000000000
+      internalID: 5428111548643727763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_3
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 47
+        width: 32
+        height: 20
+      alignment: 9
+      pivot: {x: 0.5287776, y: 0.14479999}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fac8ab12b25ac3690800000000000000
+      internalID: -7621034864749671249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_4
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 25
+        width: 32
+        height: 19
+      alignment: 9
+      pivot: {x: 0.52466667, y: 0.15380126}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18f31338f2e69a420800000000000000
+      internalID: 2641763806773067649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_5
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 30
+        width: 21
+        height: 16
+      alignment: 9
+      pivot: {x: 0.50626445, y: 0.19577765}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0312a918d2a575740800000000000000
+      internalID: 5140676651161100592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_6
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 26
+        width: 21
+        height: 19
+      alignment: 9
+      pivot: {x: 0.53132266, y: 0.16072524}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d86e9c7910462f1a0800000000000000
+      internalID: -6777244531234838899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_7
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 26
+        width: 32
+        height: 20
+      alignment: 9
+      pivot: {x: 0.5369997, y: 0.118488885}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1be989862e479bc70800000000000000
+      internalID: 8987343047160798897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2
+        width: 34
+        height: 20
+      alignment: 9
+      pivot: {x: 0.55416995, y: 0.17111146}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae50244c61645ac90800000000000000
+      internalID: -7159238969039649302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_9
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 11
+        width: 25
+        height: 13
+      alignment: 9
+      pivot: {x: 0.50526214, y: 0.16605149}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43471205044fd65a0800000000000000
+      internalID: -6526291727930526668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_10
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 2
+        width: 21
+        height: 20
+      alignment: 9
+      pivot: {x: 0.5125289, y: 0.13822258}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4967f17af500211d0800000000000000
+      internalID: -3381639959376071020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bestafera_spritesheet_11
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 6
+        width: 31
+        height: 19
+      alignment: 9
+      pivot: {x: 0.5042437, y: 0.15380116}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18450b03f65e95b60800000000000000
+      internalID: 7735466100706530433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: d005777551b02a14fab22100ae5a1bbe
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      bestafera_spritesheet_0: 5676964103175048788
+      bestafera_spritesheet_1: -3288277761487377169
+      bestafera_spritesheet_10: -3381639959376071020
+      bestafera_spritesheet_11: 7735466100706530433
+      bestafera_spritesheet_2: 5428111548643727763
+      bestafera_spritesheet_3: -7621034864749671249
+      bestafera_spritesheet_4: 2641763806773067649
+      bestafera_spritesheet_5: 5140676651161100592
+      bestafera_spritesheet_6: -6777244531234838899
+      bestafera_spritesheet_7: 8987343047160798897
+      bestafera_spritesheet_8: -7159238969039649302
+      bestafera_spritesheet_9: -6526291727930526668
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

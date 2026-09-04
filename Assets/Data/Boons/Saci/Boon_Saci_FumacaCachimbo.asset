@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d2745f320553a4f9584fd79ebe5fb6, type: 3}
+  m_Name: Boon_Saci_FumacaCachimbo
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityBoonSO
+  boonName: "Fuma\xE7a do Cachimbo"
+  rarity: 2
+  icon: {fileID: -2008709361, guid: a25e3e586a8040a4eb8ab0adb77bc876, type: 3}
+  description: "Traga a fuma\xE7a m\xEDstica do cachimbo do Saci para revitalizar
+    suas feridas na hora, ao custo de desgastar sua vitalidade total."
+  statDetail: "\u25B8 Cura Instant\xE2nea: +40 HP"
+  effectType: 0
+  effectValue: 40
+  debuffEffectType: 1
+  debuffValue: 25
+  debuffDetail: "- Vida M\xE1xima: -25"
+  starCost: 1
+  grantedAbility: {fileID: 0}

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ccf2639e752c5e438b573f983d2b1b3, type: 3}
+  m_Name: Iara_Node2
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
+  speakerName: Sereia Iara
+  speakerPortrait: {fileID: 0}
+  dialogueText: "Aquele rio j\xE1 foi meu lar, mas agora est\xE1 envenenado. Por
+    favor, tire aquela jacar\xE9 horrorosa das minhas \xE1guas de uma vez!"
+  nextNode: {fileID: 0}
+  onStart: {fileID: 0}
+  onEnd: {fileID: 11400000, guid: 4c29a8db752493848b4180192f31f3d2, type: 2}
+  voiceClip: {fileID: 8300000, guid: 532a87f39df50f14295c27a606778386, type: 3}

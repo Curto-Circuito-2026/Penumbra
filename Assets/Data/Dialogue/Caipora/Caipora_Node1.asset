@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ccf2639e752c5e438b573f983d2b1b3, type: 3}
+  m_Name: Caipora_Node1
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
+  speakerName: Caipora
+  speakerPortrait: {fileID: 0}
+  dialogueText: "Mantenha isso na cabe\xE7a: ca\xE7ada \xE9 respeito, n\xE3o \xE9
+    massacre! A natureza da o que precisamos, mas ela tamb\xE9m tira de quem \xE9
+    ganancioso."
+  nextNode: {fileID: 0}
+  onStart: {fileID: 0}
+  onEnd: {fileID: 11400000, guid: 42771a7554582fd42bc1bd8c2cda347a, type: 2}
+  voiceClip: {fileID: 8300000, guid: c9e4c2463206fcf498f2668a10f1e9a7, type: 3}

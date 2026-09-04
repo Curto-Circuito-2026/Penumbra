@@ -1,0 +1,738 @@
+fileFormatVersion: 2
+guid: 26e5ea77197c73b4cb74fc0380187106
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5946719010149676757
+    second: cuca_p1_idle_0
+  - first:
+      213: -5835845487063164755
+    second: cuca_p1_idle_1
+  - first:
+      213: -7732567637445558169
+    second: cuca_p1_idle_2
+  - first:
+      213: 2996385844541962349
+    second: cuca_p1_attack_0
+  - first:
+      213: 1100667934039802990
+    second: cuca_p1_attack_1
+  - first:
+      213: 8789734106215688118
+    second: cuca_p1_attack_2
+  - first:
+      213: 5349743721117208780
+    second: cuca_p1_attack_3
+  - first:
+      213: 4712396112413512475
+    second: cuca_transform_0
+  - first:
+      213: 5253403627349298030
+    second: cuca_transform_1
+  - first:
+      213: 8202136964113717503
+    second: cuca_transform_2
+  - first:
+      213: 2413689116504541117
+    second: cuca_transform_3
+  - first:
+      213: 6813722683732805758
+    second: cuca_p2_idle_0
+  - first:
+      213: -3442226059274610989
+    second: cuca_p2_idle_1
+  - first:
+      213: -2793584409864267667
+    second: cuca_p2_idle_2
+  - first:
+      213: -5064843829163964272
+    second: cuca_p2_walk_0
+  - first:
+      213: -7504348929067170794
+    second: cuca_p2_walk_1
+  - first:
+      213: 4397515827711554402
+    second: cuca_p2_walk_2
+  - first:
+      213: -2414791730871658228
+    second: cuca_p2_melee_0
+  - first:
+      213: 4422190649305748823
+    second: cuca_p2_melee_1
+  - first:
+      213: 8407638888535154283
+    second: cuca_p2_melee_2
+  - first:
+      213: 3927979633460028631
+    second: cuca_p2_magic_0
+  - first:
+      213: -482183796228899517
+    second: cuca_p2_magic_1
+  - first:
+      213: -997221271154108974
+    second: cuca_p2_magic_2
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: cuca_p1_idle_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 156
+        width: 38
+        height: 36
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d6b803ce6df68250800000000000000
+      internalID: 5946719010149676757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p1_idle_1
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 108
+        width: 38
+        height: 36
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da8988bf279e20fa0800000000000000
+      internalID: -5835845487063164755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p1_idle_2
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 60
+        width: 38
+        height: 36
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7604060e3b660b490800000000000000
+      internalID: -7732567637445558169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p1_attack_0
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 156
+        width: 38
+        height: 36
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d68bee1dc0d459920800000000000000
+      internalID: 2996385844541962349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p1_attack_1
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 108
+        width: 38
+        height: 36
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e640b1887ab564f00800000000000000
+      internalID: 1100667934039802990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p1_attack_2
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 60
+        width: 38
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b72f1f79986bf970800000000000000
+      internalID: 8789734106215688118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p1_attack_3
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 6
+        width: 38
+        height: 42
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc05198f19b1e3a40800000000000000
+      internalID: 5349743721117208780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_transform_0
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 156
+        width: 36
+        height: 35
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b13d6510c4bc56140800000000000000
+      internalID: 4712396112413512475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_transform_1
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 104
+        width: 36
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6b47ede3c6d7e840800000000000000
+      internalID: 5253403627349298030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_transform_2
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 52
+        width: 36
+        height: 44
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff85911bc18d3d170800000000000000
+      internalID: 8202136964113717503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_transform_3
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 5
+        width: 36
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db7ca7396752f7120800000000000000
+      internalID: 2413689116504541117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_idle_0
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 149
+        width: 31
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e784ae12ea43f8e50800000000000000
+      internalID: 6813722683732805758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_idle_1
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 101
+        width: 31
+        height: 41
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d6185403a1ca30d0800000000000000
+      internalID: -3442226059274610989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_idle_2
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 52
+        width: 31
+        height: 41
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6898ffb7c13b39d0800000000000000
+      internalID: -2793584409864267667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_walk_0
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 149
+        width: 31
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0984adf3f5f06b9b0800000000000000
+      internalID: -5064843829163964272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_walk_1
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 101
+        width: 31
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6144e54a8623bd790800000000000000
+      internalID: -7504348929067170794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_walk_2
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 53
+        width: 31
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 263b7e4a85d170d30800000000000000
+      internalID: 4397515827711554402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_melee_0
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 149
+        width: 32
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0918d207bfec7ed0800000000000000
+      internalID: -2414791730871658228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_melee_1
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 100
+        width: 32
+        height: 44
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7555cec37f6ce5d30800000000000000
+      internalID: 4422190649305748823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_melee_2
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 53
+        width: 32
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6ed5e6060feda470800000000000000
+      internalID: 8407638888535154283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_magic_0
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 149
+        width: 46
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d4aa515aacf28630800000000000000
+      internalID: 3927979633460028631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_magic_1
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 101
+        width: 46
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34db35d5460fe49f0800000000000000
+      internalID: -482183796228899517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cuca_p2_magic_2
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 53
+        width: 46
+        height: 43
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d5556299882922f0800000000000000
+      internalID: -997221271154108974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      cuca_p1_attack_0: 2996385844541962349
+      cuca_p1_attack_1: 1100667934039802990
+      cuca_p1_attack_2: 8789734106215688118
+      cuca_p1_attack_3: 5349743721117208780
+      cuca_p1_idle_0: 5946719010149676757
+      cuca_p1_idle_1: -5835845487063164755
+      cuca_p1_idle_2: -7732567637445558169
+      cuca_p2_idle_0: 6813722683732805758
+      cuca_p2_idle_1: -3442226059274610989
+      cuca_p2_idle_2: -2793584409864267667
+      cuca_p2_magic_0: 3927979633460028631
+      cuca_p2_magic_1: -482183796228899517
+      cuca_p2_magic_2: -997221271154108974
+      cuca_p2_melee_0: -2414791730871658228
+      cuca_p2_melee_1: 4422190649305748823
+      cuca_p2_melee_2: 8407638888535154283
+      cuca_p2_walk_0: -5064843829163964272
+      cuca_p2_walk_1: -7504348929067170794
+      cuca_p2_walk_2: 4397515827711554402
+      cuca_sprites_0: -8308852807819694161
+      cuca_sprites_1: 4734979899502994032
+      cuca_sprites_10: 9187104410278900508
+      cuca_sprites_11: -409031433053675979
+      cuca_sprites_12: -9145232239277655908
+      cuca_sprites_13: -946708429670834455
+      cuca_sprites_14: 192057748890204428
+      cuca_sprites_15: -8833283399163700878
+      cuca_sprites_16: -5461733652463445120
+      cuca_sprites_17: 1050864741637529973
+      cuca_sprites_18: -3203437785707046617
+      cuca_sprites_19: 7763551984823825729
+      cuca_sprites_2: 632076287427302471
+      cuca_sprites_20: 4369689685541089906
+      cuca_sprites_21: 9204709908950865619
+      cuca_sprites_22: 8666964772012343641
+      cuca_sprites_3: -8346283689045355664
+      cuca_sprites_4: 822517298161050622
+      cuca_sprites_5: 3015398651263801684
+      cuca_sprites_6: -4195823007237295989
+      cuca_sprites_7: 4564773244938203162
+      cuca_sprites_8: 386559970087926670
+      cuca_sprites_9: -5902533982530375369
+      cuca_transform_0: 4712396112413512475
+      cuca_transform_1: 5253403627349298030
+      cuca_transform_2: 8202136964113717503
+      cuca_transform_3: 2413689116504541117
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
